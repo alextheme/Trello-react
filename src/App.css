@@ -1,0 +1,23 @@
+.home-page-img {
+  width: 30px;
+  height: auto;
+}
+
+#app-main-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#app-main-nav ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+}
+#app-main-nav ul li {
+  margin: 0 10px;
+}
+
+/*# sourceMappingURL=App.css.map */

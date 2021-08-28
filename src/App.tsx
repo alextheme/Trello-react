@@ -4,9 +4,8 @@ import React from 'react';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import './App.scss';
 import homeIcon from './common/img/home-icon.png';
-// import Board from './pages/Board/Board';
+import Board from './pages/Board/Board';
 import Home from './pages/Home/Home';
-// import Board from './pages/Board/Board';
 
 export default function App(): JSX.Element {
   return (
@@ -18,7 +17,9 @@ export default function App(): JSX.Element {
               <Link to="/">
                 <img className="home-page-img" src={homeIcon} alt="home" />
               </Link>
-              <Link to="/boards">
+            </li>
+            <li>
+              <Link to="/board">
                 <span>Boards</span>
               </Link>
             </li>
@@ -28,8 +29,8 @@ export default function App(): JSX.Element {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/boards">
-            <Home />
+          <Route path="/board">
+            <Board />
           </Route>
           <Route path="*">"Page Not Found :-("</Route>
         </Switch>

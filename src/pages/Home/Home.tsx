@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/lines-between-class-members */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable spaced-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -27,7 +26,7 @@ const Home = (): JSX.Element => {
   const li = boards
     .map((board: { id: number; title: string }) => (
       <li className="home-boards__list-element" key={board.id}>
-        <Link to={`${url}boards/${board.id}`}>
+        <Link to={`${url}board/${board.id}`}>
           <span className="boards__list-element-title">{board.title}</span>
         </Link>
       </li>
@@ -45,11 +44,11 @@ const Home = (): JSX.Element => {
           <Route exact path={`${url}`}>
             <ul className="home-boards__list">{li}</ul>
           </Route>
-          <Route path={`${url}boards/:board_id`}>
+          <Route path={`${url}board/:board_id`}>
             <Board />
           </Route>
           <Route path="*">
-            <p>Page not found (Home)</p>
+            <p>Page not found (Home) </p>
           </Route>
         </Switch>
       </div>

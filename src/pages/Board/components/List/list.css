@@ -2,7 +2,12 @@
   padding-left: 3px;
   margin-bottom: 5px;
 }
+.lists .lists-list {
+  padding: 0;
+  margin: 0;
+}
 .lists .lists-element {
+  list-style: none;
   background: #ffffff;
   padding: 6px 8px;
   margin-bottom: 5px;
@@ -35,6 +40,7 @@
   border: none;
   transition: 300ms ease-in-out all;
   color: #bbbbbb;
+  font-size: 0.9em;
 }
 .lists .lists-element.lists-btn button span {
   margin-right: 5px;
