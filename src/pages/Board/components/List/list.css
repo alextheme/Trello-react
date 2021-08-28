@@ -1,0 +1,50 @@
+.lists .lists-title {
+  padding-left: 3px;
+  margin-bottom: 5px;
+}
+.lists .lists-element {
+  background: #ffffff;
+  padding: 6px 8px;
+  margin-bottom: 5px;
+  border-radius: 3px;
+  white-space: normal;
+  box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
+  transition: 300ms ease-in-out all;
+}
+.lists .lists-element:hover {
+  box-sizing: border-box;
+  background: #fafafa;
+  box-shadow: 0 -1px 26px -8px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 -1px 26px -8px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0 -1px 26px -8px rgba(0, 0, 0, 0.75);
+  transition: 300ms ease-in-out all;
+  cursor: pointer;
+  padding-left: 12px;
+}
+.lists .lists-element.lists-btn {
+  padding: 0;
+  margin-top: 5px;
+}
+.lists .lists-element.lists-btn button {
+  width: 100%;
+  padding: 3px 5px;
+  background: #e7e7e7;
+  border-radius: 3px;
+  border: none;
+  transition: 300ms ease-in-out all;
+  color: #bbbbbb;
+}
+.lists .lists-element.lists-btn button span {
+  margin-right: 5px;
+}
+.lists .lists-element.lists-btn button:hover {
+  box-sizing: border-box;
+  background: #eeeeee;
+  transition: 300ms ease-in-out all;
+  cursor: pointer;
+  color: #000000;
+}
+
+/*# sourceMappingURL=list.css.map */
