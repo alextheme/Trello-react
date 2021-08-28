@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import './home.scss';
 import { Link, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
-import Board from '../Board/Board';
+// import Board from '../Board/Board';
 import ButtonCreateNewBoard from './components/Buttons/ButtonCreateNewBoard';
 
 const Home = (): JSX.Element => {
@@ -17,17 +17,25 @@ const Home = (): JSX.Element => {
       { id: 2, title: 'подготовка к свадьбе' },
       { id: 3, title: 'разработка интернет-магазина' },
       { id: 4, title: 'курс по продвижению в соцсетях' },
-      { id: 5, title: 'курс фронтэнда' },
     ],
   });
   const { url } = useRouteMatch();
   console.log(url);
+  console.log(useParams());
+
+  const getRandomNumber = (num: number): number => Math.round(Math.random() * num);
+  const getRGB = (): string => `rgb(${getRandomNumber(100)}, ${getRandomNumber(100)}, ${getRandomNumber(100)})`;
 
   const { boards } = state;
   const li = boards
     .map((board: { id: number; title: string }) => (
-      <li className="home-boards__list-element" key={board.id}>
-        <Link to={`${url}boards/${board.id}`}>
+      <li
+        style={{ backgroundColor: getRGB() }}
+        className="home-boards__list-element"
+        id={`board_id-${board.id}`}
+        key={board.id}
+      >
+        <Link to={`/board/${board.id}`}>
           <span className="boards__list-element-title">{board.title}</span>
         </Link>
       </li>
@@ -41,16 +49,9 @@ const Home = (): JSX.Element => {
   return (
     <div className="home-boards">
       <div className="home-boards__wrapper">
+        <ul className="home-boards__list">{li}</ul>
         <Switch>
-          <Route exact path={`${url}`}>
-            <ul className="home-boards__list">{li}</ul>
-          </Route>
-          <Route path={`${url}boards/:board_id`}>
-            <Board />
-          </Route>
-          <Route path="*">
-            <p>Page not found (Home)</p>
-          </Route>
+          <Route path="/board/:board_id">board 1</Route>
         </Switch>
       </div>
     </div>

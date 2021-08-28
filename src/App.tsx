@@ -6,6 +6,7 @@ import './App.scss';
 import homeIcon from './common/img/home-icon.png';
 // import Board from './pages/Board/Board';
 import Home from './pages/Home/Home';
+// import Board from './pages/Board/Board';
 
 export default function App(): JSX.Element {
   return (
@@ -17,7 +18,9 @@ export default function App(): JSX.Element {
               <Link to="/">
                 <img className="home-page-img" src={homeIcon} alt="home" />
               </Link>
-              {/* <Link to="/board">Board</Link> */}
+              <Link to="/boards">
+                <span>Boards</span>
+              </Link>
             </li>
           </ul>
         </nav>
@@ -25,6 +28,10 @@ export default function App(): JSX.Element {
           <Route exact path="/">
             <Home />
           </Route>
+          <Route path="/boards">
+            <Home />
+          </Route>
+          <Route path="*">"Page Not Found :-("</Route>
         </Switch>
       </div>
     </BrowserRouter>
