@@ -3,7 +3,7 @@ import './list.scss';
 import Card from '../Card/Card';
 import { IList } from '../../../../common/interfaces/Interfaces';
 
-export default function List({ title, cards }: IList): JSX.Element {
+const List = ({ title, cards }: IList): JSX.Element => {
   const listCards = cards
     .map((card: { id: number; title: string }) => (
       <li key={card.id} className="lists__element">
@@ -24,4 +24,6 @@ export default function List({ title, cards }: IList): JSX.Element {
       <br />
     </div>
   );
-}
+};
+
+export default List;
