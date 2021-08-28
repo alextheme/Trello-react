@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
+/* index style */
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: "Neucha", cursive;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.active {
+  background: #a7ccec;
+}
+
+#main-nav {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+#main-nav li {
+  margin: 0 10px;
+}
+#main-nav li a {
+  display: block;
+  text-decoration: none;
+  transition: 300ms ease-in-out all;
+  border-radius: 3px;
+  box-sizing: border-box;
+  padding: 5px 10px;
+}
+#main-nav li a.home-page img {
+  width: 30px;
+  height: auto;
+  fill: #282c34;
+}
+#main-nav li a:hover {
+  opacity: 0.5;
+  transition: 300ms ease-in-out all;
+}
+
+.home-page-title {
+  text-align: center;
+}
+
+a.home-page {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+}
+a.home-page .home-page-img {
+  display: block;
+  background: url("img/home-icon.png") center center no-repeat;
+  background-size: 30px 30px;
+  width: 30px;
+  height: 30px;
+}
+
+/*# sourceMappingURL=App.css.map */

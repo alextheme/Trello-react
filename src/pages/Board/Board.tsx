@@ -1,19 +1,11 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-// import { useParams } from 'react-router-dom';
 import { IList } from '../../common/interfaces/Interfaces';
 import './board.scss';
 import List from './components/List/List';
 
-// eslint-disable-next-line react/prefer-stateless-function,@typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types
-const Board = () => {
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  console.log('Board');
+const Board = (): JSX.Element => {
   const state = {
-    // eslint-disable-next-line react/no-unused-state
     title: 'Моя тестовая доска',
-    // eslint-disable-next-line react/no-unused-state
     lists: [
       {
         id: 1,
@@ -44,21 +36,18 @@ const Board = () => {
       </li>
     ))
     .concat([
-      <li className="board-add-list-btn" key="btn">
+      <li className="board__add-list-btn" key="btn">
         <button>
           <span>+</span> Добавить список
         </button>
       </li>,
     ]);
-  //
-  //
+
   return (
     <div className="board">
       <h2 className="board__title">{title}</h2>
-      <div className="boards-wrapper">
-        <div className="boards-container">
-          <ul className="boards-list">{listsCards}</ul>
-        </div>
+      <div className="board__container">
+        <ul className="boards__list">{listsCards}</ul>
       </div>
     </div>
   );

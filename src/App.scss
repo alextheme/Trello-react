@@ -1,19 +1,67 @@
-.home-page-img {
-  width: 30px;
-  height: auto;
+@import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
+
+/* index style */
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: 'Neucha', cursive;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
 
-#app-main-nav {
-  ul {
-    list-style: none;
-    display: flex;
-    padding: 0;
-    margin: 0;
-    justify-content: center;
-    align-items: center;
+.active {
+  background: #a7ccec;
+}
 
-    li {
-      margin: 0 10px;
+#main-nav {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+
+  li {
+    margin: 0 10px;
+    a {
+      display: block;
+      text-decoration: none;
+      transition: 300ms ease-in-out all;
+      border-radius: 3px;
+      box-sizing: border-box;
+      padding: 5px 10px;
+
+      &.home-page {
+        img {
+          width: 30px;
+          height: auto;
+          fill: #282c34;
+        }
+      }
+
+      &:hover {
+        opacity: .5;
+        transition: 300ms ease-in-out all;
+      }
+
     }
+  }
+}
+.home-page-title {
+  text-align: center;
+}
+
+a.home-page {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+
+  .home-page-img {
+    display: block;
+    background: url("img/home-icon.png") center center no-repeat;
+    background-size: 30px 30px;
+    width: 30px;
+    height: 30px;
   }
 }

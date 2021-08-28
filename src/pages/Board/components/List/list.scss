@@ -1,13 +1,13 @@
 .lists {
-  .lists-title {
+  .lists__title {
     padding-left: 3px;
     margin-bottom: 5px;
   }
-  .lists-list {
+  .lists__list {
     padding: 0;
     margin: 0;
   }
-  .lists-element {
+  .lists__element {
     list-style: none;
     background: #ffffff;
     padding: 6px 8px;
@@ -30,7 +30,7 @@
       padding-left: 12px;
     }
 
-    &.lists-btn {
+    &.lists__btn {
       padding: 0;
       margin-top: 5px;
 

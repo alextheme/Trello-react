@@ -6,12 +6,12 @@ import { IList } from '../../../../common/interfaces/Interfaces';
 export default function List({ title, cards }: IList): JSX.Element {
   const listCards = cards
     .map((card: { id: number; title: string }) => (
-      <li key={card.id} className="lists-element">
+      <li key={card.id} className="lists__element">
         <Card title={card.title} />
       </li>
     ))
     .concat([
-      <li className="lists-element lists-btn" key="btn">
+      <li className="lists__element lists__btn" key="btn">
         <button>
           <span>+</span> Добавить карточку
         </button>
@@ -19,8 +19,8 @@ export default function List({ title, cards }: IList): JSX.Element {
     ]);
   return (
     <div className="lists">
-      <div className="lists-title">{title}</div>
-      <ul className="lists-list">{listCards}</ul>
+      <div className="lists__title">{title}</div>
+      <ul className="lists__list">{listCards}</ul>
       <br />
     </div>
   );

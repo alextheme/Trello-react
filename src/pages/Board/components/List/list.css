@@ -1,8 +1,13 @@
-.lists .lists-title {
+.lists .lists__title {
   padding-left: 3px;
   margin-bottom: 5px;
 }
-.lists .lists-element {
+.lists .lists__list {
+  padding: 0;
+  margin: 0;
+}
+.lists .lists__element {
+  list-style: none;
   background: #ffffff;
   padding: 6px 8px;
   margin-bottom: 5px;
@@ -13,7 +18,7 @@
   -moz-box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
   transition: 300ms ease-in-out all;
 }
-.lists .lists-element:hover {
+.lists .lists__element:hover {
   box-sizing: border-box;
   background: #fafafa;
   box-shadow: 0 -1px 26px -8px rgba(0, 0, 0, 0.75);
@@ -23,11 +28,11 @@
   cursor: pointer;
   padding-left: 12px;
 }
-.lists .lists-element.lists-btn {
+.lists .lists__element.lists__btn {
   padding: 0;
   margin-top: 5px;
 }
-.lists .lists-element.lists-btn button {
+.lists .lists__element.lists__btn button {
   width: 100%;
   padding: 3px 5px;
   background: #e7e7e7;
@@ -35,11 +40,12 @@
   border: none;
   transition: 300ms ease-in-out all;
   color: #bbbbbb;
+  font-size: 0.9em;
 }
-.lists .lists-element.lists-btn button span {
+.lists .lists__element.lists__btn button span {
   margin-right: 5px;
 }
-.lists .lists-element.lists-btn button:hover {
+.lists .lists__element.lists__btn button:hover {
   box-sizing: border-box;
   background: #eeeeee;
   transition: 300ms ease-in-out all;

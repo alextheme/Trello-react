@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 
 export interface IData {
@@ -16,10 +15,8 @@ export interface IState {
 }
 
 export interface IProps {
-  [component: string]:
-    | React.ComponentType<any>
-    | React.ComponentType<RouteComponentProps<any, StaticContext, unknown>>
-    | undefined;
+  [component: string]: /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  React.ComponentType<any> | React.ComponentType<RouteComponentProps<any, StaticContext, unknown>> | undefined;
 }
 
 export interface IBoardActions {

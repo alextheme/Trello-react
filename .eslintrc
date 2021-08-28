@@ -5,6 +5,7 @@
     "airbnb",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
+	 "plugin:prettier/recommended",
     "airbnb-typescript",
     "prettier"
   ],
@@ -57,6 +58,13 @@
     "eol-last": "error",
     "semi": "error",
     "no-console": "error"
+
+//    todo: custom eslint rules
+//    "no-console": "off",
+//    "@typescript-eslint/no-explicit-any": "off"
+//    "@typescript-eslint/naming-convention": "off",
+//    "@typescript-eslint/no-unused-vars": "off",
+//    "@typescript-eslint/ban-ts-comment": "off"
   },
   "overrides": []
 }
