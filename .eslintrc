@@ -54,16 +54,19 @@
     "import/no-named-as-default-member" : "off",
     "no-alert": "error",
     "eol-last": "error",
-    "@typescript-eslint/no-explicit-any": 2,
-    "no-console": "error",
-    "semi": "error"
+//    "@typescript-eslint/no-explicit-any": 2,
+//    "no-console": "error",
+    "semi": "error",
 
 //    todo: custom eslint rules
-//    "@typescript-eslint/no-explicit-any": "off",
-//    "@typescript-eslint/no-unused-vars": "off",
-//    "no-console": "off",
-//    "@typescript-eslint/naming-convention": "off",
-//    "@typescript-eslint/ban-ts-comment": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-console": "off",
+    "spaced-comment": "off",
+    "react/no-unused-state": "off",
+    "react/destructuring-assignment": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
+    //    "react/destructuring-assignment": "off"
 
   },
   "overrides": []

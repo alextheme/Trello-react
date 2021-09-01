@@ -1,10 +1,8 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import './App.scss';
 import homeIcon from './common/img/home-icon.png';
-import Board from './pages/Board/Board';
+// import Board from './pages/Board/Board';
 import Home from './pages/Home/Home';
 
 export default function App(): JSX.Element {
@@ -27,12 +25,12 @@ export default function App(): JSX.Element {
         </nav>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <h1>&#127968;</h1>
           </Route>
           <Route path="/board">
-            <Board />
+            <Home />
           </Route>
-          <Route path="*">"Page Not Found :-("</Route>
+          <Route path="*">"Page Not Found :-( (App.tsx)"</Route>
         </Switch>
       </div>
     </BrowserRouter>
