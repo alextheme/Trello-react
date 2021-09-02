@@ -54,19 +54,6 @@
   align-items: center;
   background: #e2e2e2;
 }
-.home-boards .home-boards__list .home-boards__list-element.btn button {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #777777;
-  transition: 300ms ease-in-out all;
-}
-.home-boards .home-boards__list .home-boards__list-element.btn button span {
-  margin-right: 3px;
-  transition: 300ms ease-in-out all;
-}
 .home-boards .home-boards__list .home-boards__list-element:hover {
   transition: 300ms ease-in-out all;
   cursor: pointer;
