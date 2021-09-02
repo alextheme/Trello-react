@@ -29,6 +29,7 @@
   transition: 300ms ease-in-out all;
 }
 .home-boards .home-boards__list .home-boards__list-element a {
+  cursor: pointer;
   width: 100%;
   height: 100%;
   display: inline-block;

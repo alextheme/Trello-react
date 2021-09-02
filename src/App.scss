@@ -18,6 +18,9 @@
 
     li {
       margin: 0 10px;
+      a, span, img {
+        cursor: pointer;
+      }
     }
   }
 }
