@@ -9,9 +9,12 @@ export interface IList extends IData {
   cards: IData[];
 }
 
-export interface IState {
-  boards: IData[];
-  path: '';
+export interface IBoard {
+  board: {
+    id: number;
+    title: string;
+    lists: IList[];
+  };
 }
 
 export interface IProps {

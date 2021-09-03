@@ -36,9 +36,8 @@ class Board extends React.Component<RouteComponentProps<TParams>, any> {
 
   render(): JSX.Element {
     const { boardId } = this.props.match.params;
-    console.log(this.props.match.params.boardId);
-
     const { title, lists } = this.state;
+
     const listsCards = lists
       .map((list: IList) => (
         <li key={list.id}>

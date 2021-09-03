@@ -1,4 +1,8 @@
-const initialState = {};
+import { IBoard } from '../../../common/interfaces/Interfaces';
+
+const initialState = {
+  board: {} as IBoard,
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types
 const reducer = (state = initialState, action: { type: string; payload?: any }) => {

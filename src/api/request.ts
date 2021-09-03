@@ -1,4 +1,5 @@
-import axios from 'axios';
+// @ts-ignore
+import axios, { AxiosResponse } from 'axios';
 import { api } from '../common/constants';
 
 const instance = axios.create({
@@ -9,6 +10,6 @@ const instance = axios.create({
   },
 });
 
-instance.interceptors.response.use((res) => res.data);
+instance.interceptors.response.use((res: AxiosResponse) => res.data);
 
 export default instance;

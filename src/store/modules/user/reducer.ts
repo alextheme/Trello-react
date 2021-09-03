@@ -1,4 +1,8 @@
-const initialState = {};
+import { IData as IUser } from '../../../common/interfaces/Interfaces';
+
+const initialState = {
+  user: {} as IUser,
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types
 const reducer = (state = initialState, action: { type: string; payload?: any }) => {
