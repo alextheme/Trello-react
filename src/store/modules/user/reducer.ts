@@ -1,7 +1,5 @@
-import { IData as IUser } from '../../../common/interfaces/Interfaces';
-
 const initialState = {
-  user: {} as IUser,
+  user: { id: 1, username: 'dff' },
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types

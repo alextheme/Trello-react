@@ -1,26 +1,17 @@
-.home-page-img {
-  width: 30px;
-  height: auto;
-}
+/* Error: Can't find stylesheet to import.
+ *   ,
+ * 1 | @import 'src/common/styles/mixins';
+ *   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *   '
+ *   app.scss 1:9  root stylesheet */
 
-#app-main-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Can't find stylesheet to import.\a   \2577 \a 1 \2502  @import 'src/common/styles/mixins';\d\a   \2502          ^^^^^^^^^^^^^^^^^^^^^^^^^^\a   \2575 \a   app.scss 1:9  root stylesheet";
 }
-#app-main-nav ul {
-  list-style: none;
-  display: flex;
-  padding: 0;
-  margin: 0;
-  justify-content: center;
-  align-items: center;
-}
-#app-main-nav ul li {
-  margin: 0 10px;
-}
-#app-main-nav ul li a, #app-main-nav ul li span, #app-main-nav ul li img {
-  cursor: pointer;
-}
-
-/*# sourceMappingURL=App.css.map */

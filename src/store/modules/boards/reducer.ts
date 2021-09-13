@@ -1,15 +1,6 @@
-import { IData as IBoard } from '../../../common/interfaces/Interfaces';
+import { StoreStateType, ActionType } from '../../../common/interfaces/Interfaces';
 
-type ActionType = {
-  type: string;
-  payload?: any;
-};
-
-type StateType = {
-  boards: IBoard[];
-};
-
-const initialState: StateType = {
+const initialState: StoreStateType = {
   boards: [
     { id: 1, title: 'покупки' },
     { id: 2, title: 'подготовка к свадьбе' },
@@ -19,7 +10,7 @@ const initialState: StateType = {
   ],
 };
 
-const reducer = (state = initialState, action: ActionType): StateType => {
+const reducer = (state = initialState, action: ActionType): StoreStateType => {
   switch (action.type) {
     case 'UPDATE_BOARDS':
       return {

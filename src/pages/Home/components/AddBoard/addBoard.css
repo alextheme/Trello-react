@@ -1,16 +1,17 @@
-.display-flex {
-  display: flex;
-}
-
 .display-none {
-  display: none;
+  display: none !important;
 }
 
-.bodyStyle {
+.overflowHidden {
   overflow: hidden;
 }
 
+.add-board {
+  width: 100%;
+  height: 100%;
+}
 .add-board .add-board__popapp {
+  display: flex;
   background: rgba(35, 35, 35, 0.75);
   width: 100%;
   height: 100%;
@@ -29,6 +30,30 @@
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
   border-radius: 10px;
+}
+.add-board .add-board__popapp .add-board__container .add-board__input-container {
+  position: relative;
+}
+.add-board .add-board__popapp .add-board__container .progress {
+  background: transparent;
+  border: 1px solid #232323;
+}
+.add-board .add-board__popapp .add-board__container .progress .progress-bar {
+  background: teal;
+}
+.add-board .add-board__popapp .add-board__container .add-board__errorHint {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffa9a9;
+  border-radius: 5px;
+  border: 2px solid rgba(255, 34, 34, 0.56);
+  padding: 5px;
+  z-index: 1;
+  width: 100%;
+  margin-left: -6px;
+  margin-top: 5px;
 }
 .add-board .add-board__popapp .add-board__container .add-board__create-new-board {
   width: fit-content;
@@ -112,4 +137,4 @@
   transition: 300ms ease-in-out all;
 }
 
-/*# sourceMappingURL=AddBoard.css.map */
+/*# sourceMappingURL=addBoard.css.map */

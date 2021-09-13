@@ -24,42 +24,17 @@
 .board .boards__container .boards__list > li {
   box-sizing: border-box;
   list-style: none;
-  padding: 15px 20px;
-  min-width: 200px;
-  max-width: 200px;
+  min-width: 280px;
+  max-width: 280px;
   min-height: 100px;
   background: #f4f4f4;
-  border-radius: 20px;
+  border-radius: 5px;
   margin: 10px;
   -webkit-box-shadow: 0 0 25px -5px rgba(0, 0, 0, 0.37);
   box-shadow: 0 0 25px -5px rgba(0, 0, 0, 0.37);
-  transition: 300ms ease-in-out all;
-}
-.board .boards__container .boards__list .board__add-list-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #e2e2e2;
-  padding: 0;
-}
-.board .boards__container .boards__list .board__add-list-btn button {
-  border: none;
-  background: none;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  border-radius: 10px;
-  transition: 300ms ease-in-out all;
-  color: #989898;
-}
-.board .boards__container .boards__list .board__add-list-btn:hover {
-  transition: 300ms ease-in-out all;
-  cursor: pointer;
-  -webkit-box-shadow: 0 0 19px -5px rgba(0, 0, 0, 0.27);
-  box-shadow: 0 0 19px -5px rgba(0, 0, 0, 0.27);
-}
-.board .boards__container .boards__list .board__add-list-btn:hover button {
-  color: #232323;
+  -webkit-transition: 300ms ease-in-out all;
+  -moz-transition: 300ms ease-in-out all;
+  -o-transition: 300ms ease-in-out all;
   transition: 300ms ease-in-out all;
 }
 

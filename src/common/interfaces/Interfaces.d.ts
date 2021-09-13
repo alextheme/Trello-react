@@ -1,8 +1,10 @@
-import React from 'react';
-
 export interface IData {
   id: number;
   title: string;
+}
+export interface IUser {
+  id: number;
+  username: string;
 }
 
 export interface IList extends IData {
@@ -11,15 +13,24 @@ export interface IList extends IData {
 
 export interface IBoard {
   board: {
-    id: number;
     title: string;
-    lists: IList[];
+    users: { id: number; username: string }[];
+    lists: {
+      id: number;
+      title: string;
+      cards: { id: number; title: string; description: string; users: number[] }[];
+    }[];
+    position: number;
   };
 }
 
-export interface IProps {
-  [component: string]: /* eslint-disable @typescript-eslint/no-explicit-any */
-  React.ComponentType<any> | React.ComponentType<RouteComponentProps<any, StaticContext, unknown>> | undefined;
+export interface ActionType {
+  type: string;
+  payload?: any;
+}
+
+export interface StoreStateType {
+  boards: IData[];
 }
 
 export interface IBoardActions {

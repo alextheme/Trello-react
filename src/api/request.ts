@@ -1,4 +1,3 @@
-// @ts-ignore
 import axios, { AxiosResponse } from 'axios';
 import { api } from '../common/constants';
 

@@ -40,12 +40,6 @@
   box-sizing: border-box;
   transition: 300ms ease-in-out all;
 }
-.home-boards .home-boards__list .home-boards__list-element .boards__list-element-title {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #ffffff;
-}
 .home-boards .home-boards__list .home-boards__list-element:last-child {
   padding: 0;
 }

@@ -3,7 +3,7 @@ import './card.scss';
 
 const Card = ({ title }: { title: string }): JSX.Element => (
   <div className="card">
-    <div className="card__title">{title}</div>
+    <span className="card__title">{title}</span>
   </div>
 );
 

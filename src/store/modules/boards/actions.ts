@@ -12,3 +12,10 @@ export const getBoards =
       dispatch({ type: 'ERROR_ACTION_TYPE' });
     }
   };
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const addBoard = async (newTitleBoard: string): Promise<any> =>
+  instance.post('/board', { title: newTitleBoard });
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deleteBoard = async (idBoard: number): Promise<any> => instance.delete(`/board/${idBoard}`);
