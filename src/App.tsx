@@ -5,7 +5,7 @@ import homeIcon from './common/img/home-icon.png';
 import Home from './pages/Home/Home';
 import Board from './pages/Board/Board';
 
-export default function App(): JSX.Element {
+function App(): JSX.Element {
   return (
     <BrowserRouter>
       <div id="app-main-page">
@@ -21,3 +21,5 @@ export default function App(): JSX.Element {
     </BrowserRouter>
   );
 }
+
+export default App;

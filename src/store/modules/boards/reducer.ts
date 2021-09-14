@@ -17,6 +17,10 @@ const reducer = (state = initialState, action: ActionType): StoreStateType => {
         ...state,
         boards: action.payload,
       };
+    case 'UPDATE_BOARDS_LOCAL':
+      return {
+        ...state,
+      };
     default: {
       return { ...state, ...action.payload };
     }

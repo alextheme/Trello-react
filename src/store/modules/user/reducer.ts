@@ -1,5 +1,8 @@
 const initialState = {
-  user: { id: 1, username: 'dff' },
+  user: [
+    { id: 1, username: 'dff' },
+    { id: 2, username: 'user2' },
+  ],
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types

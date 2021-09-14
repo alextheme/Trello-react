@@ -94,6 +94,7 @@ class AddBoard extends React.Component<PropsType, StateType> {
               <input
                 id="addNewBoardInpt"
                 type="text"
+                autoComplete="off"
                 value={this.state.nameNewBoard}
                 onChange={this.handleInputChange}
               />

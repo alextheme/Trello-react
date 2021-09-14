@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { IList, IBoard } from '../../common/interfaces/Interfaces';
 import './board.scss';
 import List from './components/List/List';
-import { getBoard } from '../../store/modules/board/actions';
-import AddList from './components/List/AddList/AddList';
+import { getBoard, renameTitleBoard } from '../../store/modules/board/actions';
+import AddList from './components/AddList/AddList';
+import { getHtmlObjectID, getHtmlObjectQS, setFocusToElement } from '../../common/scripts/commonFunctions';
 
 interface TypeProps extends RouteComponentProps {
   boardId: string;
@@ -13,40 +14,18 @@ interface TypeProps extends RouteComponentProps {
   getBoard: (boardId: string) => Promise<void>;
 }
 
-class Board extends React.Component<TypeProps, any> {
+interface TypeState {
+  openInputEditTitle: boolean;
+  inputTitleBoard: string;
+}
+
+class Board extends React.Component<TypeProps, TypeState> {
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: TypeProps) {
     super(props);
     this.state = {
-      title: 'Моя тестовая доска',
-      users: [{ id: 1, username: 'dff' }],
-      lists: [
-        {
-          id: 1,
-          title: 'Планы',
-          cards: [
-            { id: 1, title: 'помыть кота', description: '1descr', users: [1] },
-            { id: 2, title: 'приготовить суп', description: '2descr', users: [1] },
-            { id: 3, title: 'сходить в магазин', description: '3descr', users: [1] },
-          ],
-          position: 1,
-        },
-        {
-          id: 2,
-          title: 'В процессе',
-          cards: [{ id: 4, title: 'посмотреть сериал', description: '4descr', users: [1] }],
-          position: 2,
-        },
-        {
-          id: 3,
-          title: 'Сделано',
-          cards: [
-            { id: 5, title: 'сделать домашку', description: '5descr', users: [1] },
-            { id: 6, title: 'погулять с собакой', description: '6descr', users: [1] },
-          ],
-          position: 3,
-        },
-      ],
+      openInputEditTitle: false,
+      inputTitleBoard: '',
     };
   }
 
@@ -59,7 +38,56 @@ class Board extends React.Component<TypeProps, any> {
 
   componentDidMount(): void {
     this.updateBoard();
+    // @ts-ignore
+    const { title } = this.props.board;
+    this.setState((state) => ({
+      ...state,
+      inputTitleBoard: title,
+    }));
+
+    const inputField: HTMLElement | null = document.getElementById('board__input-edit-title');
+    document.addEventListener('keypress', (e) => {
+      if (inputField === document.activeElement && e.key === 'Enter') {
+        this.handleRenameBoard();
+      }
+    });
   }
+
+  handleRenameBoard = async (): Promise<void> => {
+    // @ts-ignore
+    const { boardId } = this.props.match.params as number;
+    await renameTitleBoard(boardId, this.state.inputTitleBoard);
+    this.setState((state: any) => ({ ...state, inputTitleBoard: '' }));
+    this.updateBoard();
+  };
+
+  handleTitleOnClick = (e: any): void => {
+    const htmlElementInput = getHtmlObjectID('board__input-edit-title');
+    // @ts-ignore
+    htmlElementInput.style.width = `${e.target.clientWidth}px`;
+    setFocusToElement('board__input-edit-title');
+    this.setState((state) => ({ ...state, inputTitleBoard: e.target.innerText, openInputEditTitle: true }));
+  };
+
+  handleInputOnBlur = (e: any): void => {
+    const titleBoard = getHtmlObjectQS('.board__title')?.innerText;
+    this.setState((state) => ({ ...state, openInputEditTitle: false }));
+    if (e.target.value === titleBoard) return;
+    this.handleRenameBoard();
+  };
+
+  /**
+   * Print new name board
+   * @param e ...
+   */
+  handleInputEditBoardTitle = (e: any): void => {
+    const inputElem = getHtmlObjectID('board__input-edit-title');
+    if (inputElem) {
+      console.log('f: ', e.target.value);
+      inputElem.style.width = `${e.target.value.length * 12}px`;
+    }
+    this.setState((state) => ({ ...state, inputTitleBoard: e.target.value }));
+  };
 
   render(): JSX.Element {
     // @ts-ignore
@@ -98,7 +126,25 @@ class Board extends React.Component<TypeProps, any> {
     //
     return (
       <div className="board">
-        <h2 className="board__title">{`${title}, id: ${boardId}`}</h2>
+        <div className="board__title-container">
+          <h2
+            className="board__title"
+            onClick={this.handleTitleOnClick}
+            style={{ display: this.state.openInputEditTitle ? 'none' : 'block' }}
+          >
+            {title}
+          </h2>
+          <input
+            id="board__input-edit-title"
+            type="text"
+            onInput={this.handleInputEditBoardTitle}
+            onBlur={this.handleInputOnBlur}
+            value={this.state.inputTitleBoard}
+            style={{ display: this.state.openInputEditTitle ? 'block' : 'none' }}
+            autoComplete="off"
+          />
+        </div>
+
         <div className="boards__container">
           <ul className="boards__list">{listsCards}</ul>
         </div>

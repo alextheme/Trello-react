@@ -34,6 +34,15 @@
 .add-board .add-board__popapp .add-board__container .add-board__input-container {
   position: relative;
 }
+.add-board .add-board__popapp .add-board__container .add-board__input-container #addNewBoardInpt {
+  outline: none;
+  border: 2px solid transparent;
+  transition: 300ms ease-in-out all;
+}
+.add-board .add-board__popapp .add-board__container .add-board__input-container #addNewBoardInpt:focus {
+  border: 2px solid #7a7a7a;
+  transition: 300ms ease-in-out all;
+}
 .add-board .add-board__popapp .add-board__container .progress {
   background: transparent;
   border: 1px solid #232323;

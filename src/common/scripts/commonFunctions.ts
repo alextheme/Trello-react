@@ -5,7 +5,7 @@
  * Result:
  *      0 is an empty string
  *      1 the string has invalid characters, errSymbols returns a list separated by a space
- *     -1 other errors
+ *     -1 not errors
  */
 export const checkInputText = (text: string, regExp = /[^а-я.\w\s\-\d]+/gi): { res: number; errSymbols: string } => {
   if (text === '') return { res: 0, errSymbols: '' };
@@ -72,13 +72,13 @@ export const toggleDisplayNoneToBlock = (element: HTMLElement | null): void => {
  * Get object by method querySelector
  * @param selector class element
  */
-export const getObjectQS = (selector: string): HTMLElement | null => document.querySelector(selector);
+export const getHtmlObjectQS = (selector: string): HTMLElement | null => document.querySelector(selector);
 
 /**
  * Get object by method getElementById
  * @param id id element without #
  */
-export const getObjectID = (id: string): HTMLElement | null => document.getElementById(id);
+export const getHtmlObjectID = (id: string): HTMLElement | null => document.getElementById(id);
 
 /**
  * checks the objects that were clicked and returns true if none of the passed objects was clicked.
@@ -90,7 +90,7 @@ export const closeInputField = (htmlElements: string[], target: EventTarget | nu
   let clickObj1 = true;
 
   for (let j = 0; j < htmlElements.length; j++) {
-    const obj = htmlElements[j][0] === '.' ? getObjectQS(htmlElements[j]) : getObjectID(htmlElements[j]);
+    const obj = htmlElements[j][0] === '.' ? getHtmlObjectQS(htmlElements[j]) : getHtmlObjectID(htmlElements[j]);
     // @ts-ignore
     if (obj && obj === target) {
       clickObj1 = false;
