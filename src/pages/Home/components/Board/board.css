@@ -4,7 +4,6 @@
 }
 .board__container .board__title-box {
   position: relative;
-  overflow-x: hidden;
   word-wrap: break-word;
   cursor: pointer;
 }
