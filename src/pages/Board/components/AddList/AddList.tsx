@@ -1,8 +1,8 @@
 import React from 'react';
 import './addList.scss';
 import { connect } from 'react-redux';
-import { addList } from '../../../../../store/modules/board/actions';
-import { checkInputText, setFocusToElement, closeInputField } from '../../../../../common/scripts/commonFunctions';
+import { addList } from '../../../../store/modules/board/actions';
+import { checkInputText, setFocusToElement, closeInputField } from '../../../../common/scripts/commonFunctions';
 import gListVar from './constantsList';
 
 interface TypeState {
@@ -65,12 +65,14 @@ class AddList extends React.Component<TypeProps, TypeState> {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   handleInput = (e: any): void => {
-    console.log(e);
     e.preventDefault();
     const { value } = e.target;
-    this.setState((state: TypeState) => ({ ...state, nameList: value }));
     const check = checkInputText(value);
-    this.errorHandling(check.res, check.errSymbols);
+    if (check.res < 0) {
+      this.setState((state: TypeState) => ({ ...state, nameList: value }));
+    } else {
+      this.errorHandling(1, check.errSymbols);
+    }
   };
 
   errorHandling = (numberError: number, errorSymbols?: string): void => {
@@ -147,7 +149,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
         <button
           className="add-list__add-btn-start"
           onClick={this.handleOpenFieldInput}
-          style={{ display: !this.state.openInput ? 'inline-block' : 'none' }}
+          style={{ display: this.state.openInput ? 'none' : 'inline-block' }}
         >
           + Добавить еще одну колонку
         </button>

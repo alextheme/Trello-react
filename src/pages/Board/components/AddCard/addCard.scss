@@ -1,8 +1,7 @@
-@import 'src/common/styles/mixins';
+@import '../../../../common/styles/mixins';
 
 .add-card__container {
   .add-card__input-box {
-    display: none;
     background: transparent;
     margin-top: 8px;
 
@@ -81,8 +80,6 @@
     }
   }
   .add-card__add-btn-start {
-    //display: none;
-    display: block;
     padding: 10px;
     border: none;
     background: none;

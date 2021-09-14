@@ -1,4 +1,4 @@
-@import 'src/common/styles/mixins';
+@import '../../../../common/styles/mixins';
 
 .board .boards__container .boards__list .board__add-list-btn {
   min-height: unset;
@@ -8,7 +8,6 @@
 
   .add-list {
     .add-list__edit-container {
-      display: none;
       padding: 5px;
 
       input[type="text"] {
@@ -94,7 +93,6 @@
     }
 
     .add-list__add-btn-start {
-      display: inline-block;
       color: white;
       border: none;
       background: none;

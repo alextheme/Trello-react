@@ -1,7 +1,7 @@
 import React from 'react';
 import './list.scss';
 import Card from '../Card/Card';
-import AddCard from '../Card/AddCard/AddCard';
+import AddCard from '../AddCard/AddCard';
 import { deleteList } from '../../../../store/modules/board/actions';
 
 // @ts-ignore

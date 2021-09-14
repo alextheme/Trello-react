@@ -14,6 +14,14 @@ export const getBoard =
     }
   };
 
+export const renameTitleBoard = async (boardId: string, title: string): Promise<void> => {
+  try {
+    await instance.put(`/board/${boardId}`, { title });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const addList = async (boardId: string, title: string, position: number): Promise<void> => {
   try {
     await instance.post(`/board/${boardId}/list`, { title, position });

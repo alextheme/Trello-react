@@ -47,6 +47,17 @@ $transitionParams: 300ms ease-in-out all;
 
       .add-board__input-container {
         position: relative;
+
+        #addNewBoardInpt {
+          outline: none;
+          border: 2px solid transparent;
+          transition: 300ms ease-in-out all;
+
+          &:focus {
+            border: 2px solid #7a7a7a;
+            transition: 300ms ease-in-out all;
+          }
+        }
       }
 
       .progress {

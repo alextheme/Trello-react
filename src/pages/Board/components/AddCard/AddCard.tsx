@@ -1,17 +1,22 @@
 import React from 'react';
 import './addCard.scss';
-import { getObjectQS, closeInputField, setFocusToElement } from '../../../../../common/scripts/commonFunctions';
+import { closeInputField } from '../../../../common/scripts/commonFunctions';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface TypeProps {}
 
 interface TypeState {
   nameCard: string;
+  openInputAddCard: boolean;
 }
 
-class AddCard extends React.Component<any, TypeState> {
+class AddCard extends React.Component<TypeProps, TypeState> {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(props: any) {
+  constructor(props: TypeProps) {
     super(props);
     this.state = {
       nameCard: '',
+      openInputAddCard: false,
     };
   }
 
@@ -37,8 +42,8 @@ class AddCard extends React.Component<any, TypeState> {
   }
 
   componentWillUnmount(): void {
-    document.addEventListener('keypress', () => {});
-    document.addEventListener('click', () => {});
+    document.removeEventListener('keypress', () => {});
+    document.removeEventListener('click', () => {});
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -47,32 +52,20 @@ class AddCard extends React.Component<any, TypeState> {
   };
 
   openInputField = (): void => {
-    setFocusToElement('add-card__input-field');
-    const btn = getObjectQS('.add-class__add-btn-start');
-    const fieldInput = getObjectQS('.add-card__input-box');
-    if (btn && fieldInput) {
-      // @ts-ignore
-      btn.style.display = 'none';
-      // @ts-ignore
-      fieldInput.style.display = 'block';
-    }
+    // setFocusToElement('add-card__input-field');
+    setTimeout(() => {
+      this.setState((state: TypeState) => ({ ...state, openInputAddCard: true }));
+    }, 0);
   };
 
   closeInputField = (): void => {
-    const btn = getObjectQS('.add-class__add-btn-start');
-    const fieldInput = getObjectQS('.add-card__input-box');
-    if (btn && fieldInput) {
-      // @ts-ignore
-      btn.style.display = 'block';
-      // @ts-ignore
-      fieldInput.style.display = 'none';
-    }
+    this.setState((state: TypeState) => ({ ...state, openInputAddCard: false }));
   };
 
   render(): JSX.Element {
     return (
       <div className="add-card__container">
-        <div className="add-card__input-box">
+        <div className="add-card__input-box" style={{ display: this.state.openInputAddCard ? 'block' : 'none' }}>
           <input
             type="text"
             id="add-card__input-field"
@@ -87,7 +80,11 @@ class AddCard extends React.Component<any, TypeState> {
           </div>
         </div>
 
-        <button className="add-card__add-btn-start" onClick={this.openInputField}>
+        <button
+          className="add-card__add-btn-start"
+          onClick={this.openInputField}
+          style={{ display: this.state.openInputAddCard ? 'none' : 'block' }}
+        >
           + Добавить еще одну карточку
         </button>
       </div>
