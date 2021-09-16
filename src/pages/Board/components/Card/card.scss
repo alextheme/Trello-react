@@ -1,4 +1,4 @@
-@import 'src/common/styles/mixins';
+@import '../../../../common/styles/mixins';
 
 .card {
   width: 100%;
@@ -6,14 +6,44 @@
   box-sizing: border-box;
   padding: 6px 8px;
   border-radius: 5px;
-  box-shadow: 0 0 37px -8px rgba(0,0,0,0.75);
-  -webkit-box-shadow: 0 0 37px -8px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0 0 37px -8px rgba(0,0,0,0.75);
-  transition: 300ms ease-in-out all;
+  box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0 0 37px -8px rgba(0, 0, 0, 0.75);
+  @include transition($transitionParams);
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
 
   .card__title {
     cursor: pointer;
+  }
+
+  .card__open-card-editor-btn {
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    border-radius: 3px;
+    @include transition($transitionParams);
+    cursor: pointer;
+    border: none;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: none;
+    font-size: 12px;
+    color: #7a7a7a;
+
+    svg, path {
+      cursor: pointer;
+    }
+
+    &:hover {
+      @include transition($transitionParams);
+      background: #d5d5d5;
+      opacity: 1;
+    }
   }
 
   &:hover {
@@ -21,6 +51,82 @@
     background: #fafafa;
     transition: 300ms ease-in-out all;
     cursor: pointer;
-    padding-left: 12px;
+
+    .card__open-card-editor-btn {
+      @include transition($transitionParams);
+      opacity: .7;
+    }
+  }
+}
+
+/* EDITOR CARD TITLE */
+.quick-card-editor {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  .quick-card__editor-card {
+
+    .quick-card-editor__edit-title {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: none;
+      outline: none ;
+      padding: 5px 7px;
+    }
+
+    .quick-card-editor__button {
+      border: none;
+      padding: 5px 8px;
+      margin-top: 6px;
+      background: blue;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      @include transition($transitionParams);
+
+      &:hover {
+        opacity: .7;
+        @include transition($transitionParams);
+      }
+    }
+
+    .quick-card-editor__button {
+
+    }
+  }
+
+  .quick-card-editor-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: -109px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    a {
+      padding: 3px;
+      background: #7a7a7a;
+      color: white;
+      margin-bottom: 5px;
+      border-radius: 3px;
+      display: block;
+      @include transition($transitionParams);
+
+      .quick-card-editor-buttons-item-icon {
+        font-size: 12px;
+      }
+      .quick-card-editor-buttons-item-text {
+        margin-left: 5px;
+      }
+
+      &:hover {
+        background: #000;
+        @include transition($transitionParams);
+      }
+    }
   }
 }

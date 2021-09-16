@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import './board.scss';
-import instance from '../../../../api/request';
 import { getBoards } from '../../../../store/modules/boards/actions';
+import { deleteBoard } from '../../../../store/modules/board/actions';
 
 type PropsType = {
   boardId: number;
@@ -12,16 +12,19 @@ type PropsType = {
 
 const Board = (props: PropsType): JSX.Element => {
   const { boardId, title } = props;
+  const isMountedRef: React.MutableRefObject<boolean | null> = useRef(null);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return (): any => (isMountedRef.current = false);
+  });
 
   const handleDeleteBoard = async (e: any): Promise<void> => {
     e.preventDefault();
     const boardIdFromHtml = e.target.getAttribute('data-id');
-    try {
-      await instance.delete(`/board/${boardIdFromHtml}`);
-      await props.getBoards();
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-    } catch (e) {
-      console.log(e);
+    await deleteBoard(boardIdFromHtml);
+    if (isMountedRef.current) {
+      props.getBoards();
     }
   };
 

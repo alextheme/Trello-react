@@ -18,14 +18,14 @@ export const checkInputText = (text: string, regExp = /[^а-я.\w\s\-\d]+/gi): {
 
 /**
  * Sets autofocus to an element with this ID
- * @param elementId ID of the element for focus
+ * @param element_id ID of the element for focus
  */
-export const setFocusToElement = (elementId: string): void => {
-  const element = document.getElementById(elementId);
+export const setFocusToElement = (element_id: string): void => {
+  const element = document.getElementById(element_id);
   if (!element) return;
   setTimeout(() => {
     element.focus();
-  });
+  }, 10);
 };
 
 /**
@@ -72,26 +72,28 @@ export const toggleDisplayNoneToBlock = (element: HTMLElement | null): void => {
  * Get object by method querySelector
  * @param selector class element
  */
-export const getHtmlObjectQS = (selector: string): HTMLElement | null => document.querySelector(selector);
+export const getHtmlElementQS = (selector: string): HTMLElement | null => document.querySelector(selector);
 
 /**
  * Get object by method getElementById
  * @param id id element without #
  */
-export const getHtmlObjectID = (id: string): HTMLElement | null => document.getElementById(id);
+export const getHtmlElementByID = (id: string): HTMLElement | null => document.getElementById(id);
 
 /**
  * checks the objects that were clicked and returns true if none of the passed objects was clicked.
  * True if the input window can be closed.
- * @param htmlElements an array of classes or id which should not be closed by clicking on the input field
+ * @param listClassesOrIdHtmlElements an array of classes or id which should not be closed by clicking on the input field
  * @param target object that was clicked
  */
-export const closeInputField = (htmlElements: string[], target: EventTarget | null): boolean => {
+export const closeInputField = (listClassesOrIdHtmlElements: string[], target: EventTarget | null): boolean => {
   let clickObj1 = true;
 
-  for (let j = 0; j < htmlElements.length; j++) {
-    const obj = htmlElements[j][0] === '.' ? getHtmlObjectQS(htmlElements[j]) : getHtmlObjectID(htmlElements[j]);
-    // @ts-ignore
+  for (let i = 0; i < listClassesOrIdHtmlElements.length; i++) {
+    const obj =
+      listClassesOrIdHtmlElements[i][0] === '.'
+        ? getHtmlElementQS(listClassesOrIdHtmlElements[i])
+        : getHtmlElementByID(listClassesOrIdHtmlElements[i]);
     if (obj && obj === target) {
       clickObj1 = false;
     }

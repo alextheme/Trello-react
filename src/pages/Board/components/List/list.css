@@ -19,6 +19,10 @@
   cursor: pointer;
   border-radius: 3px;
   transition: 300ms ease-in-out all;
+  margin-bottom: 6px;
+}
+.lists .lists-header .lists__delete-btn svg {
+  color: #7a7a7a;
 }
 .lists .lists-header .lists__delete-btn:hover {
   transition: 300ms ease-in-out all;

@@ -2,7 +2,7 @@
   background: transparent;
   margin-top: 8px;
 }
-.add-card__container .add-card__input-box #add-card__input-field {
+.add-card__container .add-card__input-box .add-card__input-field {
   width: 100%;
   height: 40px;
   box-sizing: border-box;

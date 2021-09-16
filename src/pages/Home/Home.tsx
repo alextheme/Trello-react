@@ -34,7 +34,6 @@ class Home extends React.Component<PropsType, StateType> {
 
     // @ts-ignore
     const { boards } = this.props.boards;
-    console.log(boards);
     let boardsListBackend: JSX.Element[] = [];
 
     if (typeof boards === 'object') {

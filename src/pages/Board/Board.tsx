@@ -6,7 +6,7 @@ import './board.scss';
 import List from './components/List/List';
 import { getBoard, renameTitleBoard } from '../../store/modules/board/actions';
 import AddList from './components/AddList/AddList';
-import { getHtmlObjectID, getHtmlObjectQS, setFocusToElement } from '../../common/scripts/commonFunctions';
+import { getHtmlElementByID, getHtmlElementQS, setFocusToElement } from '../../common/scripts/commonFunctions';
 
 interface TypeProps extends RouteComponentProps {
   boardId: string;
@@ -36,7 +36,7 @@ class Board extends React.Component<TypeProps, TypeState> {
     await this.props.getBoard(boardId);
   };
 
-  componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
     this.updateBoard();
     // @ts-ignore
     const { title } = this.props.board;
@@ -45,47 +45,53 @@ class Board extends React.Component<TypeProps, TypeState> {
       inputTitleBoard: title,
     }));
 
-    const inputField: HTMLElement | null = document.getElementById('board__input-edit-title');
     document.addEventListener('keypress', (e) => {
+      const inputField = document.getElementById('board__input-edit-title');
       if (inputField === document.activeElement && e.key === 'Enter') {
-        this.handleRenameBoard();
+        // @ts-ignore
+        this.handleRenameBoard(e.path[0].value);
       }
     });
   }
 
-  handleRenameBoard = async (): Promise<void> => {
+  handleRenameBoard = async (oldName: string): Promise<void> => {
+    const titleBoard = getHtmlElementQS('.board__title')?.innerText;
+    if (oldName === titleBoard) {
+      this.setState((state: any) => ({ ...state, openInputEditTitle: false }));
+      return;
+    }
+
     // @ts-ignore
     const { boardId } = this.props.match.params as number;
     await renameTitleBoard(boardId, this.state.inputTitleBoard);
-    this.setState((state: any) => ({ ...state, inputTitleBoard: '' }));
-    this.updateBoard();
+    await this.updateBoard();
+    this.setState((state: any) => ({ ...state, inputTitleBoard: '', openInputEditTitle: false }));
   };
 
-  handleTitleOnClick = (e: any): void => {
-    const htmlElementInput = getHtmlObjectID('board__input-edit-title');
+  /**
+   * Focus out
+   * @param e e
+   */
+  handleTitleBoardInputOnBlur = async (e: any): Promise<void> => {
+    await this.handleRenameBoard(e.target.value);
+  };
+
+  handleTitleBoardOnClick = (e: any): void => {
+    const htmlElementInput = getHtmlElementByID('board__input-edit-title');
     // @ts-ignore
     htmlElementInput.style.width = `${e.target.clientWidth}px`;
     setFocusToElement('board__input-edit-title');
     this.setState((state) => ({ ...state, inputTitleBoard: e.target.innerText, openInputEditTitle: true }));
   };
 
-  handleInputOnBlur = (e: any): void => {
-    const titleBoard = getHtmlObjectQS('.board__title')?.innerText;
-    this.setState((state) => ({ ...state, openInputEditTitle: false }));
-    if (e.target.value === titleBoard) return;
-    this.handleRenameBoard();
-  };
-
   /**
    * Print new name board
    * @param e ...
    */
-  handleInputEditBoardTitle = (e: any): void => {
-    const inputElem = getHtmlObjectID('board__input-edit-title');
-    if (inputElem) {
-      console.log('f: ', e.target.value);
-      inputElem.style.width = `${e.target.value.length * 12}px`;
-    }
+  handleTitleBoardInputEdit = (e: any): void => {
+    const inputElem = getHtmlElementByID('board__input-edit-title');
+    if (inputElem) inputElem.style.width = `${e.target.value.length * 12}px`;
+
     this.setState((state) => ({ ...state, inputTitleBoard: e.target.value }));
   };
 
@@ -93,14 +99,13 @@ class Board extends React.Component<TypeProps, TypeState> {
     // @ts-ignore
     const { boardId } = this.props.match.params as number;
     // @ts-ignore
-    // const { title, users, lists } = this.state;
     const { title, lists } = this.props.board;
     const list1 = Object.keys(lists).map((k: string) => lists[k]);
 
     let listsCards;
     const button = [
       <li className="board__add-list-btn" key="btn">
-        <AddList boardId={boardId} position={list1.length + 1} updateBoard={this.props.getBoard} />
+        <AddList boardId={boardId} position={list1.length + 1} />
       </li>,
     ];
 
@@ -109,13 +114,7 @@ class Board extends React.Component<TypeProps, TypeState> {
         .sort((a, b) => a.position - b.position)
         .map((list: IList) => (
           <li key={list.id}>
-            <List
-              boardId={boardId}
-              listId={list.id}
-              listTitle={list.title}
-              listCards={list.cards}
-              update={this.updateBoard}
-            />
+            <List boardId={boardId} listId={list.id} listTitle={list.title} listCards={list.cards} />
           </li>
         ))
         .concat(button);
@@ -129,7 +128,7 @@ class Board extends React.Component<TypeProps, TypeState> {
         <div className="board__title-container">
           <h2
             className="board__title"
-            onClick={this.handleTitleOnClick}
+            onClick={this.handleTitleBoardOnClick}
             style={{ display: this.state.openInputEditTitle ? 'none' : 'block' }}
           >
             {title}
@@ -137,12 +136,13 @@ class Board extends React.Component<TypeProps, TypeState> {
           <input
             id="board__input-edit-title"
             type="text"
-            onInput={this.handleInputEditBoardTitle}
-            onBlur={this.handleInputOnBlur}
-            value={this.state.inputTitleBoard}
+            onInput={this.handleTitleBoardInputEdit}
+            onBlur={this.handleTitleBoardInputOnBlur}
+            defaultValue={this.state.inputTitleBoard}
             style={{ display: this.state.openInputEditTitle ? 'block' : 'none' }}
             autoComplete="off"
           />
+          <p style={{ margin: '0 0 0 20px' }}>({boardId})</p>
         </div>
 
         <div className="boards__container">
@@ -154,9 +154,5 @@ class Board extends React.Component<TypeProps, TypeState> {
 }
 
 const mapStateToProps = (state: any): void => ({ ...state.board });
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const mapDispatchToProps = () => ({
-  getBoard,
-});
 
-export default connect(mapStateToProps, mapDispatchToProps())(withRouter(Board));
+export default connect(mapStateToProps, { getBoard })(withRouter(Board));

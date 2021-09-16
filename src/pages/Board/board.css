@@ -36,6 +36,7 @@
   list-style: none;
   padding: 0;
   margin: 50px 0 100px;
+  align-items: self-start;
 }
 .board .boards__container .boards__list > li {
   box-sizing: border-box;

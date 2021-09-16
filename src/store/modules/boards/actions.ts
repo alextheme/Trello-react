@@ -7,7 +7,6 @@ export const getBoards =
     try {
       const data = await instance.get('/board');
       await dispatch({ type: 'UPDATE_BOARDS', payload: data });
-      await dispatch({ type: 'UPDATE_BOARDS_LOCAL' });
     } catch (e) {
       console.log(e);
       dispatch({ type: 'ERROR_ACTION_TYPE' });

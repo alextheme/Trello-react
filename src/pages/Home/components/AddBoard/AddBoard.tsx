@@ -12,7 +12,13 @@ type PropsType = {
 type StateType = { nameNewBoard: string };
 
 class AddBoard extends React.Component<PropsType, StateType> {
-  private isOpenPopap = false;
+  globalValue: {
+    mounted: boolean | undefined;
+    isOpenPopap: boolean | undefined;
+  } = {
+    mounted: undefined,
+    isOpenPopap: undefined,
+  };
 
   constructor(props: PropsType) {
     super(props);
@@ -26,32 +32,40 @@ class AddBoard extends React.Component<PropsType, StateType> {
   }
 
   componentDidMount(): void {
+    this.globalValue.mounted = true;
+
     document.addEventListener('click', (e) => {
-      // @ts-ignore
-      if (!this.isOpenPopap && e.target.classList.contains('add-board__popapp')) {
-        this.closedPopap();
+      if (this.globalValue.mounted) {
+        // @ts-ignore
+        if (!this.isOpenPopap && e.target.classList.contains('add-board__popapp')) {
+          this.closedPopap();
+        }
       }
     });
     document.addEventListener('keypress', (e) => {
-      if (this.isOpenPopap && e.key === 'Enter') {
+      if (this.globalValue.isOpenPopap && e.key === 'Enter') {
         e.preventDefault();
         this.addNewBoard();
       }
     });
   }
 
-  handleInputChange = (e: { target: { value: string } }): void => {
+  componentWillUnmount(): void {
+    this.globalValue.mounted = false;
+  }
+
+  inputOnChangeHandler = (e: { target: { value: string } }): void => {
     this.setState({ nameNewBoard: e.target.value });
   };
 
   closedPopap = (): void => {
-    this.isOpenPopap = toggleClassElement('.add-board__popapp', 'display-none');
+    this.globalValue.isOpenPopap = toggleClassElement('.add-board__popapp', 'display-none');
     toggleClassBody('overflowHidden');
     this.setState({ nameNewBoard: '' });
   };
 
   openPopap = (): void => {
-    this.isOpenPopap = toggleClassElement('.add-board__popapp', 'display-none');
+    this.globalValue.isOpenPopap = toggleClassElement('.add-board__popapp', 'display-none');
     toggleClassBody('overflowHidden');
     setFocusToElement('addNewBoardInpt');
   };
@@ -96,7 +110,7 @@ class AddBoard extends React.Component<PropsType, StateType> {
                 type="text"
                 autoComplete="off"
                 value={this.state.nameNewBoard}
-                onChange={this.handleInputChange}
+                onChange={this.inputOnChangeHandler}
               />
             </div>
             <button className="add-board__create-new-board" onClick={this.addNewBoard}>
