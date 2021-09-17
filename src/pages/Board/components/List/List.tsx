@@ -5,27 +5,36 @@ import { connect } from 'react-redux';
 import Card from '../Card/Card';
 import AddCard from '../AddCard/AddCard';
 import { deleteList, getBoard } from '../../../../store/modules/board/actions';
+import { IData } from '../../../../common/interfaces/Interfaces';
 
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function List({ boardId, listId, listTitle, listCards, ...rest }): JSX.Element {
+interface TypeProps {
+  boardId: string;
+  id: number;
+  title: string;
+  cards: IData[];
+  position: number;
+  getBoard: any;
+}
+
+function List({ boardId, id, title, cards, position, ...p }: TypeProps): JSX.Element {
   const onClickHandleButtonDeleteList = async (): Promise<void> => {
-    await deleteList(boardId, listId);
-    rest.getBoard(boardId);
+    await deleteList(boardId, id);
+    p.getBoard(boardId);
   };
 
   let listCardsRender;
 
   const button = [
     <li className="lists-element" key="btn">
-      <AddCard boardId={boardId} listId={listId} />
+      <AddCard boardId={boardId} listId={id} />
     </li>,
   ];
 
-  if (Object.keys(listCards).length) {
-    listCardsRender = Object.keys(listCards)
+  if (Object.keys(cards).length) {
+    listCardsRender = Object.keys(cards)
       .map((e) => {
-        const elem = listCards[e];
+        // @ts-ignore
+        const elem = cards[e];
         return (
           <li key={elem.id} className="lists-element">
             <Card title={elem.title} id={elem.id} boardId={boardId} />
@@ -40,9 +49,13 @@ function List({ boardId, listId, listTitle, listCards, ...rest }): JSX.Element {
   //
   return (
     // eslint-disable-next-line react/no-this-in-sfc
-    <div className="lists" data-list_id={listId}>
+    <div className="lists" data-list_id={id}>
       <div className="lists-header">
-        <h2 className="lists-title">{`${listTitle} (${listId})`}</h2>
+        <div className="list__title-container">
+          <h2 className="list-title">{title}</h2>
+          <p className="afasdf">{id}</p>
+          <p className="afasdf">{position}</p>
+        </div>
         <span className="lists__delete-btn" onClick={onClickHandleButtonDeleteList}>
           <FontAwesomeIcon icon="ellipsis-h" />
         </span>

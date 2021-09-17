@@ -38,9 +38,17 @@ export const addList = (boardId: number, title: string, position: number): void 
   }
 };
 
-export const deleteList = async (boardId: string, listId: string): Promise<void> => {
+export const deleteList = async (boardId: string, listId: number): Promise<void> => {
   try {
     await instance.delete(`/board/${boardId}/list/${listId}`);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const renameTitleList = (boardId: string, listId: string, title: string, position: number): void => {
+  try {
+    instance.put(`/board/${boardId}/list/${listId}`, { title, position });
   } catch (e) {
     console.log(e);
   }

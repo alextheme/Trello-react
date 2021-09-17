@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { IList, IBoard } from '../../common/interfaces/Interfaces';
 import './board.scss';
 import List from './components/List/List';
-import { getBoard, renameTitleBoard } from '../../store/modules/board/actions';
+import { getBoard } from '../../store/modules/board/actions';
 import AddList from './components/AddList/AddList';
-import { getHtmlElementByID, getHtmlElementQS, setFocusToElement } from '../../common/scripts/commonFunctions';
+import EditableTitle from './components/EditableTitle/EditableTitle';
 
 interface TypeProps extends RouteComponentProps {
   boardId: string;
@@ -27,6 +27,8 @@ class Board extends React.Component<TypeProps, TypeState> {
       openInputEditTitle: false,
       inputTitleBoard: '',
     };
+
+    this.updateBoard();
   }
 
   // eslint-disable-next-line react/sort-comp
@@ -37,14 +39,6 @@ class Board extends React.Component<TypeProps, TypeState> {
   };
 
   async componentDidMount(): Promise<void> {
-    this.updateBoard();
-    // @ts-ignore
-    const { title } = this.props.board;
-    this.setState((state) => ({
-      ...state,
-      inputTitleBoard: title,
-    }));
-
     document.addEventListener('keypress', (e) => {
       const inputField = document.getElementById('board__input-edit-title');
       if (inputField === document.activeElement && e.key === 'Enter') {
@@ -54,53 +48,15 @@ class Board extends React.Component<TypeProps, TypeState> {
     });
   }
 
-  handleRenameBoard = async (oldName: string): Promise<void> => {
-    const titleBoard = getHtmlElementQS('.board__title')?.innerText;
-    if (oldName === titleBoard) {
-      this.setState((state: any) => ({ ...state, openInputEditTitle: false }));
-      return;
-    }
-
-    // @ts-ignore
-    const { boardId } = this.props.match.params as number;
-    await renameTitleBoard(boardId, this.state.inputTitleBoard);
-    await this.updateBoard();
-    this.setState((state: any) => ({ ...state, inputTitleBoard: '', openInputEditTitle: false }));
-  };
-
-  /**
-   * Focus out
-   * @param e e
-   */
-  handleTitleBoardInputOnBlur = async (e: any): Promise<void> => {
-    await this.handleRenameBoard(e.target.value);
-  };
-
-  handleTitleBoardOnClick = (e: any): void => {
-    const htmlElementInput = getHtmlElementByID('board__input-edit-title');
-    // @ts-ignore
-    htmlElementInput.style.width = `${e.target.clientWidth}px`;
-    setFocusToElement('board__input-edit-title');
-    this.setState((state) => ({ ...state, inputTitleBoard: e.target.innerText, openInputEditTitle: true }));
-  };
-
-  /**
-   * Print new name board
-   * @param e ...
-   */
-  handleTitleBoardInputEdit = (e: any): void => {
-    const inputElem = getHtmlElementByID('board__input-edit-title');
-    if (inputElem) inputElem.style.width = `${e.target.value.length * 12}px`;
-
-    this.setState((state) => ({ ...state, inputTitleBoard: e.target.value }));
-  };
+  shouldComponentUpdate(nextProps: Readonly<TypeProps>, nextState: Readonly<TypeState>, nextContext: any): boolean {
+    return nextProps.board.title !== this.state.inputTitleBoard;
+  }
 
   render(): JSX.Element {
     // @ts-ignore
     const { boardId } = this.props.match.params as number;
-    // @ts-ignore
     const { title, lists } = this.props.board;
-    const list1 = Object.keys(lists).map((k: string) => lists[k]);
+    const list1 = Object.keys(lists).map((k: any) => lists[k]);
 
     let listsCards;
     const button = [
@@ -114,7 +70,7 @@ class Board extends React.Component<TypeProps, TypeState> {
         .sort((a, b) => a.position - b.position)
         .map((list: IList) => (
           <li key={list.id}>
-            <List boardId={boardId} listId={list.id} listTitle={list.title} listCards={list.cards} />
+            <List boardId={boardId} {...list} />
           </li>
         ))
         .concat(button);
@@ -126,25 +82,18 @@ class Board extends React.Component<TypeProps, TypeState> {
     return (
       <div className="board">
         <div className="board__title-container">
-          <h2
-            className="board__title"
-            onClick={this.handleTitleBoardOnClick}
-            style={{ display: this.state.openInputEditTitle ? 'none' : 'block' }}
-          >
-            {title}
-          </h2>
-          <input
-            id="board__input-edit-title"
-            type="text"
-            onInput={this.handleTitleBoardInputEdit}
-            onBlur={this.handleTitleBoardInputOnBlur}
-            defaultValue={this.state.inputTitleBoard}
-            style={{ display: this.state.openInputEditTitle ? 'block' : 'none' }}
-            autoComplete="off"
+          <EditableTitle
+            key={title}
+            title={title}
+            listId=""
+            boardId={boardId}
+            updateBoard={null}
+            titleClassName="board__title"
+            inputClassName=""
+            inputId="board__input-edit-title"
           />
-          <p style={{ margin: '0 0 0 20px' }}>({boardId})</p>
         </div>
-
+        <p>{boardId}</p>
         <div className="boards__container">
           <ul className="boards__list">{listsCards}</ul>
         </div>

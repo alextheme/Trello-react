@@ -5,7 +5,7 @@ import { closeInputField, getHtmlElementByID, setFocusToElement } from '../../..
 import { addCard, getBoard } from '../../../../store/modules/board/actions';
 
 interface TypeProps {
-  listId: string;
+  listId: number;
   boardId: string;
   getBoard: any;
 }

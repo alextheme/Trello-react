@@ -9,9 +9,17 @@ export interface IUser {
 
 export interface IList extends IData {
   cards: IData[];
+  position: number;
 }
 
 export interface IBoard {
+  title: string;
+  lists: {
+    id: number;
+    title: string;
+    cards: { id: number; title: string; description: string; users: number[] }[];
+    position: number;
+  }[];
   board: {
     title: string;
     users: { id: number; username: string }[];
