@@ -7,6 +7,7 @@ import { addCard, getBoard } from '../../../../store/modules/board/actions';
 interface TypeProps {
   listId: number;
   boardId: string;
+  countCards: number;
   getBoard: any;
 }
 
@@ -60,7 +61,10 @@ class AddCard extends React.Component<TypeProps, TypeState> {
       const inputField = getHtmlElementByID(this.state.inputId);
       if (inputField === document.activeElement && e.key === 'Enter') {
         // @ts-ignore
-        this.addNewCard(e.target.dataset.list_id);
+        const { dataset } = e.target;
+        const { countcards } = dataset;
+        // @ts-ignore
+        this.addNewCard(e.target.dataset.list_id, countcards);
       }
     });
   }
@@ -70,22 +74,21 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   }
 
   handleAddNewCard = (e: any): void => {
-    this.addNewCard(e.target.dataset.list_id);
+    const { dataset } = e.target;
+    const { countcards } = dataset;
+
+    this.addNewCard(e.target.dataset.list_id, countcards);
   };
 
-  addNewCard = async (listId: string): Promise<void> => {
+  addNewCard = async (listId: string, countcards: string): Promise<void> => {
+    console.log('addNewCard: ', listId, countcards);
     const { ...p } = this.props;
     const { ...s } = this.state;
-    await addCard(p.boardId, s.nameCard, +listId, 1);
+    await addCard(p.boardId, s.nameCard, +listId, +countcards + 1);
     await p.getBoard(p.boardId);
     if (this.globalValue.mounted) {
       this.setState((state) => ({ ...state, openInputAddCard: false, nameCard: '' }));
     }
-  };
-
-  updateBoard = (): void => {
-    // @ts-ignore
-    // console.log('P: ', this.props.board.lists[1631683944925].cards);
   };
 
   inputOnChangeHandler = (e: any): void => {
@@ -118,8 +121,13 @@ class AddCard extends React.Component<TypeProps, TypeState> {
             onChange={this.inputOnChangeHandler}
           />
           <div className="add-card__btn-box">
-            <button className="add-card__add-btn-run" data-list_id={this.props.listId} onClick={this.handleAddNewCard}>
-              Добавить карточку
+            <button
+              className="add-card__add-btn-run"
+              data-list_id={this.props.listId}
+              data-countcards={this.props.countCards}
+              onClick={this.handleAddNewCard}
+            >
+              {`Добавить карточку ${this.props.countCards}`}
             </button>
             <div className="add-card__close-btn" onClick={this.onClickButtonCloseInputField} />
           </div>

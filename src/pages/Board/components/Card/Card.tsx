@@ -8,10 +8,11 @@ interface TypeProps {
   title: string;
   id: string;
   boardId: string;
+  position: number;
   getBoard: any;
 }
 
-const Card = ({ title, id, boardId, ...p }: TypeProps): JSX.Element => {
+const Card = ({ title, id, boardId, position, ...p }: TypeProps): JSX.Element => {
   // const { openCardEtitor, setOpenCardEditor } = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -24,7 +25,7 @@ const Card = ({ title, id, boardId, ...p }: TypeProps): JSX.Element => {
 
   return (
     <div className="card">
-      <p className="card__title">{`${title} (${id})`}</p>
+      <p className="card__title">{`${title} (${id}) поз: ${position}`}</p>
       <button
         className="card__open-card-editor-btn"
         data-board_id={boardId}

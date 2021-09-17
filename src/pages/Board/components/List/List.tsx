@@ -23,21 +23,30 @@ function List({ boardId, id, title, cards, position, ...p }: TypeProps): JSX.Ele
   };
 
   let listCardsRender;
+  const countCards = Object.keys(cards).length;
 
   const button = [
     <li className="lists-element" key="btn">
-      <AddCard boardId={boardId} listId={id} />
+      <AddCard boardId={boardId} listId={id} countCards={countCards} />
     </li>,
   ];
 
-  if (Object.keys(cards).length) {
+  if (countCards) {
+    // @ts-ignore
     listCardsRender = Object.keys(cards)
+      .sort((a, b) => {
+        // @ts-ignore
+        const elem1 = cards[a];
+        // @ts-ignore
+        const elem2 = cards[b];
+        return elem1.position - elem2.position;
+      })
       .map((e) => {
         // @ts-ignore
         const elem = cards[e];
         return (
           <li key={elem.id} className="lists-element">
-            <Card title={elem.title} id={elem.id} boardId={boardId} />
+            <Card boardId={boardId} {...elem} />
           </li>
         );
       })
@@ -54,7 +63,7 @@ function List({ boardId, id, title, cards, position, ...p }: TypeProps): JSX.Ele
         <div className="list__title-container">
           <h2 className="list-title">{title}</h2>
           <p className="afasdf">{id}</p>
-          <p className="afasdf">{position}</p>
+          <p className="afasdf">{`pos: ${position}`}</p>
         </div>
         <span className="lists__delete-btn" onClick={onClickHandleButtonDeleteList}>
           <FontAwesomeIcon icon="ellipsis-h" />
