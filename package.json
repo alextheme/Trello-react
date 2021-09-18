@@ -72,16 +72,5 @@
     "pretty-quick": "^3.1.1",
     "redux-devtools-extension": "^2.13.9",
     "typescript": "^4.4.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alextheme/Trello-react-2.git"
-  },
-  "keywords": [],
-  "author": "Alexandr Borimskiy",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/alextheme/Trello-react-2/issues"
-  },
-  "homepage": "https://github.com/alextheme/Trello-react-2#readme"
+  }
 }
