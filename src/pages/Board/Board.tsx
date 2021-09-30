@@ -292,32 +292,28 @@ class Board extends React.Component<TypeProps, TypeState> {
         </div>
         <p>{boardId}</p>
         <div id="board_lists_container">
-          {
-            /*
-             * DND Container
-             */
-            <DragDropContext onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate} onDragStart={this.onDragStart}>
-              <Droppable droppableId="all-columns" direction="horizontal" type="column">
-                {(provided) => {
-                  /* List */
-                  const btn = <AddList key="btn" boardId={boardId} position={1} updateBoard={this.updateBoard} />;
-                  const listsRender = Object.entries(lists)
-                    .sort((a: any, b: any) => a[1].position - b[1].position)
-                    .map(([id, list], index) => (
-                      <List key={id} boardId={boardId} list={list} index={index} updateBoard={this.updateBoard} />
-                    ));
+          {/* DnD Context */}
+          <DragDropContext onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate} onDragStart={this.onDragStart}>
+            <Droppable droppableId="all-columns" direction="horizontal" type="column">
+              {(provided) => {
+                /* List */
+                const btn = <AddList key="btn" boardId={boardId} position={1} updateBoard={this.updateBoard} />;
+                const listsRender = Object.entries(lists)
+                  .sort((a: any, b: any) => a[1].position - b[1].position)
+                  .map(([id, list], index) => (
+                    <List key={id} boardId={boardId} list={list} index={index} updateBoard={this.updateBoard} />
+                  ));
 
-                  return (
-                    <div className="board_lists" ref={provided.innerRef} {...provided.droppableProps}>
-                      {listsRender}
-                      {btn}
-                      {provided.placeholder}
-                    </div>
-                  );
-                }}
-              </Droppable>
-            </DragDropContext>
-          }
+                return (
+                  <div className="board_lists" ref={provided.innerRef} {...provided.droppableProps}>
+                    {listsRender}
+                    {btn}
+                    {provided.placeholder}
+                  </div>
+                );
+              }}
+            </Droppable>
+          </DragDropContext>
         </div>
       </div>
     );
