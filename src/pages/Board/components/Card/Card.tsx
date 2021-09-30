@@ -1,66 +1,74 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any, no-console */
 import React from 'react';
 import './card.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { connect } from 'react-redux';
-import { deleteCard, getBoard } from '../../../../store/modules/board/actions';
+import { Draggable } from 'react-beautiful-dnd';
 
 interface TypeProps {
-  title: string;
-  id: string;
   boardId: string;
+  id: number;
+  title: string;
   position: number;
-  getBoard: any;
+  onClickOpenEditCard: any;
+  index: number;
+  cardId: string;
 }
 
-const Card = ({ title, id, boardId, position, ...p }: TypeProps): JSX.Element => {
-  // const { openCardEtitor, setOpenCardEditor } = useState(false);
+const Card = (props: TypeProps | any): JSX.Element => {
+  const { boardId, card, index, onClickOpenEditCard } = props;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  // const handleOpenCardEditor = () => {};
-
-  const onClickHandlerDeleteCard = async (idBoard: any, idCard: any): Promise<void> => {
-    await deleteCard(idBoard, idCard);
-    await p.getBoard(idBoard);
+  const onClickOpenEditor = (event: any): void => {
+    // @ts-ignore
+    const c = event.target.closest('.parent-card').getBoundingClientRect();
+    onClickOpenEditCard({ openedEditCard: true, x: c.left, y: c.top, boardId, cardId: card.id, title: card.title });
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getStyle = (style: any, snapshot: any): any => {
+    if (!snapshot.isDropAnimating) {
+      return style;
+    }
+    const { moveTo, curve, duration } = snapshot.dropAnimation;
+    console.log('sd: ', moveTo, curve, duration);
+    console.log('s: ', snapshot);
+    return {
+      ...style,
+      transform: snapshot.isDragging ? 'rotate(0)' : 'rotate(10deg)',
+      userSelect: 'none',
+      // backgroundColor: snapshot.draggingOver ? '#d5d5d5' : '',
+      backgroundColor: snapshot.isDragging ? 'lightGreen' : 'red',
+    };
+  };
+  //
   return (
-    <div className="card">
-      <p className="card__title">{`${title} (${id}) поз: ${position}`}</p>
-      <button
-        className="card__open-card-editor-btn"
-        data-board_id={boardId}
-        data-card_id={id}
-        // onClick={handleOpenCardEditor}
-        onClick={onClickHandlerDeleteCard.bind(this, boardId, id)}
-      >
-        <FontAwesomeIcon icon="pencil-alt" />
-      </button>
-
-      <div className="quick-card-editor" style={{}}>
-        {/*<span className="quick-card-editor__close-icon">*/}
-        {/*  <FontAwesomeIcon icon="times" />*/}
-        {/*</span>*/}
-        <div className="quick-card__editor-card">
-          <textarea className="quick-card-editor__edit-title" dir="auto" defaultValue="valueTextArea" />
-          <input className="quick-card-editor__button" type="submit" value="Сохранить" />
-        </div>
-        <div className="quick-card-editor-buttons">
-          <a href="#" className="quick-card-editor-buttons-item">
-            <span className="quick-card-editor-buttons-item-icon">
-              <FontAwesomeIcon icon="signature" />
-            </span>
-            <span className="quick-card-editor-buttons-item-text">rename card</span>
-          </a>
-          <a href="#" className="quick-card-editor-buttons-item">
-            <span className="quick-card-editor-buttons-item-icon">
-              <FontAwesomeIcon icon="trash-alt" />
-            </span>
-            <span className="quick-card-editor-buttons-item-text">delete card</span>
-          </a>
-        </div>
-      </div>
-    </div>
+    <Draggable draggableId={`${card.id}`} key={card.id} index={index}>
+      {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        (provided, snapshot): JSX.Element => (
+          <div className="shadow-card" /* id={`card-item-id-${card.id}`} */>
+            <div
+              className="parent-card"
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={{
+                ...provided.draggableProps.style,
+                userSelect: 'none',
+                backgroundColor: snapshot.isDragging ? 'lightGreen' : 'lightBlue',
+              }}
+            >
+              <div className="card-item">
+                <p className="card__title">{`${card.title} (${card.id}) поз: ${card.position}`}</p>
+                <button className="card__open-card-editor-btn no-moved" onClick={onClickOpenEditor}>
+                  <FontAwesomeIcon icon={['fas', 'pencil-alt']} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </Draggable>
   );
 };
 
-export default connect(null, { getBoard })(Card);
+export default Card;

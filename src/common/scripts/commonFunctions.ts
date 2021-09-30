@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /**
  * Validation of data entry in the input field
  * @param text from the input field
@@ -23,8 +24,10 @@ export const checkInputText = (text: string, regExp = /[^а-я.\w\s\-\d]+/gi): {
 export const setFocusToElement = (element_id: string): void => {
   const element = document.getElementById(element_id);
   if (!element) return;
+
   setTimeout(() => {
-    element.focus();
+    element.focus(); // @ts-ignore
+    element.select();
   }, 10);
 };
 
@@ -55,8 +58,6 @@ export const toggleDisplayNoneToBlock = (element: HTMLElement | null): void => {
   if (element) {
     const { display } = getComputedStyle(element);
     const displ = display !== 'none' ? display : 'block';
-
-    console.log('display: ', display);
 
     if (display === 'none') {
       // eslint-disable-next-line no-param-reassign

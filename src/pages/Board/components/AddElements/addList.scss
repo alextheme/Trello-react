@@ -1,10 +1,14 @@
-@import '../../../../common/styles/mixins';
+@import "../../../../common/styles/miksinsis";
 
-.board .boards__container .boards__list .board__add-list-btn {
+.board__add-list-btn {
   min-height: unset;
   height: max-content;
   background: #b2b2b2;
   padding: 0;
+  width: 280px;
+  min-width: 280px;
+  border-radius: 4px;
+  list-style: none;
 
   .add-list {
     .add-list__edit-container {

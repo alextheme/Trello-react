@@ -13,12 +13,14 @@ type PropsType = {
 const Board = (props: PropsType): JSX.Element => {
   const { boardId, title } = props;
   const isMountedRef: React.MutableRefObject<boolean | null> = useRef(null);
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   useEffect(() => {
     isMountedRef.current = true;
-    return (): any => (isMountedRef.current = false);
+    return (): boolean => (isMountedRef.current = false);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDeleteBoard = async (e: any): Promise<void> => {
     e.preventDefault();
     const boardIdFromHtml = e.target.getAttribute('data-id');

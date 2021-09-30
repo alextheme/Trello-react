@@ -1,6 +1,9 @@
-@import '../../../../common/styles/mixins';
+@import "../../../../common/styles/miksinsis";
 
 .add-card__container {
+  display: inline-block;
+  margin-bottom: 5px;
+
   .add-card__input-box {
     background: transparent;
     margin-top: 8px;
@@ -15,6 +18,7 @@
       outline: navajowhite;
       border: 2px solid rgba(61, 61, 61, 0.33);
     }
+
     .add-card__btn-box {
       display: flex;
 
@@ -35,6 +39,7 @@
           background: #9a9a9a;
         }
       }
+
       .add-card__close-btn {
         width: 20px;
         height: 20px;
@@ -79,6 +84,7 @@
       }
     }
   }
+
   .add-card__add-btn-start {
     padding: 10px;
     border: none;
@@ -87,6 +93,7 @@
     transition: 300ms ease-in-out all;
     border-radius: 5px;
     margin-top: 8px;
+    margin-bottom: 8px;
 
     &:hover {
       box-sizing: border-box;

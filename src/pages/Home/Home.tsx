@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment, @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import { connect } from 'react-redux';
 import './home.scss';
@@ -33,7 +34,7 @@ class Home extends React.Component<PropsType, StateType> {
     const { url } = this.props.match;
 
     // @ts-ignore
-    const { boards } = this.props.boards;
+    const { boards } = this.props.boards as IBoard[];
     let boardsListBackend: JSX.Element[] = [];
 
     if (typeof boards === 'object') {
@@ -49,22 +50,26 @@ class Home extends React.Component<PropsType, StateType> {
       }
     }
     // Add a button to create a new board
-    const boardsList = boardsListBackend.concat([
+    const AddBoardButton = (
       <li className="home-boards__list-element btn" key="btn">
         <AddBoard />
-      </li>,
-    ]);
+      </li>
+    );
 
     return (
       <div className="home-boards">
         <div className="home-boards__wrapper">
-          <ul className="home-boards__list">{boardsList}</ul>
+          <ul className="home-boards__list">
+            {boardsListBackend}
+            {AddBoardButton}
+          </ul>
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state: any): void => ({ ...state.boards });
+// @ts-ignore
+const mapStateToProps = (state): StoreStateType => ({ ...state.boards });
 
 export default connect(mapStateToProps, { getBoards })(Home);

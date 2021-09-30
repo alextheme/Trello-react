@@ -5,7 +5,7 @@ const initialState = {
   ],
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
 const reducer = (state = initialState, action: { type: string; payload?: any }) => {
   switch (action.type) {
     default: {

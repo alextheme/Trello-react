@@ -1,19 +1,18 @@
-.lists {
-  padding: 8px;
+.list-item {
 
-  .lists-header {
+  .list-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    .list__title-container {
+    .editable-list-title {
 
       .list-title {
         padding-left: 3px;
         margin-bottom: 5px;
       }
 
-      .list-title__input-edit-title {
+      input[type="text"] {
         width: 230px;
         outline: none;
         border: 2px solid #7a7a7a;
@@ -26,8 +25,7 @@
       }
     }
 
-
-    .lists__delete-btn {
+    .list__delete-btn {
       width: 30px;
       height: 30px;
       display: flex;
@@ -48,20 +46,74 @@
       }
     }
   }
-  .lists-list {
+  .list-card-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+
+        /* width */
+        &::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+
+        }
+    
+        /* button */
+        &::-webkit-scrollbar-button {
+          width: 0; 
+          height: 0;
+        }
+    
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+          background: rgb(179, 179, 179); 
+        }
+    
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+          background: rgb(186, 214, 233);
+        }
+    
+        /* Track */
+        &::-webkit-scrollbar-track {
+          background: rgb(235, 235, 235); 
+        }
+    
+        /* The track NOT covered by the handle.
+        ::-webkit-scrollbar-track-piece {
+          background: #000; 
+        }
+    
+        /* Corner */
+        &::-webkit-scrollbar-corner {
+          background: #999; 
+          border-radius: 50%;
+        }
+    
+        /* Resizer */
+        &::-webkit-resizer {
+          background: #111;
+          border-radius: 50%; 
+        }
+  }
+
+  .list-cards {
     padding: 0;
     margin: 0;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .card-wrapper {
+      margin-bottom: 5px;
+    }
   }
-  .lists-element {
+
+  .list-add-card {
     list-style: none;
     background: transparent;
-    margin-bottom: 5px;
     border-radius: 3px;
     white-space: normal;
     transition: 300ms ease-in-out all;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 }

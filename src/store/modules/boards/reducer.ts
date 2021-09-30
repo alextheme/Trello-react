@@ -1,6 +1,6 @@
-import { StoreStateType, ActionType } from '../../../common/interfaces/Interfaces';
+import { IBackendDataBoards, ActionType } from '../../../common/interfaces/Interfaces';
 
-const initialState: StoreStateType = {
+const initialState: IBackendDataBoards = {
   boards: [
     { id: 1, title: 'покупки' },
     { id: 2, title: 'подготовка к свадьбе' },
@@ -10,7 +10,7 @@ const initialState: StoreStateType = {
   ],
 };
 
-const reducer = (state = initialState, action: ActionType): StoreStateType => {
+const reducer = (state = initialState, action: ActionType): IBackendDataBoards => {
   switch (action.type) {
     case 'UPDATE_BOARDS':
       return {

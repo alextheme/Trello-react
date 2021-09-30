@@ -5,6 +5,8 @@
   border-radius: $radius;
 }
 
+$transitionParams100: 100ms ease-in-out all;
+$transitionParams200: 200ms ease-in-out all;
 $transitionParams: 300ms ease-in-out all;
 
 @mixin transition($transitionParams) {

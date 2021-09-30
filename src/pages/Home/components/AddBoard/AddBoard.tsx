@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import './addBoard.scss';
 import { connect } from 'react-redux';
@@ -6,6 +7,7 @@ import { checkInputText, setFocusToElement, toggleClassElement } from '../../../
 import { showErrText, toggleClassBody } from './functionsAddBoard';
 
 type PropsType = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-comment
   getBoards: any;
 };
 
@@ -36,6 +38,7 @@ class AddBoard extends React.Component<PropsType, StateType> {
 
     document.addEventListener('click', (e) => {
       if (this.globalValue.mounted) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         if (!this.isOpenPopap && e.target.classList.contains('add-board__popapp')) {
           this.closedPopap();
@@ -72,20 +75,20 @@ class AddBoard extends React.Component<PropsType, StateType> {
 
   // Check data input
   checkInputData = (): boolean => {
-    const check = checkInputText(this.state.nameNewBoard);
+    const { res, errSymbols } = checkInputText(this.state.nameNewBoard);
 
-    if (check.res === 0) {
+    if (res === 0) {
       showErrText('add-board-error-text', 2000, 'Поле не может быть пустым.');
       return true;
     }
 
-    if (check.res === 1) {
+    if (res === 1) {
       setFocusToElement('addNewBoardInpt');
-      showErrText('add-board-error-text', 4000, `Эти символы не допустимы: \n${check.errSymbols}`);
+      showErrText('add-board-error-text', 4000, `Эти символы не допустимы: \n${errSymbols}`);
       return true;
     }
 
-    return check.res !== -1;
+    return res !== -1;
   };
 
   addNewBoard = async (): Promise<void> => {

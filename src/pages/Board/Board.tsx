@@ -1,101 +1,323 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+// @ts-ignore
+// import {DragDropContext} from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-import { IList, IBoard } from '../../common/interfaces/Interfaces';
-import './board.scss';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { IBackendDataBoard } from '../../common/interfaces/Interfaces';
+import {
+  deleteList,
+  getBoard,
+  renameTitleBoard,
+  renameTitleCard,
+  deleteCard,
+  movedLists,
+  movedCards,
+} from '../../store/modules/board/actions';
+import AddList from './components/AddElements/AddList';
+import EditableTitleBoard from './components/EditableTitle/EditableTitleBoard';
 import List from './components/List/List';
-import { getBoard } from '../../store/modules/board/actions';
-import AddList from './components/AddList/AddList';
-import EditableTitle from './components/EditableTitle/EditableTitle';
+import './board.scss';
 
 interface TypeProps extends RouteComponentProps {
   boardId: string;
-  board: IBoard;
+  board: IBackendDataBoard;
   getBoard: (boardId: string) => Promise<void>;
 }
 
 interface TypeState {
-  openInputEditTitle: boolean;
   inputTitleBoard: string;
+  settingsEditCard: {
+    x: string;
+    y: string;
+    boardId: string;
+    cardId: string;
+    title: string;
+    saveTitle: any;
+    deleteCard: any;
+    closeEditor: any;
+    closeBGEditor: any;
+  } | null;
+  openEditCard: boolean;
+  heightListContainer: number;
 }
 
 class Board extends React.Component<TypeProps, TypeState> {
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: TypeProps) {
     super(props);
     this.state = {
-      openInputEditTitle: false,
       inputTitleBoard: '',
+      openEditCard: false,
+      settingsEditCard: {
+        x: '',
+        y: '',
+        boardId: '',
+        cardId: '',
+        title: '',
+        saveTitle: null,
+        deleteCard: null,
+        closeEditor: null,
+        closeBGEditor: null,
+      },
+      heightListContainer: 0,
     };
-
-    this.updateBoard();
   }
 
   // eslint-disable-next-line react/sort-comp
   updateBoard = async (): Promise<void> => {
-    // @ts-ignore
-    const { boardId }: { boardId: string } = this.props.match.params;
-    await this.props.getBoard(boardId);
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const { getBoard, match } = this.props;
+    const { params } = match; // @ts-ignore
+    const { boardId } = params;
+    await getBoard(boardId);
   };
 
   async componentDidMount(): Promise<void> {
-    document.addEventListener('keypress', (e) => {
-      const inputField = document.getElementById('board__input-edit-title');
-      if (inputField === document.activeElement && e.key === 'Enter') {
-        // @ts-ignore
-        this.handleRenameBoard(e.path[0].value);
-      }
-    });
-  }
-
-  shouldComponentUpdate(nextProps: Readonly<TypeProps>, nextState: Readonly<TypeState>, nextContext: any): boolean {
-    return nextProps.board.title !== this.state.inputTitleBoard;
-  }
-
-  render(): JSX.Element {
-    // @ts-ignore
-    const { boardId } = this.props.match.params as number;
-    const { title, lists } = this.props.board;
-    const list1 = Object.keys(lists).map((k: any) => lists[k]);
-
-    let listsCards;
-    const button = [
-      <li className="board__add-list-btn" key="btn">
-        <AddList boardId={boardId} position={list1.length + 1} />
-      </li>,
-    ];
-
-    if (list1.length) {
-      listsCards = list1
-        .sort((a, b) => a.position - b.position)
-        .map((list: IList) => (
-          <li key={list.id}>
-            <List boardId={boardId} {...list} />
-          </li>
-        ))
-        .concat(button);
-    } else {
-      listsCards = button;
+    await this.updateBoard();
+    const { board } = this.props;
+    if (board) {
+      const heightWindow = window.innerHeight;
+      const topElement = document.querySelector('.list-container')?.getBoundingClientRect().top;
+      const heightListContainer = heightWindow - (topElement || 0);
+      this.setState((state) => ({ ...state, heightListContainer }));
     }
+  }
+
+  shouldComponentUpdate(nextProps: Readonly<TypeProps>): boolean {
+    const { inputTitleBoard } = this.state;
+    return nextProps.board.title !== inputTitleBoard;
+  }
+
+  handleRenameBoard = async (boardId: number, value: string): Promise<void> => {
+    await renameTitleBoard(boardId, value);
+    await this.updateBoard();
+  };
+
+  handlerDeleteList = async (boardId: number, listId: number): Promise<void> => {
+    await deleteList(boardId, listId);
+    await this.updateBoard();
+  };
+
+  /* Card */
+  onClickDeleteCard = async (e: any): Promise<void> => {
+    const idCard =
+      e.target.dataset.idCard ||
+      e.target.parentElement.dataset.idCard ||
+      e.target.parentElement.parentElement.dataset.idCard ||
+      e.target.parentElement.parentElement.parentElement.dataset.idCard;
+    const { match } = this.props;
+    const { params } = match; // @ts-ignore
+    const { boardId } = params;
+    await deleteCard(boardId, idCard);
+    this.updateBoard();
+    this.onClickClosedEditCard();
+  };
+
+  onClickClosedEditCard = (): void => {
+    this.setState((state) => ({ ...state, openEditCard: false }));
+  };
+
+  saveTitleCard = async (titleCard: string, idCard: string): Promise<void> => {
+    await renameTitleCard('123', idCard, { title: titleCard, list_id: `${'id'}` });
+    this.updateBoard();
+    this.onClickClosedEditCard();
+  };
+
+  handlerClickClosedEditCard = (e: any): void => {
+    let canBeClosed = true;
+    ['.editor-card__title', '.editor-card__buttons'].forEach((cls) => {
+      if (e.target.closest(cls)) canBeClosed = false;
+    });
+    if (canBeClosed) this.onClickClosedEditCard();
+  };
+
+  // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  onClickOpenEditCard = ({ openedEditCard, x, y, boardId, cardId, title }): void => {
+    const settingsEditCard = {
+      x,
+      y,
+      boardId,
+      cardId,
+      title,
+      saveTitle: this.saveTitleCard,
+      deleteCard: this.onClickDeleteCard,
+      closeEditor: this.onClickClosedEditCard,
+      closeBGEditor: this.handlerClickClosedEditCard,
+    };
+
+    this.setState((state) => ({ ...state, openEditCard: openedEditCard, settingsEditCard }));
+  };
+
+  onDragStart = () => {};
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onDragEnd = async (result: any): Promise<Promise<void>> => {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    if (result.type === 'column') {
+      // return;
+    }
+
+    const { lists } = this.props.board;
+
+    // Move Cards
+    // get source & destination lists
+    const listSourse = lists[source.droppableId];
+    const listDestination = lists[destination.droppableId];
+
+    const resultOrderCards: { id: number; position: number; list_id: number }[] = [];
+    // [
+    //   {id: 1, position: 3, list_id: 2},
+    //   {id: 2, position: 1, list_id: 1}
+    // ]
+
+    // If source & destination is different
+    if (listSourse !== listDestination) {
+      const cardsSource = Object.entries(listSourse.cards)
+        .sort((a, b) => a[1].position - b[1].position)
+        .map(([, card]) => card);
+      const moveCard = cardsSource.splice(source.index, 1)[0];
+
+      const cardsDestination = Object.entries(listDestination.cards)
+        .sort((a, b) => a[1].position - b[1].position)
+        .map(([, card]) => card);
+      cardsDestination.splice(destination.index, 0, moveCard);
+
+      cardsSource.forEach((card, index) => {
+        if (card) resultOrderCards.push({ id: card.id, position: index + 1, list_id: +source.droppableId });
+      });
+
+      cardsDestination.forEach((card, index) => {
+        if (card) resultOrderCards.push({ id: card.id, position: index + 1, list_id: +destination.droppableId });
+      });
+
+      // If source & destination is not different
+    } else if (listSourse) {
+      const cardsSource = Object.entries(listSourse.cards)
+        .sort((a, b) => a[1].position - b[1].position)
+        .map(([, card]) => card);
+      const moveCard = cardsSource.splice(source.index, 1)[0];
+      cardsSource.splice(destination.index, 0, moveCard);
+
+      cardsSource.forEach((card, index) => {
+        resultOrderCards.push({ id: card.id, position: index + 1, list_id: +source.droppableId });
+      });
+    }
+
+    const { match } = this.props;
+    const { params } = match; // @ts-ignore
+    const { boardId } = params;
+    await movedCards(boardId, resultOrderCards);
+    await this.updateBoard();
+    this.updateBoard();
+  };
+
+  onDragUpdate = async (result: any): Promise<void> => {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    const { match } = this.props;
+    const { params } = match; // @ts-ignore
+    const { boardId } = params;
+    const { lists } = this.props.board;
+
+    // Move Columns
+    if (result.type === 'column') {
+      const newcardsOrder = Object.entries(lists)
+        .sort((a: any, b: any) => a[1].position - b[1].position)
+        .map(([, list]) => list);
+      const moveList = newcardsOrder.splice(source.index, 1);
+      newcardsOrder.splice(destination.index, 0, moveList[0]);
+
+      const resultOrderList: { id: number; position: number }[] = [];
+      newcardsOrder.forEach((elem, index) => {
+        resultOrderList.push({ id: elem.id, position: index + 1 });
+      });
+
+      await movedLists(boardId, resultOrderList);
+      await this.updateBoard();
+    }
+  }; // end update dnd
+
+  // Render
+  render(): JSX.Element | null {
+    const { board, match } = this.props;
+
+    if (!board) return null;
+
+    const { params } = match; // @ts-ignore
+    const { boardId } = params;
+    const { title, lists } = board;
+
+    if (!lists) return null;
 
     //
     return (
       <div className="board">
         <div className="board__title-container">
-          <EditableTitle
+          <EditableTitleBoard
             key={title}
             title={title}
             listId=""
             boardId={boardId}
-            updateBoard={null}
+            renameBoard={this.handleRenameBoard}
+            updateBoard={this.updateBoard}
             titleClassName="board__title"
             inputClassName=""
             inputId="board__input-edit-title"
           />
         </div>
         <p>{boardId}</p>
-        <div className="boards__container">
-          <ul className="boards__list">{listsCards}</ul>
+        <div id="board_lists_container">
+          {
+            /*
+             * DND Container
+             */
+            <DragDropContext onDragEnd={this.onDragEnd} onDragUpdate={this.onDragUpdate} onDragStart={this.onDragStart}>
+              <Droppable droppableId="all-columns" direction="horizontal" type="column">
+                {(provided) => {
+                  /* List */
+                  const btn = <AddList key="btn" boardId={boardId} position={1} updateBoard={this.updateBoard} />;
+                  const listsRender = Object.entries(lists)
+                    .sort((a: any, b: any) => a[1].position - b[1].position)
+                    .map(([id, list], index) => (
+                      <List key={id} boardId={boardId} list={list} index={index} updateBoard={this.updateBoard} />
+                    ));
+
+                  return (
+                    <div className="board_lists" ref={provided.innerRef} {...provided.droppableProps}>
+                      {listsRender}
+                      {btn}
+                      {provided.placeholder}
+                    </div>
+                  );
+                }}
+              </Droppable>
+            </DragDropContext>
+          }
         </div>
       </div>
     );

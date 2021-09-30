@@ -1,20 +1,22 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { connect } from 'react-redux';
 import './addCard.scss';
 import { closeInputField, getHtmlElementByID, setFocusToElement } from '../../../../common/scripts/commonFunctions';
-import { addCard, getBoard } from '../../../../store/modules/board/actions';
+import { addCard } from '../../../../store/modules/board/actions';
 
 interface TypeProps {
   listId: number;
   boardId: string;
   countCards: number;
-  getBoard: any;
+  updateBoard: any;
+  addCardInputId: string;
 }
 
 interface TypeState {
   nameCard: string;
   openInputAddCard: boolean;
-  inputId: string;
 }
 
 class AddCard extends React.Component<TypeProps, TypeState> {
@@ -29,14 +31,13 @@ class AddCard extends React.Component<TypeProps, TypeState> {
     this.state = {
       nameCard: '',
       openInputAddCard: false,
-      inputId: '0',
     };
   }
 
   componentDidMount(): void {
     this.globalValue.mounted = true;
 
-    this.setState((state: TypeState) => ({ ...state, inputId: `add-card__input-field-${this.props.listId}` }));
+    const { addCardInputId } = this.props;
 
     document.addEventListener('click', (e) => {
       const htmlElements = [
@@ -44,12 +45,14 @@ class AddCard extends React.Component<TypeProps, TypeState> {
         '.lists-element',
         '.lists',
         '.add-card__input-box',
-        this.state.inputId, // id
+        addCardInputId, // id
         '.add-card__btn-box',
+        '.add-card__input-field',
         '.add-card__add-btn-run',
         '.add-card__close-btn',
         '.add-class__add-btn-start',
       ];
+
       if (this.globalValue.mounted) {
         if (closeInputField(htmlElements, e.target)) {
           this.onClickButtonCloseInputField();
@@ -58,7 +61,7 @@ class AddCard extends React.Component<TypeProps, TypeState> {
     });
 
     document.addEventListener('keypress', (e) => {
-      const inputField = getHtmlElementByID(this.state.inputId);
+      const inputField = getHtmlElementByID(addCardInputId);
       if (inputField === document.activeElement && e.key === 'Enter') {
         // @ts-ignore
         const { dataset } = e.target;
@@ -73,6 +76,7 @@ class AddCard extends React.Component<TypeProps, TypeState> {
     this.globalValue.mounted = false;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   handleAddNewCard = (e: any): void => {
     const { dataset } = e.target;
     const { countcards } = dataset;
@@ -81,22 +85,25 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   };
 
   addNewCard = async (listId: string, countcards: string): Promise<void> => {
-    console.log('addNewCard: ', listId, countcards);
     const { ...p } = this.props;
     const { ...s } = this.state;
     await addCard(p.boardId, s.nameCard, +listId, +countcards + 1);
-    await p.getBoard(p.boardId);
+    await p.updateBoard();
     if (this.globalValue.mounted) {
       this.setState((state) => ({ ...state, openInputAddCard: false, nameCard: '' }));
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   inputOnChangeHandler = (e: any): void => {
     this.setState((state: TypeState) => ({ ...state, nameCard: e.target.value }));
   };
 
   onClickButtonOpenInputField = (): void => {
-    setFocusToElement(this.state.inputId);
+    const { addCardInputId } = this.props;
+
+    setFocusToElement(addCardInputId);
+
     setTimeout(() => {
       this.setState((state: TypeState) => ({ ...state, openInputAddCard: true }));
     }, 0);
@@ -107,36 +114,38 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   };
 
   render(): JSX.Element {
+    const { listId, countCards, addCardInputId } = this.props;
+    const { openInputAddCard, nameCard } = this.state;
     return (
       <div className="add-card__container">
-        <div className="add-card__input-box" style={{ display: this.state.openInputAddCard ? 'block' : 'none' }}>
+        <div className="add-card__input-box" style={{ display: openInputAddCard ? 'block' : 'none' }}>
           <input
             type="text"
             className="add-card__input-field"
-            data-list_id={this.props.listId}
-            id={this.state.inputId}
+            data-list_id={listId}
+            id={addCardInputId}
             placeholder="Ввести заголовок для этой карточки"
             autoComplete="off"
-            value={this.state.nameCard}
+            value={nameCard}
             onChange={this.inputOnChangeHandler}
           />
           <div className="add-card__btn-box">
             <button
               className="add-card__add-btn-run"
-              data-list_id={this.props.listId}
-              data-countcards={this.props.countCards}
+              data-list_id={listId}
+              data-countcards={countCards}
               onClick={this.handleAddNewCard}
             >
-              {`Добавить карточку ${this.props.countCards}`}
+              {`Добавить карточку ${countCards + 1}`}
             </button>
             <div className="add-card__close-btn" onClick={this.onClickButtonCloseInputField} />
           </div>
         </div>
 
         <button
-          className="add-card__add-btn-start"
+          className="add-card__add-btn-start no-selected"
           onClick={this.onClickButtonOpenInputField}
-          style={{ display: this.state.openInputAddCard ? 'none' : 'block' }}
+          style={{ display: openInputAddCard ? 'none' : 'block' }}
         >
           + Добавить еще одну карточку
         </button>
@@ -145,6 +154,4 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   }
 }
 
-// const mapStateToProps = (state: any): void => ({ ...state.board });
-
-export default connect(null, { getBoard })(AddCard);
+export default AddCard;

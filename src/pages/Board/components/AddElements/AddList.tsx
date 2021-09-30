@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
 import './addList.scss';
-import { connect } from 'react-redux';
-import { getBoard, addList } from '../../../../store/modules/board/actions';
+import { addList } from '../../../../store/modules/board/actions';
 import {
   checkInputText,
-  setFocusToElement,
   closeInputField,
   getHtmlElementByID,
   getHtmlElementQS,
+  setFocusToElement,
 } from '../../../../common/scripts/commonFunctions';
 
 interface TypeState {
@@ -18,7 +18,7 @@ interface TypeState {
 interface TypeProps {
   boardId: number;
   position: number;
-  getBoard: any;
+  updateBoard: any;
 }
 
 class AddList extends React.Component<TypeProps, TypeState> {
@@ -86,6 +86,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
     this.globalValue.mounted = false;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   onInputHandler = (e: any): void => {
     e.preventDefault();
     const { value } = e.target;
@@ -131,50 +132,54 @@ class AddList extends React.Component<TypeProps, TypeState> {
   };
 
   handlerAddNewList = (): void => {
-    if (this.state.nameList === '') {
+    const { nameList } = this.state;
+    if (nameList === '') {
       this.showMessageInBottom(0, '');
       return;
     }
 
     setTimeout(async () => {
       const { ...a } = this.props;
-      await addList(a.boardId, this.state.nameList, a.position);
+      await addList(a.boardId, nameList, a.position);
       this.setState((state: any) => ({ ...state, nameList: '' }));
-      await a.getBoard(a.boardId);
+      await a.updateBoard();
       await this.closeFieldInputHandler();
     }, 10);
   };
 
   render(): JSX.Element {
+    const { openInput, nameList } = this.state;
     return (
-      <div className="add-list">
-        <div className="add-list__edit-container" style={{ display: this.state.openInput ? 'block' : 'none' }}>
-          <input
-            id="add-list__input-field1"
-            type="text"
-            placeholder="ввести заголовок списка"
-            autoComplete="off"
-            onInput={this.onInputHandler}
-            value={this.state.nameList}
-          />
-          <div className="add-list__btn-box">
-            <button className="add-list__add-btn-run" onClick={this.handlerAddNewList}>
-              Добавить список
-            </button>
-            <div className="add-list__close-btn" onClick={this.closeFieldInputHandler} />
+      <div className="board__add-list-btn">
+        <div className="add-list">
+          <div className="add-list__edit-container" style={{ display: openInput ? 'block' : 'none' }}>
+            <input
+              id="add-list__input-field1"
+              type="text"
+              placeholder="ввести заголовок списка"
+              autoComplete="off"
+              onInput={this.onInputHandler}
+              value={nameList}
+            />
+            <div className="add-list__btn-box">
+              <button className="add-list__add-btn-run" onClick={this.handlerAddNewList}>
+                Добавить список
+              </button>
+              <div className="add-list__close-btn" onClick={this.closeFieldInputHandler} />
+            </div>
           </div>
-        </div>
 
-        <button
-          className="add-list__add-btn-start"
-          onClick={this.buttonHandlerOpenFieldInput}
-          style={{ display: this.state.openInput ? 'none' : 'inline-block' }}
-        >
-          + Добавить еще одну колонку
-        </button>
+          <button
+            className="add-list__add-btn-start"
+            onClick={this.buttonHandlerOpenFieldInput}
+            style={{ display: openInput ? 'none' : 'inline-block' }}
+          >
+            + Добавить еще одну колонку
+          </button>
+        </div>
       </div>
     );
   }
 }
 
-export default connect(null, { getBoard })(AddList);
+export default AddList;

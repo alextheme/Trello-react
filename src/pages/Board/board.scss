@@ -1,14 +1,16 @@
-@import '../../common/styles/mixins';
+@import "../../common/styles/miksinsis";
+#root {
+  margin: 0;
+  background: rgba(15, 23, 46, 0.781);
+}
 
 .board {
   width: 100%;
-
+  margin-top: 10px;
+  
   .board__title-container {
-    margin-bottom: 0;
-    margin-top: 50px;
-    text-align: center;
     font-size: 1.5rem;
-    color: #232323;
+    color: #f0f0f0;
     display: flex;
     justify-content: center;
 
@@ -32,22 +34,59 @@
 
   }
 
-
-  .boards__container {
-    width: content-box;
+  // CONTENT Styles
+  #board_lists_container {
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: nowrap;
     overflow-x: auto;
-    max-width: 880px;
-    margin: 0 auto;
+    overflow-y: hidden;
 
-    .boards__list {
+    .board_lists {
       display: flex;
-      flex-wrap: nowrap;
-      list-style: none;
-      padding: 0;
-      margin: 50px 0 100px;
-      align-items: self-start;
+    }
 
-      & > li {
+    // container styles
+    .list-container {
+      height: 100%;
+      background: #d5d5d5;
+      width: 270px;
+      min-width: 270px;
+      margin-right: 14px;
+      border-radius: 3px;
+      padding-right: 5px;
+      padding-left: 5px;
+      padding-top: 6px;
+
+      .list_header { 
+        display: flex;
+        justify-content: space-between;
+        margin: 0 3px 3px 3px;
+
+        .editable-list-title {
+          display: flex;
+          align-items: center;
+        }
+
+        .list__delete-btn {
+          background: #f7f7f7;
+          color: #a8a8a8;
+          width: 30px;
+          height: 30px;
+          border-radius: 3px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          transition: 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) all;
+          &:hover {
+            background: #e0e0e0;
+          }
+        }
+      }
+
+      .list-wrapper {
         box-sizing: border-box;
         list-style: none;
         min-width: 280px;
@@ -61,5 +100,67 @@
         @include transition($transitionParams);
       }
     }
+
+    /* width */
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    /* button */
+    &::-webkit-scrollbar-button {
+      width: 0; 
+      height: 0;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: rgb(136, 136, 136); 
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgb(43, 43, 43); 
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: rgb(92, 92, 92); 
+    }
+
+    /* The track NOT covered by the handle.
+    ::-webkit-scrollbar-track-piece {
+      background: #000; 
+    }
+
+    /* Corner */
+    &::-webkit-scrollbar-corner {
+      background: #999; 
+    }
+
+    /* Resizer */
+    &::-webkit-resizer {
+      background: #111; 
+    }
   }
+}
+
+.parent-card {
+  background: #fafafa;
+  color: #232323;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+
+  .card-item {
+
+  }
+
+  .list-cards-box {
+    
+  }
+}
+
+.move-card {
+  transform: rotate(10deg);
 }

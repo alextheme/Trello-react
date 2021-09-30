@@ -1,19 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.scss';
 import { Provider } from 'react-redux';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faEllipsisH, faPencilAlt, faTimes, faTrashAlt, faSignature } from '@fortawesome/free-solid-svg-icons';
-import store from './store/store';
 import App from './App';
-// My test
-// import TestApp from './tests/Test03-react-async-state-debuggrio/App';
 import reportWebVitals from './reportWebVitals';
-
-library.add(faEllipsisH, faPencilAlt, faTimes, faTrashAlt, faSignature);
+import store from './store/store';
 
 ReactDOM.render(
-  // <TestApp />,
   <React.StrictMode>
     <Provider store={store}>
       <App />
@@ -22,4 +14,7 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
