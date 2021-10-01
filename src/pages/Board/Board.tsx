@@ -95,17 +95,19 @@ class Board extends React.Component<TypeProps, TypeState> {
     return nextProps.board.title !== inputTitleBoard;
   }
 
+  /** Rename Title Board */
   handleRenameBoard = async (boardId: number, value: string): Promise<void> => {
     await renameTitleBoard(boardId, value);
     await this.updateBoard();
   };
 
+  /** Delete List */
   handlerDeleteList = async (boardId: number, listId: number): Promise<void> => {
     await deleteList(boardId, listId);
     await this.updateBoard();
   };
 
-  /* Card */
+  /** Delete Card */
   onClickDeleteCard = async (e: any): Promise<void> => {
     const idCard =
       e.target.dataset.idCard ||
@@ -120,16 +122,19 @@ class Board extends React.Component<TypeProps, TypeState> {
     this.onClickClosedEditCard();
   };
 
+  /** Closed Edit Card window */
   onClickClosedEditCard = (): void => {
     this.setState((state) => ({ ...state, openEditCard: false }));
   };
 
+  /** Save Title Card, ajax */
   saveTitleCard = async (titleCard: string, idCard: string): Promise<void> => {
     await renameTitleCard('123', idCard, { title: titleCard, list_id: `${'id'}` });
     this.updateBoard();
     this.onClickClosedEditCard();
   };
 
+  /** Implementation of closing the card editing window */
   handlerClickClosedEditCard = (e: any): void => {
     let canBeClosed = true;
     ['.editor-card__title', '.editor-card__buttons'].forEach((cls) => {
@@ -138,9 +143,9 @@ class Board extends React.Component<TypeProps, TypeState> {
     if (canBeClosed) this.onClickClosedEditCard();
   };
 
-  // @ts-ignore
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  onClickOpenEditCard = ({ openedEditCard, x, y, boardId, cardId, title }): void => {
+  /** Opening the card editing window */
+  onClickOpenEditCard = ({ ...params }: any): void => {
+    const { openedEditCard, x, y, boardId, cardId, title } = params;
     const settingsEditCard = {
       x,
       y,
@@ -156,9 +161,11 @@ class Board extends React.Component<TypeProps, TypeState> {
     this.setState((state) => ({ ...state, openEditCard: openedEditCard, settingsEditCard }));
   };
 
+  /** Drag and drop implementation functions  */
+  /** Start */
   onDragStart = () => {};
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  /** End */
   onDragEnd = async (result: any): Promise<Promise<void>> => {
     const { destination, source } = result;
 
@@ -228,6 +235,7 @@ class Board extends React.Component<TypeProps, TypeState> {
     this.updateBoard();
   };
 
+  /** Update */
   onDragUpdate = async (result: any): Promise<void> => {
     const { destination, source } = result;
 

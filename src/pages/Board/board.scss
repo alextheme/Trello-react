@@ -104,29 +104,29 @@
     }
 
     /* width */
-    &::-webkit-scrollbar {
+    &::-webkit-scrollbar, &::-moz-scrollbar {
       width: 5px;
       height: 5px;
     }
 
     /* button */
-    &::-webkit-scrollbar-button {
+    &::-webkit-scrollbar-button, &::-moz-scrollbar-button {
       width: 0; 
       height: 0;
     }
 
     /* Handle */
-    &::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar-thumb, &::-moz-scrollbar-thumb {
       background: rgb(136, 136, 136); 
     }
 
     /* Handle on hover */
-    &::-webkit-scrollbar-thumb:hover {
+    &::-webkit-scrollbar-thumb:hover, &::-moz-scrollbar-thumb:hover {
       background: rgb(43, 43, 43); 
     }
 
     /* Track */
-    &::-webkit-scrollbar-track {
+    &::-webkit-scrollbar-track, &::-moz-scrollbar-track {
       background: rgb(92, 92, 92); 
     }
 
@@ -136,12 +136,12 @@
     }
 
     /* Corner */
-    &::-webkit-scrollbar-corner {
+    &::-webkit-scrollbar-corner, &::-moz-scrollbar-corner {
       background: #999; 
     }
 
     /* Resizer */
-    &::-webkit-resizer {
+    &::-webkit-resizer, &::-moz-resizer {
       background: #111; 
     }
   }
