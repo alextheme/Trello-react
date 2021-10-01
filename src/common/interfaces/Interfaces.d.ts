@@ -8,7 +8,7 @@ export interface IBoardTlt {
 }
 
 export interface IData {
-  board: IBoard;
+  board: { board: IBoard };
 }
 
 export interface IBoard {

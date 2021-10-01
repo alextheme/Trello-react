@@ -8,7 +8,6 @@ export const getBoard =
   async (dispatch: Dispatch): Promise<void> => {
     try {
       const data: IBoardTlt = await instance.get(`/board/${boardId}`);
-      console.log('board: ', data);
       await dispatch({ type: 'UPDATE_BOARD', payload: data });
     } catch (e) {
       console.log('Error update data: ', e);

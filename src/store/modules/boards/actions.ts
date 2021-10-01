@@ -6,9 +6,7 @@ export const getBoards =
   () =>
   async (dispatch: Dispatch): Promise<void> => {
     try {
-      console.log('store');
       const data = await instance.get('/board');
-      console.log('boards: ', data);
       await dispatch({ type: 'UPDATE_BOARDS', payload: data });
     } catch (e) {
       console.log(e);

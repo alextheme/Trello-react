@@ -44,7 +44,6 @@ interface TypeState {
   openEditCard: boolean;
   heightListContainer: number;
 }
-
 class Board extends React.Component<TypeProps, TypeState> {
   constructor(props: TypeProps) {
     super(props);
