@@ -1,90 +1,67 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export interface IData {
+export interface IBoards {
+  boards: IBoardTlt[];
+}
+
+export interface IBoardTlt {
   id: number;
   title: string;
 }
+
+export interface IData {
+  board: IBoard;
+}
+
+export interface IBoard {
+  title: string;
+  lists: {
+    [id: number]: IList;
+  };
+  users: User[];
+}
+
+export interface IList {
+  id: number;
+  position: number;
+  title: string;
+  cards: {
+    [id: number]: ICard;
+  };
+}
+
+export interface ICard {
+  id: number;
+  position: number;
+  title: string;
+  created_at: number;
+  description: string;
+  users: User[];
+}
+
 export interface IUser {
   id: number;
   username: string;
 }
 
-export interface IList {
-  id: number;
-  title: string;
-  cards: ICard[];
-  position: number;
-}
-
-export interface ICard {
-  id: number;
-  title: string;
-  description: string;
-  position: number;
-  users: number[];
-}
-
-// export interface IBoard {
-//   board: {
-//     lists: IList[];
-//     title: string;
-//     users: IUser[];
-//   };
-// }
-
-export interface ActionType {
-  type: string;
-  payload?: any;
-}
-
-export interface IBoardActions {
-  type: string;
-  payLoad: string;
-}
-
-export interface IBoard {
-  board: IBackendDataBoard;
-}
-
-/* Backend data interface */
-
-/* Boards */
-export interface IBackendBoard {
-  id: number;
-  title: string;
-}
-
-export interface IBackendDataBoards {
-  boards: IBackendBoard[];
-}
-
-/* Board */
-export interface IUserBackend {
-  id: number;
-  username: string;
-}
-
-export interface ICardBackend {
-  created_at: number;
-  description: string;
-  id: number;
-  position: number;
-  title: string;
-  users: IUserBackend[];
-}
-
-export interface IListBackend {
-  cards: {
-    [id: number]: ICardBackend;
+export interface IData1 {
+  board: {
+    title: string;
+    lists: {
+      [id: number]: {
+        id: number;
+        title: string;
+        position: number;
+        cards: {
+          [id: number]: {
+            id: number;
+            title: string;
+            description: string;
+            created_at: number;
+            position: number;
+            users: { id: number; username: string }[];
+          };
+        };
+      };
+    };
+    users: { id: number; username: string }[];
   };
-  id: number;
-  position: number;
-  title: string;
-}
-
-export interface IBackendDataBoard {
-  lists: {
-    [id: number]: IListBackend;
-  };
-  title: string;
-  users: IUserBackend[];
 }

@@ -8,7 +8,6 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 import EditableTitleList from './EditableTitleList';
 import Card from '../Card/Card';
 import { deleteCard, deleteList, renameTitleCard } from '../../../../store/modules/board/actions';
-// import { IData } from '../../../../common/interfaces/Interfaces';
 import EditableCard from '../Card/EditableCard';
 import AddCard from '../Card/AddCard';
 

@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 import { Dispatch } from 'redux';
 import instance from '../../../api/request';
-import { IBackendBoard } from '../../../common/interfaces/Interfaces';
+import { IBoardTlt } from '../../../common/interfaces/Interfaces';
 
 export const getBoard =
   (boardId: string) =>
   async (dispatch: Dispatch): Promise<void> => {
     try {
-      const data: IBackendBoard = await instance.get(`/board/${boardId}`);
-      // console.log('board: ', data);
+      const data: IBoardTlt = await instance.get(`/board/${boardId}`);
+      console.log('board: ', data);
       await dispatch({ type: 'UPDATE_BOARD', payload: data });
     } catch (e) {
       console.log('Error update data: ', e);

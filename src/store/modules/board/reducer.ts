@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { IBackendDataBoard } from '../../../common/interfaces/Interfaces';
+import { IBoard, IData } from '../../../common/interfaces/Interfaces';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const initialState: any = {
+const initialState: IData = {
   board: {
     title: 'Моя тестовая доска',
-    lists: [
-      {
+    lists: {
+      1: {
         id: 1,
         title: 'Планы',
         position: 1,
-        cards: [
-          {
+        cards: {
+          1: {
             id: 1,
             title: 'Помыть кота Леву',
             description: '1descr',
@@ -19,7 +17,7 @@ const initialState: any = {
             position: 1,
             users: [{ id: 1, username: 'AlBor' }],
           },
-          {
+          2: {
             id: 2,
             title: 'Приготовить суп Харчо',
             description: '2descr',
@@ -27,7 +25,7 @@ const initialState: any = {
             position: 2,
             users: [{ id: 1, username: 'AlBor' }],
           },
-          {
+          3: {
             id: 3,
             title: 'Сходить в магазин по хлеб',
             description: '3descr',
@@ -35,14 +33,14 @@ const initialState: any = {
             position: 3,
             users: [{ id: 1, username: 'AlBor' }],
           },
-        ],
+        },
       },
-      {
+      2: {
         id: 2,
         title: 'В процессе',
         position: 2,
-        cards: [
-          {
+        cards: {
+          4: {
             id: 4,
             title: 'Прочесть Библию',
             description: '4descr',
@@ -50,14 +48,14 @@ const initialState: any = {
             position: 4,
             users: [{ id: 1, username: 'AlBor' }],
           },
-        ],
+        },
       },
-      {
+      3: {
         id: 3,
         title: 'Сделано',
         position: 3,
-        cards: [
-          {
+        cards: {
+          5: {
             id: 5,
             title: 'Сделать Трело 2',
             description: '5descr',
@@ -65,7 +63,7 @@ const initialState: any = {
             position: 5,
             users: [{ id: 1, username: 'AlBor' }],
           },
-          {
+          6: {
             id: 6,
             title: 'Погулять с Беллой',
             description: '6descr',
@@ -73,19 +71,14 @@ const initialState: any = {
             position: 6,
             users: [{ id: 1, username: 'AlBor' }],
           },
-        ],
+        },
       },
-    ],
+    },
     users: [{ id: 123, username: 'para' }],
   },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const reducer = (
-  state: any = initialState,
-  action: { type: string; payload: IBackendDataBoard }
-): IBackendDataBoard => {
+const reducer = (state: IData = initialState, action: { type: string; payload: IBoard }): IData => {
   switch (action.type) {
     case 'UPDATE_BOARD':
       return {

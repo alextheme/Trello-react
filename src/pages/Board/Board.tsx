@@ -5,13 +5,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-// @ts-ignore
-// import {DragDropContext} from 'react-beautiful-dnd';
 import { connect } from 'react-redux';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { IBackendDataBoard } from '../../common/interfaces/Interfaces';
 import {
   deleteList,
   getBoard,
@@ -25,10 +20,11 @@ import AddList from './components/List/AddList';
 import EditableTitleBoard from './EditableTitleBoard';
 import List from './components/List/List';
 import './board.scss';
+import { IBoard } from '../../common/interfaces/Interfaces';
 
 interface TypeProps extends RouteComponentProps {
   boardId: string;
-  board: IBackendDataBoard;
+  board: IBoard;
   getBoard: (boardId: string) => Promise<void>;
 }
 

@@ -1,6 +1,6 @@
-import { IBackendDataBoards, ActionType } from '../../../common/interfaces/Interfaces';
+import { IBoards, IBoardTlt } from '../../../common/interfaces/Interfaces';
 
-const initialState: IBackendDataBoards = {
+const initialState: IBoards = {
   boards: [
     { id: 1, title: 'покупки' },
     { id: 2, title: 'подготовка к свадьбе' },
@@ -10,7 +10,7 @@ const initialState: IBackendDataBoards = {
   ],
 };
 
-const reducer = (state = initialState, action: ActionType): IBackendDataBoards => {
+const reducer = (state: IBoards = initialState, action: { type: string; payload: IBoardTlt[] }): IBoards => {
   switch (action.type) {
     case 'UPDATE_BOARDS':
       return {

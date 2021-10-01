@@ -3,13 +3,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './home.scss';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { IData as IBoard } from '../../common/interfaces/Interfaces';
+import { IBoards } from '../../common/interfaces/interfacesDnD';
 import AddBoard from './components/AddBoard/AddBoard';
 import Board from './components/Board/Board';
 import { getBoards } from '../../store/modules/boards/actions';
 
 interface PropsType extends RouteComponentProps {
-  boards: IBoard[];
+  boards: IBoards[];
   getBoards: () => Promise<void>;
 }
 
@@ -40,7 +40,7 @@ class Home extends React.Component<PropsType, StateType> {
     if (typeof boards === 'object') {
       // Form a list of boards and add a button to create a new board
       if (boards.length) {
-        boardsListBackend = boards.map((board: IBoard) => (
+        boardsListBackend = boards.map((board: IBoards) => (
           <li className="home-boards__list-element" key={board.id}>
             <Link to={`${url}board/${board.id}`}>
               <Board boardId={board.id} title={board.title} />
