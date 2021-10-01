@@ -75,20 +75,22 @@ class AddBoard extends React.Component<PropsType, StateType> {
 
   // Check data input
   checkInputData = (): boolean => {
-    const { res, errSymbols } = checkInputText(this.state.nameNewBoard);
+    const { status, res, errSymbols } = checkInputText(this.state.nameNewBoard);
 
-    if (res === 0) {
-      showErrText('add-board-error-text', 2000, 'Поле не может быть пустым.');
-      return true;
+    if (!status) {
+      if (res === 'empty') {
+        showErrText('add-board-error-text', 2000, 'Поле не может быть пустым.');
+        return true;
+      }
+
+      if (res === 'forbidden') {
+        setFocusToElement('addNewBoardInpt');
+        showErrText('add-board-error-text', 4000, `Эти символы не допустимы: \n${errSymbols}`);
+        return true;
+      }
     }
 
-    if (res === 1) {
-      setFocusToElement('addNewBoardInpt');
-      showErrText('add-board-error-text', 4000, `Эти символы не допустимы: \n${errSymbols}`);
-      return true;
-    }
-
-    return res !== -1;
+    return status;
   };
 
   addNewBoard = async (): Promise<void> => {

@@ -20,6 +20,7 @@
     }
 
     #board__input-edit-title {
+      min-width: 50px;
       margin: 0 auto;
       outline: none;
       border-radius: 5px;
@@ -67,6 +68,7 @@
         .editable-list-title {
           display: flex;
           align-items: center;
+          position: relative;
         }
 
         .list__delete-btn {

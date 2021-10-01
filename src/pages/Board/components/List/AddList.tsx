@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
-import './addList.scss';
+import './list.scss';
 import { addList } from '../../../../store/modules/board/actions';
 import {
   checkInputText,
-  closeInputField,
+  isCloseInputField,
   getHtmlElementByID,
   getHtmlElementQS,
   setFocusToElement,
@@ -75,7 +75,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
       ];
 
       if (this.globalValue.mounted) {
-        if (closeInputField(classes, e.target)) {
+        if (isCloseInputField(classes, e.target)) {
           this.closeFieldInputHandler();
         }
       }
@@ -90,11 +90,11 @@ class AddList extends React.Component<TypeProps, TypeState> {
   onInputHandler = (e: any): void => {
     e.preventDefault();
     const { value } = e.target;
-    const check = checkInputText(value);
-    if (check.res < 0) {
+    const { status, errSymbols } = checkInputText(value);
+    if (status) {
       this.setState((state: TypeState) => ({ ...state, nameList: value }));
     } else {
-      this.errorHandling(1, check.errSymbols);
+      this.errorHandling(1, errSymbols);
     }
   };
 

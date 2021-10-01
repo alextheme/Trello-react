@@ -8,13 +8,16 @@
  *      1 the string has invalid characters, errSymbols returns a list separated by a space
  *     -1 not errors
  */
-export const checkInputText = (text: string, regExp = /[^а-я.\w\s\-\d]+/gi): { res: number; errSymbols: string } => {
-  if (text === '') return { res: 0, errSymbols: '' };
+export const checkInputText = (
+  text: string,
+  regExp = /[^а-я.\w\s\-\d]+/gi
+): { status: boolean; res: '' | 'empty' | 'forbidden'; errSymbols: string } => {
+  if (text === '') return { status: false, res: 'empty', errSymbols: '' };
 
   const res = text.match(regExp);
-  if (res) return { res: 1, errSymbols: res.join(' ') };
+  if (res) return { status: false, res: 'forbidden', errSymbols: res.join(' ') };
 
-  return { res: -1, errSymbols: '' };
+  return { status: true, res: '', errSymbols: '' };
 };
 
 /**
@@ -87,7 +90,7 @@ export const getHtmlElementByID = (id: string): HTMLElement | null => document.g
  * @param listClassesOrIdHtmlElements an array of classes or id which should not be closed by clicking on the input field
  * @param target object that was clicked
  */
-export const closeInputField = (listClassesOrIdHtmlElements: string[], target: EventTarget | null): boolean => {
+export const isCloseInputField = (listClassesOrIdHtmlElements: string[], target: EventTarget | null): boolean => {
   let clickObj1 = true;
 
   for (let i = 0; i < listClassesOrIdHtmlElements.length; i++) {

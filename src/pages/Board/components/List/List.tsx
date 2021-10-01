@@ -5,12 +5,12 @@ import React, { useEffect, useState } from 'react';
 import './list.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
-import EditableTitleList from '../EditableTitle/EditableTitleList';
+import EditableTitleList from './EditableTitleList';
 import Card from '../Card/Card';
-import AddCard from '../AddElements/AddCard';
 import { deleteCard, deleteList, renameTitleCard } from '../../../../store/modules/board/actions';
 // import { IData } from '../../../../common/interfaces/Interfaces';
-import EditableCard from '../EditableTitle/EditableCard';
+import EditableCard from '../Card/EditableCard';
+import AddCard from '../Card/AddCard';
 
 // interface TypeProps {
 //   boardId: string;
@@ -119,6 +119,7 @@ function List({ boardId, index, list, updateBoard }: any): JSX.Element {
                 </div>
 
                 <div
+                  id={`list-card-wrapper-${list.id}`}
                   className="list-card-wrapper"
                   style={{
                     background: snapshot.isDraggingOver ? 'lightgreen' : '',

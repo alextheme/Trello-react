@@ -1,0 +1,22 @@
+.triangle {
+  width: 0;
+  height: 0;
+  border-width: 0 7px 8px 7px;
+  border-color: transparent transparent #FF0000 transparent;
+  border-style: solid;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: -8px;
+  margin-left: 10px;
+}
+
+.pop-up-message {
+  position: fixed;
+  border: 1px solid red;
+  background: #ff0000a6;
+  color: white;
+  border-radius: 5px;
+  padding: 2px 9px 5px;
+  z-index: 1000;
+}

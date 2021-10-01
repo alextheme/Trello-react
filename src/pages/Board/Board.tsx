@@ -21,8 +21,8 @@ import {
   movedLists,
   movedCards,
 } from '../../store/modules/board/actions';
-import AddList from './components/AddElements/AddList';
-import EditableTitleBoard from './components/EditableTitle/EditableTitleBoard';
+import AddList from './components/List/AddList';
+import EditableTitleBoard from './EditableTitleBoard';
 import List from './components/List/List';
 import './board.scss';
 
@@ -285,9 +285,6 @@ class Board extends React.Component<TypeProps, TypeState> {
             boardId={boardId}
             renameBoard={this.handleRenameBoard}
             updateBoard={this.updateBoard}
-            titleClassName="board__title"
-            inputClassName=""
-            inputId="board__input-edit-title"
           />
         </div>
         <p>{boardId}</p>
