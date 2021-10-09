@@ -66,7 +66,7 @@ function List({ boardId, index, list, updateBoard }: any): JSX.Element {
   };
 
   const saveTitleCard = async (titleCard: string, idCard: string): Promise<void> => {
-    await renameTitleCard(boardId, idCard, { title: titleCard, list_id: `${list.id}` });
+    await renameTitleCard(boardId, idCard, { title: titleCard, list_id: list.id });
     updateBoard();
     onClickClosedEditCard();
   };

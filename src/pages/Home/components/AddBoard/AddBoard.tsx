@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
 import './addBoard.scss';
@@ -75,26 +76,27 @@ class AddBoard extends React.Component<PropsType, StateType> {
 
   // Check data input
   checkInputData = (): boolean => {
-    const { status, res, errSymbols } = checkInputText(this.state.nameNewBoard);
+    const { status: statusErrorMessage, res, errSymbols } = checkInputText(this.state.nameNewBoard);
 
-    if (!status) {
+    if (!statusErrorMessage) {
       if (res === 'empty') {
         showErrText('add-board-error-text', 2000, 'Поле не может быть пустым.');
-        return true;
+        return false;
       }
 
       if (res === 'forbidden') {
         setFocusToElement('addNewBoardInpt');
-        showErrText('add-board-error-text', 4000, `Эти символы не допустимы: \n${errSymbols}`);
-        return true;
+        showErrText('add-board-error-text', 2000, `Эти символы не допустимы: \n${errSymbols}`);
+        return false;
       }
     }
 
-    return status;
+    return true;
   };
 
   addNewBoard = async (): Promise<void> => {
-    if (this.checkInputData()) return;
+    if (!this.checkInputData()) return;
+    console.log('98: ', '??');
 
     await addBoard(this.state.nameNewBoard);
     await this.props.getBoards();

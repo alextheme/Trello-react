@@ -1,5 +1,6 @@
 import { IBoard, IData } from '../../../common/interfaces/Interfaces';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const initialState: IData = {
   board: {
     board: {
@@ -46,7 +47,7 @@ const initialState: IData = {
               title: 'Прочесть Библию',
               description: '4descr',
               created_at: 4,
-              position: 4,
+              position: 1,
               users: [{ id: 1, username: 'AlBor' }],
             },
           },
@@ -61,7 +62,7 @@ const initialState: IData = {
               title: 'Сделать Трело 2',
               description: '5descr',
               created_at: 5,
-              position: 5,
+              position: 1,
               users: [{ id: 1, username: 'AlBor' }],
             },
             6: {
@@ -69,7 +70,7 @@ const initialState: IData = {
               title: 'Погулять с Беллой',
               description: '6descr',
               created_at: 6,
-              position: 6,
+              position: 2,
               users: [{ id: 1, username: 'AlBor' }],
             },
           },
@@ -80,7 +81,7 @@ const initialState: IData = {
   },
 };
 
-const reducer = (state: IData = initialState, action: { type: string; payload: IBoard }): IData => {
+const reducer = (state: IData, action: { type: string; payload: IBoard }): IData => {
   switch (action.type) {
     case 'UPDATE_BOARD':
       return {

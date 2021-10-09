@@ -7,8 +7,11 @@ export const getBoard =
   (boardId: string) =>
   async (dispatch: Dispatch): Promise<void> => {
     try {
+      console.log('axios 1');
       const data: IBoardTlt = await instance.get(`/board/${boardId}`);
+      console.log('axios 2');
       await dispatch({ type: 'UPDATE_BOARD', payload: data });
+      console.log('axios 3');
     } catch (e) {
       console.log('Error update data: ', e);
       dispatch({ type: 'ERROR_ACTION_TYPE' });
@@ -31,7 +34,7 @@ export const renameTitleBoard = async (boardId: number, title: string): Promise<
   }
 };
 
-export const addList = (boardId: number, title: string, position: number): void => {
+export const addList = (boardId: number | string, title: string, position: number): void => {
   try {
     instance.post(`/board/${boardId}/list`, { title, position });
   } catch (e) {
@@ -47,7 +50,7 @@ export const deleteList = async (boardId: number, listId: number): Promise<void>
   }
 };
 
-export const renameTitleList = async (boardId: string, listId: string, title: string): Promise<void> => {
+export const renameTitleList = async (boardId: string, listId: number, title: string): Promise<void> => {
   try {
     await instance.put(`/board/${boardId}/list/${listId}`, { title });
   } catch (e) {
@@ -56,9 +59,6 @@ export const renameTitleList = async (boardId: string, listId: string, title: st
 };
 
 export const movedLists = async (boardId: string, data: { id: number; position: number }[]): Promise<void> => {
-  console.log('move lists');
-  console.log(data);
-
   try {
     await instance.put(`/board/${boardId}/list`, data);
   } catch (e) {
@@ -85,7 +85,7 @@ export const deleteCard = async (board_id: string, card_id: string): Promise<voi
 export const renameTitleCard = async (
   board_id: string,
   card_id: string,
-  data: { title: string; list_id: string }
+  data: { title: string; list_id: number }
 ): Promise<void> => {
   try {
     await instance.put(`/board/${board_id}/card/${card_id}`, data);

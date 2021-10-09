@@ -77,6 +77,7 @@ class Board extends React.Component<TypeProps, TypeState> {
   async componentDidMount(): Promise<void> {
     await this.updateBoard();
     const { board } = this.props;
+
     if (board) {
       const heightWindow = window.innerHeight;
       const topElement = document.querySelector('.list-container')?.getBoundingClientRect().top;
@@ -124,7 +125,7 @@ class Board extends React.Component<TypeProps, TypeState> {
 
   /** Save Title Card, ajax */
   saveTitleCard = async (titleCard: string, idCard: string): Promise<void> => {
-    await renameTitleCard('123', idCard, { title: titleCard, list_id: `${'id'}` });
+    await renameTitleCard('123', idCard, { title: titleCard, list_id: -1 });
     this.updateBoard();
     this.onClickClosedEditCard();
   };
@@ -267,7 +268,8 @@ class Board extends React.Component<TypeProps, TypeState> {
 
   // Render
   render(): JSX.Element | null {
-    const { board, match } = this.props;
+    const { match } = this.props; // @ts-ignore
+    const { board } = this.props.board;
 
     if (!board) return null;
 

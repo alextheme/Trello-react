@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /**
  * Validation of data entry in the input field
@@ -96,8 +97,9 @@ export const isCloseInputField = (listClassesOrIdHtmlElements: string[], target:
   for (let i = 0; i < listClassesOrIdHtmlElements.length; i++) {
     const obj =
       listClassesOrIdHtmlElements[i][0] === '.'
-        ? getHtmlElementQS(listClassesOrIdHtmlElements[i])
-        : getHtmlElementByID(listClassesOrIdHtmlElements[i]);
+        ? document.querySelector(listClassesOrIdHtmlElements[i])
+        : document.getElementById(listClassesOrIdHtmlElements[i]);
+
     if (obj && obj === target) {
       clickObj1 = false;
     }
