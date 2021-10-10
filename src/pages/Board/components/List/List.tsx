@@ -1,164 +1,147 @@
+/* esli nt-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
-import './list.scss';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { IList } from '../../../../common/interfaces/Interfaces';
+import Card from './Card';
 import EditableTitleList from './EditableTitleList';
-import Card from '../Card/Card';
-import { deleteCard, deleteList, renameTitleCard } from '../../../../store/modules/board/actions';
-import EditableCard from '../Card/EditableCard';
-import AddCard from '../Card/AddCard';
+import AddList from './AddList';
+import AddCard from './AddCard';
+import { deleteList } from '../../../../store/modules/board/actions';
 
-// interface TypeProps {
-//   boardId: string;
-//   id: number;
-//   title: string;
-//   cards: IData[];
-//   position: number;
-//   updateBoard: any;
-// }
+interface TypeProps {
+  lists: { [id: number]: IList };
+  heightContainer: number;
+  boardId: number;
+  updateBoard: () => void;
+  onMouseDownForList: (event: any) => void;
+  onMouseDownForCard: (event: any) => void;
+  movingProcess: boolean;
+}
 
-// @ts-ignore
-function List({ boardId, index, list, updateBoard }: any): JSX.Element {
-  const [settingsEditCard, setSettingsEditCard] = useState({});
-  const [openEditCard, setOpenEditCard] = useState(false);
-  const [heightListContainer, setHeightListContainer] = useState(window.innerHeight);
+interface TypeState {
+  openAddCard: string;
+}
 
-  useEffect(() => {
-    const boardListConainer = document.getElementById('board_lists_container');
+class List extends React.Component<TypeProps, TypeState> {
+  constructor(props: TypeProps) {
+    super(props);
+    this.state = {
+      openAddCard: '',
+    };
+  }
 
-    if (boardListConainer) {
-      const top = boardListConainer?.getBoundingClientRect().top || 0;
-      boardListConainer.style.height = `${window.innerHeight - top}px`;
-      const height = window.innerHeight - top;
-      setHeightListContainer(height);
+  componentDidMount(): void {}
+
+  componentWillUnmount(): void {}
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  onClickOpenAddedCard = (event: any): void => {
+    this.setState({ openAddCard: event.target.dataset.btnAddCardListId });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  onClickDeleteList = async (event: any): Promise<void> => {
+    const { target } = event;
+    const listId = target.dataset.listId || target.parentElement.dataset.listId;
+
+    const { updateBoard, boardId } = this.props;
+    await deleteList(+boardId, listId);
+    updateBoard();
+  };
+
+  handlerClickCloseAddedCard = (): void => {
+    this.setState({ openAddCard: '' });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  onClickColumn = (event: any): void => {
+    const { target } = event;
+    if (target.classList.contains('list_wrapper')) {
+      this.setState({ openAddCard: '' });
     }
-  });
-
-  const onClickDeleteList = async (): Promise<void> => {
-    await deleteList(+boardId, list.id);
-    updateBoard();
   };
 
-  const onClickDeleteCard = async (e: any): Promise<void> => {
-    const idCard =
-      e.target.dataset.idCard ||
-      e.target.parentElement.dataset.idCard ||
-      e.target.parentElement.parentElement.dataset.idCard ||
-      e.target.parentElement.parentElement.parentElement.dataset.idCard;
-    await deleteCard(boardId, idCard);
-    updateBoard();
-    setOpenEditCard(false);
-  };
+  render(): JSX.Element | null {
+    const { lists, boardId, heightContainer, onMouseDownForList, onMouseDownForCard, updateBoard, movingProcess } =
+      this.props;
+    const { openAddCard } = this.state;
 
-  const onClickClosedEditCard = (): void => {
-    setOpenEditCard(false);
-  };
-
-  const handlerClickClosedEditCard = (e: any): void => {
-    let canBeClosed = true;
-    ['.editor-card__title', '.editor-card__buttons'].forEach((cls) => {
-      if (e.target.closest(cls)) canBeClosed = false;
-    });
-    if (canBeClosed) onClickClosedEditCard();
-  };
-
-  const saveTitleCard = async (titleCard: string, idCard: string): Promise<void> => {
-    await renameTitleCard(boardId, idCard, { title: titleCard, list_id: list.id });
-    updateBoard();
-    onClickClosedEditCard();
-  };
-
-  // @ts-ignore
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const onClickOpenEditCard = ({ openedEditCard, x, y, boardId, cardId, title }): void => {
-    setSettingsEditCard({
-      x,
-      y,
-      boardId,
-      cardId,
-      title,
-      saveTitle: saveTitleCard,
-      deleteCard: onClickDeleteCard,
-      closeEditor: onClickClosedEditCard,
-      closeBGEditor: handlerClickClosedEditCard,
-    });
-    setOpenEditCard(openedEditCard);
-  };
-
-  // return
-  return (
-    <Draggable draggableId={`${list.id}`} index={index}>
-      {(provided): JSX.Element => (
-        <div
-          className="list-container"
-          ref={provided.innerRef}
-          {...provided.dragHandleProps}
-          style={{ maxHeight: heightListContainer }}
-          {...provided.draggableProps}
-        >
-          <Droppable droppableId={`${list.id}`} type="task">
-            {(provided, snapshot): JSX.Element => (
-              <div className="list-item" ref={provided.innerRef} {...provided.droppableProps}>
-                {/* Edit Card */}
-                {openEditCard ? <EditableCard {...settingsEditCard} /> : null}
-                <div className="list_header">
-                  <EditableTitleList
-                    boardId={boardId}
-                    listId={list.id}
-                    titleList={list.title}
-                    updateBoard={updateBoard}
-                  />
-                  <p>{list.id}</p>
-                  <span className="list__delete-btn" onClick={onClickDeleteList}>
-                    <FontAwesomeIcon icon={['fas', 'ellipsis-h']} />
-                  </span>
-                </div>
-
-                <div
-                  id={`list-card-wrapper-${list.id}`}
-                  className="list-card-wrapper"
-                  style={{
-                    background: snapshot.isDraggingOver ? 'lightgreen' : '',
-                    maxHeight: heightListContainer - 44,
-                  }}
-                >
+    return (
+      <>
+        {Object.entries(lists)
+          .sort((a, b) => a[1].position - b[1].position)
+          .map(([, list]) => {
+            const openFieldForAddCard = +openAddCard === list.id;
+            return (
+              <div
+                key={list.id}
+                className="list_wrapper"
+                data-list-id={list.id}
+                onClick={this.onClickColumn}
+                style={{ height: heightContainer }}
+                onMouseDown={onMouseDownForList}
+              >
+                <div className="list_detalis" style={{ maxHeight: heightContainer }}>
                   <div>
-                    {
-                      /* Card */
-                      Object.entries(list.cards)
-                        .sort((a: any, b: any) => a[1].position - b[1].position)
-                        // eslint-disable-next-line @typescript-eslint/no-shadow
-                        .map(([id, card], index) => (
-                          <Card
-                            key={id}
-                            boardId={boardId}
-                            card={card}
-                            index={index}
-                            onClickOpenEditCard={onClickOpenEditCard}
-                          />
-                        ))
-                    }
+                    {list.id}, pos: {list.position}
                   </div>
-                  {/* </div> */}
-                  <AddCard
-                    addCardInputId={`add-card__input-field-${list.id}`}
-                    boardId={boardId}
-                    listId={list.id}
-                    countCards={Object.keys(list.cards).length}
-                    updateBoard={updateBoard}
-                  />
-                  {provided.placeholder}
+                  {/* Header */}
+                  <div className="list_header">
+                    <EditableTitleList
+                      boardId={boardId}
+                      titleList={list.title}
+                      listId={list.id}
+                      updateBoard={updateBoard}
+                      movingProcess={movingProcess}
+                    />
+                    <span className="list__delete-btn" data-list-id={list.id} onClick={this.onClickDeleteList}>
+                      <FontAwesomeIcon icon={['fas', 'ellipsis-h']} />
+                    </span>
+                  </div>
+                  <div className="list_content" data-list-id={list.id} style={{ maxHeight: heightContainer - 125 }}>
+                    {/* Cards */}
+                    <Card
+                      listId={list.id}
+                      cards={list.cards}
+                      onMouseDownForCard={onMouseDownForCard}
+                      boardId={boardId}
+                      updateBoard={updateBoard}
+                    />
+                    {openFieldForAddCard ? (
+                      <AddCard
+                        listId={`${list.id}`}
+                        boardId={boardId}
+                        countCards={Object.keys(list.cards).length}
+                        updateBoard={updateBoard}
+                        addCardInputId={`add_card_textarea_${list.id}`}
+                        handlerClickCloseAddedCard={this.handlerClickCloseAddedCard}
+                      />
+                    ) : null}
+                  </div>
+
+                  <div className="list_bottom">
+                    {!openFieldForAddCard ? (
+                      <button
+                        id={`btn-list-add-card-${list.id}`}
+                        data-btn-add-card-list-id={list.id}
+                        className="add-card__add-btn-start"
+                        onClick={this.onClickOpenAddedCard}
+                      >
+                        + Добавить карточку
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               </div>
-            )}
-          </Droppable>
-        </div>
-      )}
-    </Draggable>
-  );
+            );
+          })}
+        <AddList boardId={boardId} position={Object.entries(lists).length + 1} updateBoard={updateBoard} />
+      </>
+    );
+  }
 }
 
 export default List;

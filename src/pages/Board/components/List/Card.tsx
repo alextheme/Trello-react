@@ -11,7 +11,7 @@ import { deleteCard, renameTitleCard } from '../../../../store/modules/board/act
 interface TypeProps {
   cards: { [id: number]: ICard };
   onMouseDownForCard: (event: any) => void;
-  boardId: string;
+  boardId: number;
   listId: number;
   updateBoard: () => void;
 }

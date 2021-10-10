@@ -16,7 +16,7 @@ import PopUpMessage from '../PopUpMessage/PopUpMessage';
 
 interface TypeProps {
   listId: string;
-  boardId: string;
+  boardId: number;
   countCards: number;
   updateBoard: any;
   addCardInputId: string;

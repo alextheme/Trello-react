@@ -1,24 +1,35 @@
 /* eslint-disable no-console */
+import { AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
 import instance from '../../../api/request';
 import { IBoardTlt } from '../../../common/interfaces/Interfaces';
 
 export const getBoard =
-  (boardId: string) =>
+  (boardId: number) =>
   async (dispatch: Dispatch): Promise<void> => {
     try {
-      console.log('axios 1');
       const data: IBoardTlt = await instance.get(`/board/${boardId}`);
-      console.log('axios 2');
-      await dispatch({ type: 'UPDATE_BOARD', payload: data });
-      console.log('axios 3');
+      dispatch({ type: 'UPDATE_BOARD', payload: data });
     } catch (e) {
       console.log('Error update data: ', e);
       dispatch({ type: 'ERROR_ACTION_TYPE' });
     }
   };
 
-export const deleteBoard = async (boardId: string): Promise<void> => {
+// instance.interceptors.request.use((config) => {
+//   console.log('before request (4.1)', config);
+//   return config;
+// });
+
+instance.interceptors.response.use(
+  (res: AxiosResponse) => {
+    console.log('before response (5.1)', res);
+    return res.data;
+  },
+  (error) => Promise.reject(error)
+);
+
+export const deleteBoard = async (boardId: number): Promise<void> => {
   try {
     await instance.delete(`/board/${boardId}`);
   } catch (e) {
@@ -28,7 +39,8 @@ export const deleteBoard = async (boardId: string): Promise<void> => {
 
 export const renameTitleBoard = async (boardId: number, title: string): Promise<void> => {
   try {
-    instance.put(`/board/${boardId}`, { title });
+    await instance.put(`/board/${boardId}`, { title });
+    getBoard(boardId);
   } catch (e) {
     console.log(e);
   }
@@ -50,15 +62,16 @@ export const deleteList = async (boardId: number, listId: number): Promise<void>
   }
 };
 
-export const renameTitleList = async (boardId: string, listId: number, title: string): Promise<void> => {
+export const renameTitleList = async (boardId: number, listId: number, title: string): Promise<void> => {
   try {
     await instance.put(`/board/${boardId}/list/${listId}`, { title });
+    // getBoard(boardId);
   } catch (e) {
     console.log(e);
   }
 };
 
-export const movedLists = async (boardId: string, data: { id: number; position: number }[]): Promise<void> => {
+export const movedLists = async (boardId: number, data: { id: number; position: number }[]): Promise<void> => {
   try {
     await instance.put(`/board/${boardId}/list`, data);
   } catch (e) {
@@ -66,7 +79,7 @@ export const movedLists = async (boardId: string, data: { id: number; position: 
   }
 };
 
-export const addCard = async (boardId: string, title: string, list_id: number, position: number): Promise<void> => {
+export const addCard = async (boardId: number, title: string, list_id: number, position: number): Promise<void> => {
   try {
     await instance.post(`/board/${boardId}/card`, { title, list_id, position });
   } catch (e) {
@@ -74,7 +87,7 @@ export const addCard = async (boardId: string, title: string, list_id: number, p
   }
 };
 
-export const deleteCard = async (board_id: string, card_id: string): Promise<void> => {
+export const deleteCard = async (board_id: number, card_id: string): Promise<void> => {
   try {
     await instance.delete(`/board/${board_id}/card/${card_id}`);
   } catch (e) {
@@ -83,7 +96,7 @@ export const deleteCard = async (board_id: string, card_id: string): Promise<voi
 };
 
 export const renameTitleCard = async (
-  board_id: string,
+  board_id: number,
   card_id: string,
   data: { title: string; list_id: number }
 ): Promise<void> => {
@@ -95,7 +108,7 @@ export const renameTitleCard = async (
 };
 
 export const movedCards = async (
-  boardId: string,
+  boardId: number,
   data: { id: number; position: number; list_id: number }[]
 ): Promise<void> => {
   try {

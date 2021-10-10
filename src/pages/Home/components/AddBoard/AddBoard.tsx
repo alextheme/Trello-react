@@ -96,7 +96,6 @@ class AddBoard extends React.Component<PropsType, StateType> {
 
   addNewBoard = async (): Promise<void> => {
     if (!this.checkInputData()) return;
-    console.log('98: ', '??');
 
     await addBoard(this.state.nameNewBoard);
     await this.props.getBoards();

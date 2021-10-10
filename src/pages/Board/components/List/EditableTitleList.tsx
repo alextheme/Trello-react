@@ -1,85 +1,103 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable jsx-a11y/no-autofocus */
 import React, { useState } from 'react';
 import { renameTitleList } from '../../../../store/modules/board/actions';
-import { checkInputText, getHtmlElementByID } from '../../../../common/scripts/commonFunctions';
+import { checkInputText } from '../../../../common/scripts/commonFunctions';
 import PopUpMessage from '../PopUpMessage/PopUpMessage';
 
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const EditableTitleList = ({ boardId, titleList, listId, updateBoard }): JSX.Element => {
+type TypeProps = {
+  boardId: number;
+  titleList: string;
+  listId: number;
+  updateBoard: () => void;
+  movingProcess: boolean;
+};
+
+const EditableTitleList = ({ boardId, titleList, listId, movingProcess, updateBoard }: TypeProps): JSX.Element => {
   const [title, setTitle] = useState(titleList);
   const [openInput, setOpenInput] = useState(false);
-  const [errorMessage, setErrorMessage] = useState({ status: false, res: '', errSymbols: '' });
+  const [errorMessage, setErrorMessage] = useState({ statusErrorText: false, res: '', errSymbols: '' });
+  const [heightTitle, setHeightTitle] = useState(0);
 
-  const onInputEditTitleHandler = (e: any): void => {
-    if (errorMessage.status) {
-      setErrorMessage({ status: false, res: '', errSymbols: '' });
+  /** Input text in textarea */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handlerInputTextarea = (event: any): void => {
+    if (errorMessage.statusErrorText) {
+      setErrorMessage({ statusErrorText: false, res: '', errSymbols: '' });
     }
-    setTitle(e.target.value);
+    const { value } = event.target;
+    setTitle(value);
   };
 
-  const getInput = (): HTMLElement | null => getHtmlElementByID(`input-title-list-${listId}`);
+  /** Open Editor List Title */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handlerPressTitle = (event: any): void => {
+    if (!movingProcess) {
+      const { currentTarget } = event;
+      const { height } = currentTarget.getBoundingClientRect();
+      setHeightTitle(height);
 
-  const onMouseUpTitleHandler = (e: any): void => {
-    e.preventDefault();
-    setOpenInput(true);
-    setTimeout(() => {
-      const element = getInput();
-      element?.focus(); // @ts-ignore
-      element?.select();
-    }, 10);
+      setOpenInput(true);
+
+      setTimeout(() => {
+        currentTarget.nextSibling.focus();
+        currentTarget.nextSibling.select();
+        currentTarget.nextSibling.classList.add('focus');
+      }, 10);
+    }
   };
 
-  const renameTitle = async (): Promise<void> => {
+  /** Asyng request on Rename Title */
+  const renameTitle = async (textarea: HTMLElement): Promise<void> => {
     const { status, res, errSymbols } = checkInputText(title);
 
     if (status) {
       setTitle(title);
-      await renameTitleList(boardId, listId, title);
+      await renameTitleList(+boardId, listId, title);
       await updateBoard();
       setOpenInput(false);
+      textarea.classList.remove('focus');
       return;
     }
 
-    setErrorMessage({ status: true, res, errSymbols });
+    setErrorMessage({ statusErrorText: true, res, errSymbols });
 
-    const input = getInput();
-    input?.focus(); // @ts-ignore
-    input?.select();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    textarea.focus(); // @ts-ignore
+    textarea.select();
   };
 
-  const onBlurEditTitleHandeler = (): void => {
-    renameTitle();
+  /** Reneme Titne on blur Textarea */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onBlurEditTitleHandeler = (event: any): void => {
+    renameTitle(event.currentTarget);
   };
 
-  const onKeyPressEditTitleHandler = (e: any): void => {
-    if (e.charCode === 13 && e.code === 'Enter') {
-      renameTitle();
+  /** Key Press */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onKeyPressEditTitleHandler = (event: any): void => {
+    if (event.code === 'Enter') {
+      renameTitle(event.currentTarget);
     }
   };
 
   //
   return (
-    <div id={`editable-list-title-${listId}`} className="editable-list-title">
+    <div className="editable-list-title">
       <h2
         className="list-title"
         style={{ display: openInput ? 'none' : 'block', position: 'relative' }}
-        onMouseUp={onMouseUpTitleHandler}
+        onClick={handlerPressTitle}
       >
         {titleList}
       </h2>
-      <input
+      <textarea
         id={`input-title-list-${listId}`}
-        type="text"
+        className="editable-list-textarea"
         defaultValue={title}
-        onInput={onInputEditTitleHandler}
+        onInput={handlerInputTextarea}
         onBlur={onBlurEditTitleHandeler}
         onKeyPress={onKeyPressEditTitleHandler}
         autoComplete="off"
-        style={{ display: openInput ? 'block' : 'none', position: 'relative' }}
+        style={{ display: openInput ? 'block' : 'none', position: 'relative', height: heightTitle }}
       />
       {openInput ? <PopUpMessage {...errorMessage} parentId={`input-title-list-${listId}`} /> : null}
     </div>

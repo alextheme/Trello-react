@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +7,6 @@ import './common/styles/normalize.scss';
 import homeIcon from './common/img/home-icon.png'; // './common/img/home-icon.png';
 import Home from './pages/Home/Home';
 import Board from './pages/Board/Board';
-import BoardDnD from './pages/BoardDnD/BoardDnD';
 
 library.add(fas);
 
@@ -31,8 +29,7 @@ function App(): JSX.Element {
         </nav>
 
         <Route exact path="/" component={Home} />
-        <Route path="/board/:boardId" component={BoardDnD} />
-        {/* <Route path="/board/:boardId" component={Board} /> */}
+        <Route path="/board/:boardId" component={Board} />
       </div>
     </BrowserRouter>
   );

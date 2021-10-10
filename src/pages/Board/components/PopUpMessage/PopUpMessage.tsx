@@ -4,7 +4,7 @@ import React from 'react';
 import './popUpMessage.scss';
 
 type TypeProps = {
-  status: boolean;
+  statusErrorText: boolean;
   res: string;
   errSymbols: string;
   parentId: string;
@@ -18,7 +18,7 @@ class PopUpMessage extends React.Component<TypeProps, TypeState> {
   }
 
   render(): JSX.Element | null {
-    const { status, res, errSymbols, parentId } = this.props;
+    const { statusErrorText, res, errSymbols, parentId } = this.props;
     const plural = errSymbols.length > 1;
     const parent = document.getElementById(parentId);
     const stylePosition: any = {};
@@ -28,7 +28,7 @@ class PopUpMessage extends React.Component<TypeProps, TypeState> {
       stylePosition.left = left;
     }
 
-    if (status) {
+    if (statusErrorText) {
       return (
         <div className="pop-up-message" style={{ ...stylePosition }}>
           <div className="triangle" />

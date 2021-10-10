@@ -1,21 +1,19 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { checkInputText, getHtmlElementByID } from '../../common/scripts/commonFunctions';
-import PopUpMessage from './components/PopUpMessage/PopUpMessage';
+import { checkInputText, getHtmlElementByID } from '../../../common/scripts/commonFunctions';
+import { renameTitleBoard } from '../../../store/modules/board/actions';
+import PopUpMessage from './PopUpMessage/PopUpMessage';
 
 interface TypeProps {
   title: string;
-  listId: string;
   boardId: string;
-  renameBoard: any;
-  updateBoard: any;
 }
 
 const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   const [openInputEditTitle, setOpenInputEditTitle] = useState(false);
   const [title, setTitle] = useState(props.title);
-  const [errorMessage, setErrorMessage] = useState({ status: false, res: '', errSymbols: '' });
+  const [errorMessage, setErrorMessage] = useState({ statusErrorText: false, res: '', errSymbols: '' });
   const [mount, setMount] = useState(false);
 
   useEffect(() => {
@@ -23,18 +21,18 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
     return (): void => setMount(false);
   });
 
-  const handleTitleOnClick = (e: any): void => {
-    const { clientWidth, innerText } = e.target;
-    e.preventDefault();
-    const input = getHtmlElementByID('board__input-edit-title');
-    if (input) {
-      input.style.width = `${clientWidth}px`;
+  const handleTitleOnClick = (event: any): void => {
+    event.preventDefault();
+    const { target, currentTarget } = event;
+    const { clientWidth, innerText } = target;
 
-      setTimeout(() => {
-        input.focus(); // @ts-ignore
-        input.select();
-      }, 0);
-    }
+    currentTarget.nextSibling.style.width = `${clientWidth}px`;
+
+    setTimeout(() => {
+      currentTarget.nextSibling.focus();
+      currentTarget.nextSibling.select();
+    }, 0);
+
     setTitle(innerText);
     setOpenInputEditTitle(true);
   };
@@ -45,8 +43,8 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
     const { target } = e;
     const { style, innerText, value } = target;
 
-    if (errorMessage.status) {
-      setErrorMessage({ status: false, res: '', errSymbols: '' });
+    if (errorMessage.statusErrorText) {
+      setErrorMessage({ statusErrorText: false, res: '', errSymbols: '' });
     }
     style.width = `${value.length * 12 + 20}px`;
     setTitle(innerText);
@@ -58,14 +56,13 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
       const { status, res, errSymbols } = checkInputText(nameTitle);
 
       if (status) {
-        await props.renameBoard(+props.boardId, nameTitle);
-        await props.updateBoard();
+        await renameTitleBoard(+props.boardId, nameTitle);
         setTitle(nameTitle);
         setOpenInputEditTitle(false);
         return true;
       }
 
-      setErrorMessage({ status: true, res, errSymbols });
+      setErrorMessage({ statusErrorText: true, res, errSymbols });
 
       return false;
     }
@@ -102,15 +99,12 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   //
   return (
     <div className="editable-title" style={{ position: 'relative' }}>
-      <h2
-        className="board__title"
-        onClick={handleTitleOnClick}
-        style={{ display: openInputEditTitle ? 'none' : 'block' }}
-      >
+      <h2 className="title" onClick={handleTitleOnClick} style={{ display: openInputEditTitle ? 'none' : 'block' }}>
         {title}
       </h2>
       <input
-        id="board__input-edit-title"
+        id="input-edit-board-title"
+        className="input-edit-board-title"
         type="text"
         onInput={onInputEditTitleHandler}
         onBlur={onBlurInputHandler}
@@ -119,7 +113,7 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
         style={{ display: openInputEditTitle ? 'block' : 'none' }}
         autoComplete="off"
       />
-      {errorMessage.status ? <PopUpMessage {...errorMessage} parentId="board__input-edit-title" /> : null}
+      {errorMessage.statusErrorText ? <PopUpMessage {...errorMessage} parentId="input-edit-board-title" /> : null}
     </div>
   );
 };

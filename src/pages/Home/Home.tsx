@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/destructuring-assignment, @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import { connect } from 'react-redux';
@@ -30,9 +31,14 @@ class Home extends React.Component<PropsType, StateType> {
     await this.props.getBoards();
   };
 
-  render(): JSX.Element {
+  render(): JSX.Element | null {
     const { url } = this.props.match;
+
+    // console.log(this.props.boards);
+    // if (!this.props.boards) return <div>HELLO</div>;
+
     const { boards } = this.props.boards;
+
     let boardsListBackend: JSX.Element[] = [];
 
     if (typeof boards === 'object') {

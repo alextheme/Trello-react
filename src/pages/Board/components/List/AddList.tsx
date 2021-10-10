@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
-import './list.scss';
 import { addList } from '../../../../store/modules/board/actions';
 import {
   checkInputText,
