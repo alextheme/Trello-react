@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-console */
@@ -5,10 +6,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import './board.scss';
-import { IBoard, IData, IList } from '../../common/interfaces/Interfaces';
+import ProgressBar from '../../common/components/ProgressBar';
+import { IBoard, IList } from '../../common/interfaces/Interfaces';
 import { getBoard, movedCards, movedLists } from '../../store/modules/board/actions';
 import List from './components/List/List';
 import EditableTitleBoard from './components/EditableTitleBoard';
+import CardDetalis from '../CardDetalis/CardDetalis';
 
 interface TypeProps extends RouteComponentProps {
   boardId: number;
@@ -31,6 +34,9 @@ interface TypeState {
   indexNewPositionActiveElement: number;
   movingCard: { indexSourceList: number; indexCard: number } | null;
   movingListId: number;
+  progressBar: boolean;
+  openDetailEditCard: boolean;
+  detalisEditCard: JSX.Element;
 }
 class Board extends React.Component<TypeProps, TypeState> {
   constructor(props: TypeProps) {
@@ -49,6 +55,9 @@ class Board extends React.Component<TypeProps, TypeState> {
       indexNewPositionActiveElement: 0,
       movingCard: null,
       movingListId: -1,
+      progressBar: false,
+      openDetailEditCard: false,
+      detalisEditCard: <div />,
     };
     this.onMouseDownForCard = this.onMouseDownForCard.bind(this);
   }
@@ -57,20 +66,30 @@ class Board extends React.Component<TypeProps, TypeState> {
     this.setState({ mount: true });
     await this.updateBoard();
 
+    // Set Height Container
     const heightWindow = window.innerHeight;
     const containerTop = document.getElementById('dnd_container')?.getBoundingClientRect().top;
     const heightContainer = heightWindow - (containerTop || 0);
     this.setState((state) => ({ ...state, heightContainer }));
 
+    // Show Detalis Card
+    const { match } = this.props;
+    const { params, path } = match; // @ts-ignore
+    const cardDetalisShow = path.slice(0, 4) === '/b/:';
+    if (cardDetalisShow) {
+      // @ts-ignore
+      const { boardId, cardId } = params;
+      this.showDetalisCard(+boardId, +cardId);
+    }
+
     // Off Move Effect for List || Card
     document.addEventListener('mouseup', () => {
-      // eslint-disable-next-line react/destructuring-assignment
-      if (this.state.cardActive) {
+      const { cardActive, listActive } = this.state;
+      if (cardActive) {
         document.removeEventListener('mousemove', this.moveCard);
         this.mouseUpForCard();
       }
-      // eslint-disable-next-line react/destructuring-assignment
-      if (this.state.listActive) {
+      if (listActive) {
         document.removeEventListener('mousemove', this.moveList);
         this.mouseUpForList();
       }
@@ -86,7 +105,6 @@ class Board extends React.Component<TypeProps, TypeState> {
     const { params } = match; // @ts-ignore
     const { boardId } = params;
     await updBoard(boardId);
-
     const { board } = this.props;
     if (!board) return;
     const { lists } = board;
@@ -458,6 +476,44 @@ class Board extends React.Component<TypeProps, TypeState> {
     }
   };
 
+  /**
+   * Detalis Card Functions ...
+   */
+  handlerOpenDetatisCard = (event: any): void => {
+    event.preventDefault();
+    if (event.target.closest('.card__open-card-editor-btn')) return;
+
+    const { match } = this.props;
+    const { params } = match; // @ts-ignore
+    const { boardId } = params;
+    const { cardId } = event.currentTarget.dataset;
+
+    this.showDetalisCard(+boardId, +cardId);
+  };
+
+  showDetalisCard = (boardId: number, cardId: number): void => {
+    const { board } = this.props;
+    this.setState({
+      openDetailEditCard: true,
+      detalisEditCard: (
+        <CardDetalis
+          board={board}
+          boardId={boardId}
+          cardId={cardId}
+          updateBoard={this.updateBoard}
+          handlerCloseDetalisCard={this.handlerCloseDetalisCard}
+        />
+      ),
+    });
+  };
+
+  handlerCloseDetalisCard = (): void => {
+    this.setState({
+      openDetailEditCard: false,
+      detalisEditCard: <div />,
+    });
+  };
+
   /** RENDER
    *
    */
@@ -469,14 +525,13 @@ class Board extends React.Component<TypeProps, TypeState> {
     const { params } = match; // @ts-ignore
     const { boardId } = params;
     const { title } = board;
-    const { heightContainer, dataLists, movingProcess } = this.state;
-
+    const { heightContainer, dataLists, movingProcess, openDetailEditCard, detalisEditCard } = this.state;
     if (!dataLists) return null;
-    const lists = dataLists;
 
     return (
       // comment
       <div className="DnD">
+        {openDetailEditCard && detalisEditCard}
         <div className="board-header">
           <h2 className="title-board">
             ({boardId})
@@ -486,13 +541,14 @@ class Board extends React.Component<TypeProps, TypeState> {
         <div id="dnd_container">
           {/* Lists */}
           <List
-            lists={lists}
+            lists={dataLists}
             boardId={boardId}
             heightContainer={heightContainer}
             updateBoard={this.updateBoard}
             onMouseDownForCard={this.onMouseDownForCard}
             onMouseDownForList={this.onMouseDownForList}
             movingProcess={movingProcess}
+            handlerOpenDetatisCard={this.handlerOpenDetatisCard}
           />
         </div>
       </div>
@@ -500,6 +556,6 @@ class Board extends React.Component<TypeProps, TypeState> {
   }
 }
 
-const mapStateToProps = (state: IData): any => ({ ...state.board.board });
+const mapStateToProps = (state: any): any => ({ ...state.board.board, ...state.load });
 
 export default connect(mapStateToProps, { updBoard: getBoard })(withRouter(Board));

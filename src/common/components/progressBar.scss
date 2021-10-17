@@ -1,0 +1,50 @@
+
+#nprogress {
+  .bar {
+    width: 99%;
+    height: 10px;
+    background: red;
+    animation-name: barProgress;
+    animation-duration: 10s;
+
+    @keyframes barProgress {
+      0%   {
+        background: red;
+        width: 1%;
+      }
+      10%  {
+        background: orange;
+        width: 10%;
+      }
+      20%  {
+        background: yellow;
+        width: 20%;
+      }
+      30%  {
+        background: green;
+        width: 50%;
+      }
+      40% {
+        background: lightblue;
+      }
+      70% {
+        background: blue;
+      }
+      90% {
+        background: violet;
+        width: 90%;
+      }
+      98% {
+        background: red;
+        width: 90%;
+      }
+    }
+  }
+  .spinner-icon {
+    border-top-color: red !important;
+    border-left-color: red !important;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
+}

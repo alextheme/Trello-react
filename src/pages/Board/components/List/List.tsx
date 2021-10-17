@@ -18,6 +18,7 @@ interface TypeProps {
   updateBoard: () => void;
   onMouseDownForList: (event: any) => void;
   onMouseDownForCard: (event: any) => void;
+  handlerOpenDetatisCard: (event: any) => void;
   movingProcess: boolean;
 }
 
@@ -65,8 +66,16 @@ class List extends React.Component<TypeProps, TypeState> {
   };
 
   render(): JSX.Element | null {
-    const { lists, boardId, heightContainer, onMouseDownForList, onMouseDownForCard, updateBoard, movingProcess } =
-      this.props;
+    const {
+      lists,
+      boardId,
+      heightContainer,
+      onMouseDownForList,
+      onMouseDownForCard,
+      updateBoard,
+      movingProcess,
+      handlerOpenDetatisCard,
+    } = this.props;
     const { openAddCard } = this.state;
 
     return (
@@ -104,11 +113,12 @@ class List extends React.Component<TypeProps, TypeState> {
                   <div className="list_content" data-list-id={list.id} style={{ maxHeight: heightContainer - 125 }}>
                     {/* Cards */}
                     <Card
+                      boardId={boardId}
                       listId={list.id}
                       cards={list.cards}
                       onMouseDownForCard={onMouseDownForCard}
-                      boardId={boardId}
                       updateBoard={updateBoard}
+                      handlerOpenDetatisCard={handlerOpenDetatisCard}
                     />
                     {openFieldForAddCard ? (
                       <AddCard

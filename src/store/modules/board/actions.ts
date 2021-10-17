@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
@@ -8,24 +9,20 @@ export const getBoard =
   (boardId: number) =>
   async (dispatch: Dispatch): Promise<void> => {
     try {
+      console.log('..1');
       const data: IBoardTlt = await instance.get(`/board/${boardId}`);
       dispatch({ type: 'UPDATE_BOARD', payload: data });
+      console.log('..2');
     } catch (e) {
       console.log('Error update data: ', e);
       dispatch({ type: 'ERROR_ACTION_TYPE' });
     }
   };
 
-// instance.interceptors.request.use((config) => {
-//   console.log('before request (4.1)', config);
-//   return config;
-// });
+instance.interceptors.request.use((config) => config);
 
 instance.interceptors.response.use(
-  (res: AxiosResponse) => {
-    console.log('before response (5.1)', res);
-    return res.data;
-  },
+  (res: AxiosResponse) => res.data,
   (error) => Promise.reject(error)
 );
 

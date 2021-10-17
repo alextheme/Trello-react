@@ -149,6 +149,8 @@ body {
         min-height: 20px;
         overflow: hidden;
         position: relative;
+        text-decoration: none;
+        color: #172b4d;
 
         &:hover {
           background-color: #f3f3f3;
@@ -157,10 +159,11 @@ body {
           }
         }
 
-        .card_detalis {
+        .card_cover {
           .title {
             line-height: 1.4em;
             overflow: hidden;
+            font-weight: 400;
           }
         }
 

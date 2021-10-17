@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* esli nt-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-console */
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ICard } from '../../../../common/interfaces/Interfaces';
 import EditableCard from './EditableCard';
 import { deleteCard, renameTitleCard } from '../../../../store/modules/board/actions';
+import CardDetalis from '../../../CardDetalis/CardDetalis';
 
 interface TypeProps {
   cards: { [id: number]: ICard };
@@ -14,6 +18,7 @@ interface TypeProps {
   boardId: number;
   listId: number;
   updateBoard: () => void;
+  handlerOpenDetatisCard: (event: any) => void;
 }
 
 interface TypeState {
@@ -88,7 +93,7 @@ class Card extends React.Component<TypeProps, TypeState> {
   };
 
   render(): JSX.Element | null {
-    const { cards, onMouseDownForCard, boardId } = this.props;
+    const { cards, onMouseDownForCard, boardId, listId, handlerOpenDetatisCard } = this.props;
     const { openEditCard, card, x, y, width } = this.state;
     const settingsEditCard = {
       openEditCard,
@@ -105,24 +110,28 @@ class Card extends React.Component<TypeProps, TypeState> {
 
     return (
       <>
+        {/* {openDetailEditCard && detalisEditCard} */}
         {Object.entries(cards)
           .sort((a, b) => a[1].position - b[1].position)
           .map(([, cardItem], index) => (
-            <a
+            <Link
+              to={`/b/${boardId}/c/${cardItem.id}`}
               key={cardItem.id}
               className="card_item"
               data-card-id={cardItem.id}
+              data-list-id={listId}
               data-card-ind-pos={index}
               onMouseDown={onMouseDownForCard}
+              onClick={handlerOpenDetatisCard}
             >
-              <div className="card_detalis">
-                {/* ({cardItem.id}) - pos: {cardItem.position} */}
+              <div className="card_cover">
+                ({cardItem.id}) - pos: {cardItem.position}
                 <h4 className="title">{cardItem.title}</h4>
                 <button className="card__open-card-editor-btn" onClick={this.onClickOpenEditor.bind(this, cardItem)}>
                   <FontAwesomeIcon icon={['fas', 'pencil-alt']} />
                 </button>
               </div>
-            </a>
+            </Link>
           ))}
         {openEditCard ? <EditableCard {...settingsEditCard} /> : null}
       </>

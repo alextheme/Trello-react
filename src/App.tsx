@@ -7,6 +7,7 @@ import './common/styles/normalize.scss';
 import homeIcon from './common/img/home-icon.png'; // './common/img/home-icon.png';
 import Home from './pages/Home/Home';
 import Board from './pages/Board/Board';
+// import Card from './pages/CardDetalis/CardDetalis';
 
 library.add(fas);
 
@@ -16,13 +17,7 @@ function App(): JSX.Element {
       <div id="app-main-page">
         <nav id="app-main-nav">
           <Link to="/">
-            <div
-              style={{
-                width: 50,
-                height: 'auto',
-                margin: '5px',
-              }}
-            >
+            <div style={{ width: 50, height: 'auto', margin: '5px' }}>
               <img style={{ width: '100%', height: 'auto' }} className="home-page-img" src={homeIcon} alt="home" />
             </div>
           </Link>
@@ -30,6 +25,7 @@ function App(): JSX.Element {
 
         <Route exact path="/" component={Home} />
         <Route path="/board/:boardId" component={Board} />
+        <Route path="/b/:boardId/c/:cardId" component={Board} />
       </div>
     </BrowserRouter>
   );

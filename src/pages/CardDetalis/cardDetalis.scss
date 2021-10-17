@@ -1,0 +1,207 @@
+.card-dialog {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1200;
+  color: rebeccapurple;
+  background: goldenrod;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+
+  .card-dialog__close-dialog {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 32px;
+    width: 32px;
+    color: #091e42;
+    border: none;
+    border-radius: 50%;
+    margin: 4px;
+    transition: background-color 85ms,color 85ms;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: #091e4214;
+      color: #42526e;
+    }
+  }
+
+  .card-dialog__wrapper {
+    background-color: #f4f5f7;
+    color: #172b4d;
+    border-radius: 2px;
+    margin: 48px 10px 80px 10px;
+    padding-top: 10px;
+    overflow: hidden;
+    position: relative;
+    width: 768px;
+    z-index: 25;
+
+    color: #172b4d;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+
+    .card-dialog__header {
+      margin: 12px 40px 8px 56px;
+      min-height: 32px;
+      position: relative;
+      z-index: 1;
+
+      .title-box {
+        .icon {
+          position: absolute;
+          top: 0;
+          left: 0;
+          margin-left: -39px;
+          font-size: 19px;
+        }
+        .title {
+          // display: none;
+          font-size: 20px;
+          line-height: 24px;
+          font-weight: 600;
+          margin: 0 0 8px;
+          margin-right: 4px;
+          color: #172b4d;
+        }
+        .title-mod {
+          display: none;
+        }
+      }
+      .title-column-name-box {
+        cursor: default;
+        display: inline-block;
+        margin: 4px 8px 4px 2px;
+
+        .tlt-col-name {
+          a {
+            color: #5e6c84;
+            &:hover {
+              color: #172b4d;
+            }
+          }
+        }
+      }
+    }
+
+    .content {
+
+    }
+
+    .card-dialog__description {
+      float: left;
+      margin: 0;
+      min-height: 24px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 0 8px 8px 16px;
+      position: relative;
+      width: 552px;
+      z-index: 0;
+
+      .title-box {
+        margin: 0 0 4px 40px;
+        padding: 8px 0;
+        position: relative;
+
+        .icon {
+          position: absolute;
+          top: 0;
+          left: 0;
+          margin-left: -39px;
+          margin-top: 10px;
+          font-size: 19px;
+        }
+
+        .title {
+          // ?
+        }
+      }
+
+      .content-text {
+        margin: 0 0 4px 40px;
+        padding: 8px 0;
+
+        .current-text {
+
+        }
+        .mod_card-dialog__description {
+          display: none;
+        }
+      }
+    }
+
+
+
+    .card-dialog__sidebar {
+      float: right;
+      overflow: hidden;
+      padding: 0 16px 8px 8px;
+      width: calc(100% - 600px);
+      z-index: 10;
+
+      .title-sidebar {
+        color: #5e6c84;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 16px;
+        line-height: 20px;
+        margin-bottom: -4px;
+        margin-top: 16px;
+      }
+
+      .button-link {
+        background-color: #091e420a;
+        border: none;
+        border-radius: 3px;
+        box-shadow: none;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: block;
+        height: 32px;
+        margin-top: 8px;
+        max-width: 300px;
+        overflow: hidden;
+        padding: 6px 12px;
+        position: relative;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        transition-duration: 85ms;
+        transition-property: background-color,border-color,box-shadow;
+        transition-timing-function: ease;
+        -webkit-user-select: none;
+        user-select: none;
+        white-space: nowrap;
+        color: #172b4d;
+
+        &:hover {
+          background-color: #091e4214;
+          border: none;
+          box-shadow: none;
+        }
+
+        .icon {
+          font-size: 16px;
+          height: 20px;
+          line-height: 20px;
+          width: 20px;
+          color: #42526e;
+          margin: 0 6px 0 -3px;
+        }
+      }
+    }
+  }
+
+}
