@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* esli nt-disable @typescript-eslint/no-unused-vars */
@@ -9,8 +10,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ICard } from '../../../../common/interfaces/Interfaces';
 import EditableCard from './EditableCard';
-import { deleteCard, renameTitleCard } from '../../../../store/modules/board/actions';
-import CardDetalis from '../../../CardDetalis/CardDetalis';
+import { deleteCard, renameTitleCard, editDescriptionCard } from '../../../../store/modules/board/actions';
 
 interface TypeProps {
   cards: { [id: number]: ICard };
@@ -83,14 +83,21 @@ class Card extends React.Component<TypeProps, TypeState> {
     this.setState({ openEditCard: false });
   };
 
-  saveTitleCard = async (titleCard: string, idCard: string): Promise<void> => {
-    const { updateBoard, boardId, listId } = this.props;
-    console.log('84: ', titleCard, boardId, idCard);
-
-    await renameTitleCard(boardId, idCard, { title: titleCard, list_id: listId });
-    updateBoard();
+  saveTitleCard = async (title: string, idCard: string): Promise<void> => {
+    this.renameTitleCard(title, idCard);
     this.closeEditor();
   };
+
+  renameTitleCard = async (title: string, idCard: string): Promise<void> => {
+    const { updateBoard, boardId, listId } = this.props;
+    await renameTitleCard(boardId, +idCard, { title, list_id: listId });
+    updateBoard();
+  };
+
+  // editCard = (boardId: number, listId: number, cardId: number, descr: string): void => {
+  //   editDescriptionCard(boardId, listId, cardId, descr);
+  //   console.log('edit card ... ');
+  // };
 
   render(): JSX.Element | null {
     const { cards, onMouseDownForCard, boardId, listId, handlerOpenDetatisCard } = this.props;
@@ -123,6 +130,7 @@ class Card extends React.Component<TypeProps, TypeState> {
               data-card-ind-pos={index}
               onMouseDown={onMouseDownForCard}
               onClick={handlerOpenDetatisCard}
+              // onMouseUp={this.editCard.bind(this, boardId, listId, cardItem.id, 'new descr...')}
             >
               <div className="card_cover">
                 ({cardItem.id}) - pos: {cardItem.position}

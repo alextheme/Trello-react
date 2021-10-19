@@ -82,6 +82,15 @@ class Board extends React.Component<TypeProps, TypeState> {
       this.showDetalisCard(+boardId, +cardId);
     }
 
+    // close the window with details on the card when pressing the escape key
+    document.addEventListener('keyup', (event: any) => {
+      const { key, keyCode } = event;
+      const { openDetailEditCard } = this.state;
+      if (openDetailEditCard && key === 'Escape' && keyCode === 27) {
+        this.handlerCloseDetalisCard();
+      }
+    });
+
     // Off Move Effect for List || Card
     document.addEventListener('mouseup', () => {
       const { cardActive, listActive } = this.state;

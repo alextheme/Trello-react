@@ -9,10 +9,9 @@ export const getBoard =
   (boardId: number) =>
   async (dispatch: Dispatch): Promise<void> => {
     try {
-      console.log('..1');
       const data: IBoardTlt = await instance.get(`/board/${boardId}`);
+      console.log('data: ', data);
       dispatch({ type: 'UPDATE_BOARD', payload: data });
-      console.log('..2');
     } catch (e) {
       console.log('Error update data: ', e);
       dispatch({ type: 'ERROR_ACTION_TYPE' });
@@ -43,6 +42,9 @@ export const renameTitleBoard = async (boardId: number, title: string): Promise<
   }
 };
 
+/**
+ * LIST
+ */
 export const addList = (boardId: number | string, title: string, position: number): void => {
   try {
     instance.post(`/board/${boardId}/list`, { title, position });
@@ -76,6 +78,9 @@ export const movedLists = async (boardId: number, data: { id: number; position: 
   }
 };
 
+/**
+ * CARD
+ */
 export const addCard = async (boardId: number, title: string, list_id: number, position: number): Promise<void> => {
   try {
     await instance.post(`/board/${boardId}/card`, { title, list_id, position });
@@ -94,11 +99,29 @@ export const deleteCard = async (board_id: number, card_id: string): Promise<voi
 
 export const renameTitleCard = async (
   board_id: number,
-  card_id: string,
+  card_id: number,
   data: { title: string; list_id: number }
 ): Promise<void> => {
   try {
     await instance.put(`/board/${board_id}/card/${card_id}`, data);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// created_at: 1632948602450
+// description: ""
+// id: 1632948602450
+// position: 1
+// title:
+export const editDescriptionCard = async (
+  board_id: number,
+  list_id: number,
+  card_id: number,
+  description: string
+): Promise<void> => {
+  try {
+    await instance.put(`/board/${board_id}/card/${card_id}`, { description, list_id });
   } catch (e) {
     console.log(e);
   }

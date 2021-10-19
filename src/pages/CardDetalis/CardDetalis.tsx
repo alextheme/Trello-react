@@ -10,6 +10,8 @@ import './cardDetalis.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { IBoard, ICard } from '../../common/interfaces/Interfaces';
+import Title from './components/Titlle';
+import Description from './components/Description';
 
 interface TypeProps extends RouteComponentProps {
   board: IBoard;
@@ -56,11 +58,10 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
   };
 
   render(): JSX.Element {
-    const { boardId, cardId, board } = this.props;
+    const { boardId, cardId, board, updateBoard } = this.props;
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const list = Object.entries(board.lists).filter(([, list]) => cardId in list.cards)[0][1];
     const card = list.cards[cardId];
-    console.log('list card detalis: ', list, card);
 
     return (
       <div className="card-dialog" onClick={this.handlerOnClickClose}>
@@ -74,12 +75,11 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
               <div className="icon">
                 <FontAwesomeIcon icon={['fas', 'credit-card']} />
               </div>
-              <h2 className="title">{card.title}</h2>
-              <textarea className="title-mod" name="mod_card-dialog__header" id="mod_card-dialog__header" />
+              <Title title={card.title} boardId={boardId} listId={list.id} cardId={cardId} updateBoard={updateBoard} />
             </div>
             <div className="title-column-name-box">
               <p className="tlt-col-name">
-                in list <a href="#">{list.title}</a>
+                in the column <a href="#">{list.title}</a>
               </p>
             </div>
           </div>
@@ -92,11 +92,15 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                 </div>
                 <h3 className="title">Description</h3>
               </div>
-              <div className="content-text">
-                <p className="current-text">text</p>
-                <textarea name="mod_card-dialog__description" className="mod_card-dialog__description" />
-              </div>
+              <Description
+                boardId={boardId}
+                listId={list.id}
+                cardId={cardId}
+                description={card.description}
+                updateBoard={updateBoard}
+              />
             </div>
+
             <div className="card-dialog__sidebar">
               <div className="title-sidebar">Add on card</div>
               <a href="#" className="button-link">
