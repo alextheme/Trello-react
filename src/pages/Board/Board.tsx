@@ -6,7 +6,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import './board.scss';
-import ProgressBar from '../../common/components/ProgressBar';
 import { IBoard, IList } from '../../common/interfaces/Interfaces';
 import { getBoard, movedCards, movedLists } from '../../store/modules/board/actions';
 import List from './components/List/List';
