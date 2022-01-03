@@ -4,6 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   checkInputText,
   // closeInputField,
@@ -11,16 +12,16 @@ import {
   isCloseInputField,
   // isCloseInputField,
 } from '../../../../common/scripts/commonFunctions';
-import { addCard } from '../../../../store/modules/board/actions';
+import { addCard } from '../../../../store/modules/board/action-creators';
+import { BoardContext } from '../../boardContext';
 import PopUpMessage from '../PopUpMessage/PopUpMessage';
 
 interface TypeProps {
   listId: string;
-  boardId: number;
   countCards: number;
-  updateBoard: any;
   addCardInputId: string;
   handlerClickCloseAddedCard: () => void;
+  cardCreate: (boardId: number, title: string, list_id: number, position: number) => void;
 }
 
 interface TypeState {
@@ -32,11 +33,7 @@ interface TypeState {
 }
 
 class AddCard extends React.Component<TypeProps, TypeState> {
-  globalValue: {
-    mounted: boolean | undefined;
-  } = {
-    mounted: undefined,
-  };
+  mounted = false;
 
   constructor(props: TypeProps) {
     super(props);
@@ -50,19 +47,19 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   }
 
   componentDidMount(): void {
-    this.globalValue.mounted = true;
+    this.mounted = true;
     const { addCardInputId } = this.props;
     const textarea: HTMLElement | null = document.getElementById(addCardInputId);
     textarea?.focus();
   }
 
   componentWillUnmount(): void {
-    this.globalValue.mounted = false;
+    this.mounted = false;
   }
 
   // set value in title, tracked component
   inputOnChangeHandler = (e: any): void => {
-    if (this.globalValue.mounted) {
+    if (this.mounted) {
       if (this.state.statusErrorText) {
         this.setState((state: TypeState) => ({ ...state, statusErrorText: false }));
       }
@@ -96,28 +93,28 @@ class AddCard extends React.Component<TypeProps, TypeState> {
 
   /** Add New Card */
   addNewCard = async (listId: string, countcards: string): Promise<void> => {
-    const { ...props } = this.props;
+    if (!this.mounted) return;
+
+    const { cardCreate, ...props } = this.props;
     const { ...state } = this.state;
+    const { boardId } = this.context;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { status, res, errSymbols } = checkInputText(state.nameCard);
 
     if (status) {
-      await addCard(props.boardId, state.nameCard, +listId, +countcards + 1);
-      await props.updateBoard();
-      if (this.globalValue.mounted) {
-        this.setState((st) => ({ ...st, openInputAddCard: false, nameCard: '' }));
-        props.handlerClickCloseAddedCard();
-      }
+      await cardCreate(boardId, state.nameCard, +listId, +countcards + 1);
+      const { updateBoard } = this.context;
+      await updateBoard();
+      this.setState((st) => ({ ...st, openInputAddCard: false, nameCard: '' }));
+      props.handlerClickCloseAddedCard();
       return;
     }
 
-    if (this.globalValue.mounted) {
-      this.setState((st) => ({ ...st, statusErrorText: true, res, errSymbols }));
-      setTimeout(() => {
-        this.setState((st) => ({ ...st, statusErrorText: false }));
-      }, 2000);
-    }
+    this.setState((st) => ({ ...st, statusErrorText: true, res, errSymbols }));
+    setTimeout(() => {
+      this.setState((st) => ({ ...st, statusErrorText: false }));
+    }, 2000);
 
     const input = this.getInput();
     input?.focus(); // @ts-ignore
@@ -167,4 +164,8 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   }
 }
 
-export default AddCard;
+const mapDispatchToProps = { cardCreate: addCard };
+
+AddCard.contextType = BoardContext;
+
+export default connect(null, mapDispatchToProps)(AddCard);

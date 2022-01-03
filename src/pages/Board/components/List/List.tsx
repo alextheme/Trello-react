@@ -4,22 +4,22 @@
 /* eslint-disable no-console */
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IList } from '../../../../common/interfaces/Interfaces';
+import { connect } from 'react-redux';
+import { IListContent } from '../../../../common/interfaces/Interfaces';
 import Card from './Card';
 import EditableTitleList from './EditableTitleList';
 import AddList from './AddList';
 import AddCard from './AddCard';
-import { deleteList } from '../../../../store/modules/board/actions';
+import { deleteList } from '../../../../store/modules/board/action-creators';
+import { BoardContext } from '../../boardContext';
 
 interface TypeProps {
-  lists: { [id: number]: IList };
+  lists: { [id: number]: IListContent };
   heightContainer: number;
-  boardId: number;
-  updateBoard: () => void;
   onMouseDownForList: (event: any) => void;
   onMouseDownForCard: (event: any) => void;
-  handlerOpenDetatisCard: (event: any) => void;
-  movingProcess: boolean;
+  processMovingList: boolean;
+  listDelete: (boardId: number, listId: number) => void;
 }
 
 interface TypeState {
@@ -46,11 +46,13 @@ class List extends React.Component<TypeProps, TypeState> {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   onClickDeleteList = async (event: any): Promise<void> => {
     const { target } = event;
+    const { contextValue } = this.context;
     const listId = target.dataset.listId || target.parentElement.dataset.listId;
 
-    const { updateBoard, boardId } = this.props;
-    await deleteList(+boardId, listId);
-    updateBoard();
+    const { listDelete } = this.props;
+    const { boardId } = this.context;
+    await listDelete(+boardId, listId);
+    contextValue.updateBoard();
   };
 
   handlerClickCloseAddedCard = (): void => {
@@ -66,16 +68,8 @@ class List extends React.Component<TypeProps, TypeState> {
   };
 
   render(): JSX.Element | null {
-    const {
-      lists,
-      boardId,
-      heightContainer,
-      onMouseDownForList,
-      onMouseDownForCard,
-      updateBoard,
-      movingProcess,
-      handlerOpenDetatisCard,
-    } = this.props;
+    const { lists, heightContainer, onMouseDownForList, onMouseDownForCard, processMovingList } = this.props;
+    const { boardId } = this.context;
     const { openAddCard } = this.state;
 
     return (
@@ -99,33 +93,18 @@ class List extends React.Component<TypeProps, TypeState> {
                   </div>
                   {/* Header */}
                   <div className="list_header">
-                    <EditableTitleList
-                      boardId={boardId}
-                      titleList={list.title}
-                      listId={list.id}
-                      updateBoard={updateBoard}
-                      movingProcess={movingProcess}
-                    />
+                    <EditableTitleList titleList={list.title} listId={list.id} processMovingList={processMovingList} />
                     <span className="list__delete-btn" data-list-id={list.id} onClick={this.onClickDeleteList}>
                       <FontAwesomeIcon icon={['fas', 'ellipsis-h']} />
                     </span>
                   </div>
                   <div className="list_content" data-list-id={list.id} style={{ maxHeight: heightContainer - 125 }}>
                     {/* Cards */}
-                    <Card
-                      boardId={boardId}
-                      listId={list.id}
-                      cards={list.cards}
-                      onMouseDownForCard={onMouseDownForCard}
-                      updateBoard={updateBoard}
-                      handlerOpenDetatisCard={handlerOpenDetatisCard}
-                    />
+                    <Card listId={list.id} cards={list.cards} onMouseDownForCard={onMouseDownForCard} />
                     {openFieldForAddCard ? (
                       <AddCard
                         listId={`${list.id}`}
-                        boardId={boardId}
                         countCards={Object.keys(list.cards).length}
-                        updateBoard={updateBoard}
                         addCardInputId={`add_card_textarea_${list.id}`}
                         handlerClickCloseAddedCard={this.handlerClickCloseAddedCard}
                       />
@@ -148,10 +127,12 @@ class List extends React.Component<TypeProps, TypeState> {
               </div>
             );
           })}
-        <AddList boardId={boardId} position={Object.entries(lists).length + 1} updateBoard={updateBoard} />
+        <AddList boardId={boardId} position={Object.entries(lists).length + 1} />
       </>
     );
   }
 }
 
-export default List;
+List.contextType = BoardContext;
+
+export default connect(null, { listDelete: deleteList })(List);

@@ -1,29 +1,29 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* esli nt-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-console */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ICard } from '../../../../common/interfaces/Interfaces';
+import { connect } from 'react-redux';
+import { ICardContent, IEditableCardProps } from '../../../../common/interfaces/Interfaces';
 import EditableCard from './EditableCard';
-import { deleteCard, renameTitleCard, editDescriptionCard } from '../../../../store/modules/board/actions';
+import { deleteCard, renameTitleCard } from '../../../../store/modules/board/action-creators';
+import { BoardContext } from '../../boardContext';
 
 interface TypeProps {
-  cards: { [id: number]: ICard };
+  cards: { [id: number]: ICardContent };
   onMouseDownForCard: (event: any) => void;
-  boardId: number;
   listId: number;
-  updateBoard: () => void;
-  handlerOpenDetatisCard: (event: any) => void;
+  cardDelete: (boardId: number, cardId: number) => Promise<void>;
+  cardRenameTitle: (boardId: number, cardId: number, data: { title: string; list_id: number }) => Promise<boolean>;
 }
 
 interface TypeState {
   openEditCard: boolean;
-  card: ICard | null;
+  card: ICardContent;
   x: number;
   y: number;
   width: number;
@@ -34,19 +34,15 @@ class Card extends React.Component<TypeProps, TypeState> {
     super(props);
     this.state = {
       openEditCard: false,
-      card: null,
+      card: { id: -1, position: -1, title: '', created_at: -1, description: '', users: [] },
       x: 0,
       y: 0,
       width: 0,
     };
   }
 
-  componentDidMount(): void {}
-
-  componentWillUnmount(): void {}
-
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  onClickOpenEditor = (card: ICard, event: any): void => {
+  onClickOpenEditor = (card: ICardContent, event: any): void => {
     const c = event.target.closest('.card_item').getBoundingClientRect();
     this.setState({ openEditCard: true, width: c.width, x: c.left, y: c.top, card });
   };
@@ -72,43 +68,40 @@ class Card extends React.Component<TypeProps, TypeState> {
       };
     };
   }): Promise<void> => {
-    const { updateBoard, boardId } = this.props;
+    const { cardDelete } = this.props;
+    const { updateBoard, boardId } = this.context;
     const idCard =
       event.target.dataset.idCard ||
       event.target.parentElement.dataset.idCard ||
       event.target.parentElement.parentElement.dataset.idCard ||
       event.target.parentElement.parentElement.parentElement.dataset.idCard;
-    await deleteCard(boardId, idCard);
+    await cardDelete(boardId, idCard);
     updateBoard();
     this.setState({ openEditCard: false });
   };
 
-  saveTitleCard = async (title: string, idCard: string): Promise<void> => {
-    this.renameTitleCard(title, idCard);
+  saveTitleCard = async (title: string, idCard: number): Promise<void> => {
+    this.handlerCardTitleRename(title, idCard);
     this.closeEditor();
   };
 
-  renameTitleCard = async (title: string, idCard: string): Promise<void> => {
-    const { updateBoard, boardId, listId } = this.props;
-    await renameTitleCard(boardId, +idCard, { title, list_id: listId });
+  handlerCardTitleRename = async (title: string, idCard: number): Promise<void> => {
+    const { listId, cardRenameTitle } = this.props;
+    const { updateBoard, boardId } = this.context;
+    await cardRenameTitle(boardId, idCard, { title, list_id: listId });
     updateBoard();
   };
 
-  // editCard = (boardId: number, listId: number, cardId: number, descr: string): void => {
-  //   editDescriptionCard(boardId, listId, cardId, descr);
-  //   console.log('edit card ... ');
-  // };
-
   render(): JSX.Element | null {
-    const { cards, onMouseDownForCard, boardId, listId, handlerOpenDetatisCard } = this.props;
+    const { cards, onMouseDownForCard, listId } = this.props;
     const { openEditCard, card, x, y, width } = this.state;
-    const settingsEditCard = {
+    const { boardId, handlerOpenDetatisCard } = this.context;
+    const settingsEditCard: IEditableCardProps = {
       openEditCard,
       card,
       x,
       y,
       width,
-      boardId,
       closeEditor: this.closeEditor,
       closeBGEditor: this.handlerClickClosedEditCard,
       deleteCard: this.onClickDeleteCard,
@@ -117,7 +110,6 @@ class Card extends React.Component<TypeProps, TypeState> {
 
     return (
       <>
-        {/* {openDetailEditCard && detalisEditCard} */}
         {Object.entries(cards)
           .sort((a, b) => a[1].position - b[1].position)
           .map(([, cardItem], index) => (
@@ -130,7 +122,6 @@ class Card extends React.Component<TypeProps, TypeState> {
               data-card-ind-pos={index}
               onMouseDown={onMouseDownForCard}
               onClick={handlerOpenDetatisCard}
-              // onMouseUp={this.editCard.bind(this, boardId, listId, cardItem.id, 'new descr...')}
             >
               <div className="card_cover">
                 ({cardItem.id}) - pos: {cardItem.position}
@@ -147,4 +138,11 @@ class Card extends React.Component<TypeProps, TypeState> {
   }
 }
 
-export default Card;
+const mapDispatchToProps = {
+  cardDelete: deleteCard,
+  cardRenameTitle: renameTitleCard,
+};
+
+Card.contextType = BoardContext;
+
+export default connect(null, mapDispatchToProps)(Card);

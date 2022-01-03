@@ -1,28 +1,27 @@
-import { IBoards, IBoardTlt } from '../../../common/interfaces/Interfaces';
+/* eslint-disable no-console */
+import { IBoardsListReducer } from '../../../common/interfaces/Interfaces';
+import { ActionType } from './action-types';
+import { Action } from './actions';
 
-const initialState: IBoards = {
-  boards: [
-    { id: 1, title: 'покупки' },
-    { id: 2, title: 'подготовка к свадьбе' },
-    { id: 3, title: 'разработка интернет-магазина' },
-    { id: 4, title: 'курс по продвижению в соцсетях' },
-    { id: 5, title: 'курс фронтэнда' },
+const initialState = {
+  boardsList: [
+    // { id: 1, title: 'покупки' },
+    // { id: 2, title: 'подготовка к свадьбе' },
+    // { id: 3, title: 'разработка интернет-магазина' },
+    // { id: 4, title: 'курс по продвижению в соцсетях' },
+    // { id: 5, title: 'курс фронтэнда' },
   ],
 };
 
-const reducer = (state: IBoards = initialState, action: { type: string; payload: IBoardTlt[] }): IBoards => {
+const reducer = (state: IBoardsListReducer = initialState, action: Action): IBoardsListReducer => {
   switch (action.type) {
-    case 'UPDATE_BOARDS':
-      return {
-        ...state,
-        boards: action.payload,
-      };
-    case 'UPDATE_BOARDS_LOCAL':
-      return {
-        ...state,
-      };
+    case ActionType.UPDATE_BOARDS:
+      return { boardsList: action.payload };
+    case ActionType.CLEAR_BOARDS:
+      return { boardsList: null };
+
     default: {
-      return { ...state, ...action.payload };
+      return state;
     }
   }
 };

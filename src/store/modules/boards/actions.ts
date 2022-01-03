@@ -1,22 +1,17 @@
-/* eslint-disable no-console */
-import { Dispatch } from 'redux';
-import instance from '../../../api/request';
+import { ActionType } from './action-types';
 
-export const getBoards =
-  () =>
-  async (dispatch: Dispatch): Promise<void> => {
-    try {
-      const data = await instance.get('/board');
-      dispatch({ type: 'UPDATE_BOARDS', payload: data });
-    } catch (e) {
-      console.log(e);
-      dispatch({ type: 'ERROR_ACTION_TYPE' });
-    }
-  };
+export interface IBoard {
+  id: number;
+  title: string;
+}
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
-export const addBoard = async (newTitleBoard: string): Promise<any> =>
-  instance.post('/board', { title: newTitleBoard });
+interface IUpdateBoardsAction {
+  type: ActionType.UPDATE_BOARDS;
+  payload: IBoard[];
+}
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/no-explicit-any
-export const deleteBoard = async (idBoard: number): Promise<any> => instance.delete(`/board/${idBoard}`);
+interface IClearBoardsAction {
+  type: ActionType.CLEAR_BOARDS;
+}
+
+export type Action = IUpdateBoardsAction | IClearBoardsAction;

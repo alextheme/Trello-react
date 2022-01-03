@@ -1,5 +1,15 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
+type TypeCheckInputText = (
+  text: string,
+  checkedSymbols?: RegExp
+) => {
+  status: boolean;
+  res: '' | 'empty' | 'forbidden';
+  errSymbols: string;
+};
+
 /**
  * Validation of data entry in the input field
  * @param text from the input field
@@ -9,10 +19,9 @@
  *      1 the string has invalid characters, errSymbols returns a list separated by a space
  *     -1 not errors
  */
-export const checkInputText = (
-  text: string,
-  regExp = /[^а-я.\w\s\-\d]+/gi
-): { status: boolean; res: '' | 'empty' | 'forbidden'; errSymbols: string } => {
+export const checkInputText: TypeCheckInputText = (text, checkedSymbols) => {
+  const regExp = checkedSymbols || /[^а-я.\w\s\-\d]+/gi;
+
   if (text === '') return { status: false, res: 'empty', errSymbols: '' };
 
   const res = text.match(regExp);

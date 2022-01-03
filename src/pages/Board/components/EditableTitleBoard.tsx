@@ -1,30 +1,36 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
 import { checkInputText, getHtmlElementByID } from '../../../common/scripts/commonFunctions';
-import { renameTitleBoard } from '../../../store/modules/board/actions';
+import { renameTitleBoard } from '../../../store/modules/board/action-creators';
+import { BoardContext } from '../boardContext';
 import PopUpMessage from './PopUpMessage/PopUpMessage';
 
 interface TypeProps {
   title: string;
-  boardId: string;
+  changeBoardTitle: (boardId: number, title: string) => Promise<boolean>;
 }
 
 const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   const [openInputEditTitle, setOpenInputEditTitle] = useState(false);
   const [title, setTitle] = useState(props.title);
+  const [prevTitle, setPrevTitle] = useState(props.title);
   const [errorMessage, setErrorMessage] = useState({ statusErrorText: false, res: '', errSymbols: '' });
-  const [mount, setMount] = useState(false);
+  const isMountedRef = useRef<boolean | null>(null);
+  const { boardId } = useContext(BoardContext);
 
-  useEffect(() => {
-    setMount(true);
-    return (): void => setMount(false);
+  useEffect((): any => {
+    isMountedRef.current = true;
+    return (): boolean => isMountedRef.current = false;
   });
 
   const handleTitleOnClick = (event: any): void => {
     event.preventDefault();
-    const { target, currentTarget } = event;
-    const { clientWidth, innerText } = target;
+    const { currentTarget } = event;
+    const { clientWidth, innerText } = currentTarget;
 
     currentTarget.nextSibling.style.width = `${clientWidth}px`;
 
@@ -33,67 +39,55 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
       currentTarget.nextSibling.select();
     }, 0);
 
+    setErrorMessage({ statusErrorText: false, res: '', errSymbols: '' });
     setTitle(innerText);
     setOpenInputEditTitle(true);
   };
 
   /** Print new name board */
-  const onInputEditTitleHandler = (e: any): void => {
+  const inputOnInputEditTitleHandler = (e: any): void => {
     e.preventDefault();
     const { target } = e;
     const { style, innerText, value } = target;
-
-    if (errorMessage.statusErrorText) {
-      setErrorMessage({ statusErrorText: false, res: '', errSymbols: '' });
-    }
     style.width = `${value.length * 12 + 20}px`;
     setTitle(innerText);
   };
 
   /** Rename Board, ajax request */
-  const renameBoard = async (nameTitle: string): Promise<boolean> => {
-    if (mount) {
-      const { status, res, errSymbols } = checkInputText(nameTitle);
+  const renameBoard = async (nameTitle: string): Promise<void> => {
+    if (!isMountedRef.current) return;
 
-      if (status) {
-        await renameTitleBoard(+props.boardId, nameTitle);
+    const { status, res, errSymbols } = checkInputText(nameTitle);
+    
+    if (status && res === '' && boardId) {
+      const { changeBoardTitle } = props;
+      const response = await changeBoardTitle(boardId, nameTitle);
+            
+      if (response) {
         setTitle(nameTitle);
+        setPrevTitle(nameTitle);
         setOpenInputEditTitle(false);
-        return true;
+        setErrorMessage({ statusErrorText: true, res: '', errSymbols: '' });
+        return;
       }
-
-      setErrorMessage({ statusErrorText: true, res, errSymbols });
-
-      return false;
     }
-    return false;
+
+    setTitle(prevTitle);
+    setOpenInputEditTitle(false);
+    setErrorMessage({ statusErrorText: true, res, errSymbols });
   };
 
   /** Focus out */
-  const onBlurInputHandler = async (e: any): Promise<void> => {
+  const inputOnBlurHandler = (e: any): void => {
     e.preventDefault();
-    const { target } = e;
-    const { value } = target;
-    const res = await renameBoard(value);
-    if (!res) {
-      const input = getHtmlElementByID('board__input-edit-title');
-      input?.focus(); // @ts-ignore
-      input?.select();
-    }
+    const { target: { value: nameTitle } } = e as { target: { value: string }};
+    renameBoard(nameTitle);
   };
 
   /** Press Enter on input */
-  const onKeyPressInputHandler = async (e: any): Promise<void> => {
-    const { charCode, code, target } = e;
-    if (charCode === 13 && code === 'Enter') {
-      const res = await renameBoard(target.value);
-
-      if (!res) {
-        const input = getHtmlElementByID('board__input-edit-title');
-        input?.focus(); // @ts-ignore
-        input?.select();
-      }
-    }
+  const inputOnKeyPressHandler = (e: any): void => {
+    const { code, target } = e;
+    if (code === 'Enter') renameBoard(target.value);
   };
 
   //
@@ -106,16 +100,16 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
         id="input-edit-board-title"
         className="input-edit-board-title"
         type="text"
-        onInput={onInputEditTitleHandler}
-        onBlur={onBlurInputHandler}
-        onKeyPress={onKeyPressInputHandler}
+        onInput={inputOnInputEditTitleHandler}
+        onBlur={inputOnBlurHandler}
+        onKeyPress={inputOnKeyPressHandler}
         defaultValue={title}
         style={{ display: openInputEditTitle ? 'block' : 'none' }}
         autoComplete="off"
       />
-      {errorMessage.statusErrorText ? <PopUpMessage {...errorMessage} parentId="input-edit-board-title" /> : null}
+      {errorMessage.statusErrorText && errorMessage.res !== '' && <PopUpMessage {...errorMessage} parentId="input-edit-board-title" />}
     </div>
   );
 };
 
-export default EditableTitleBoard;
+export default connect(null, { changeBoardTitle: renameTitleBoard })(EditableTitleBoard);

@@ -2,18 +2,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unused-state */
 import React from 'react';
+import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
-import { editDescriptionCard } from '../../../store/modules/board/actions';
+import { editDescriptionCard } from '../../../../store/modules/board/action-creators';
+import { BoardContext, IBoardContext } from '../../../Board/boardContext';
+import './Description.scss';
 
 interface TypeProps {
-  boardId: number;
   listId: number;
   cardId: number;
   description: string;
-  updateBoard: () => void;
+  cardEditDescription: (board_id: number, list_id: number, card_id: number, description: string) => void;
 }
 
 interface TypeState {
+  mount: boolean;
   description: string;
 }
 
@@ -22,11 +25,17 @@ class Description extends React.Component<TypeProps, TypeState> {
     super(props);
     const { description } = this.props;
     this.state = {
+      mount: true,
       description,
     };
   }
 
+  componentDidMount(): void {
+    this.setState({ mount: true });
+  }
+
   componentWillUnmount(): void {
+    this.setState({ mount: false });
     this.editCard();
   }
 
@@ -41,11 +50,12 @@ class Description extends React.Component<TypeProps, TypeState> {
     this.editCard();
   };
 
-  editCard = (): void => {
-    const { boardId, listId, cardId, updateBoard } = this.props;
-    const { description } = this.state;
-    editDescriptionCard(boardId, listId, cardId, description);
-    updateBoard();
+  editCard = async (): Promise<void> => {
+    const { listId, cardId, cardEditDescription } = this.props;
+    const { description, mount } = this.state;
+    const { updateBoard, boardId } = this.context as IBoardContext;
+    await cardEditDescription(boardId, listId, cardId, description);
+    if (mount) updateBoard();
   };
 
   render(): JSX.Element {
@@ -62,4 +72,10 @@ class Description extends React.Component<TypeProps, TypeState> {
   }
 }
 
-export default Description;
+const mapDispatchToProps = {
+  cardEditDescription: editDescriptionCard,
+};
+
+Description.contextType = BoardContext;
+
+export default connect(null, mapDispatchToProps)(Description);

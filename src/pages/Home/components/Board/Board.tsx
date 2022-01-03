@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import './board.scss';
-import { getBoards } from '../../../../store/modules/boards/actions';
-import { deleteBoard } from '../../../../store/modules/board/actions';
+import { getBoards, deleteBoard } from '../../../../store/modules/boards/action-creators';
 
 type PropsType = {
   boardId: number;
   title: string;
   getBoards: () => Promise<void>;
+  deleteBoard: (boardId: number) => Promise<void>;
 };
 
 const Board = (props: PropsType): JSX.Element => {
-  const { boardId, title } = props;
+  const { boardId, title, deleteBoard: delBoard } = props;
   const isMountedRef: React.MutableRefObject<boolean | null> = useRef(null);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -24,7 +24,7 @@ const Board = (props: PropsType): JSX.Element => {
   const handleDeleteBoard = async (e: any): Promise<void> => {
     e.preventDefault();
     const boardIdFromHtml = e.target.getAttribute('data-id');
-    await deleteBoard(boardIdFromHtml);
+    await delBoard(boardIdFromHtml);
     if (isMountedRef.current) {
       props.getBoards();
     }
@@ -40,4 +40,4 @@ const Board = (props: PropsType): JSX.Element => {
   );
 };
 
-export default connect(null, { getBoards })(Board);
+export default connect(null, { getBoards, deleteBoard })(Board);

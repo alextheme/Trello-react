@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { addList } from '../../../../store/modules/board/actions';
+import { connect } from 'react-redux';
+import { addList } from '../../../../store/modules/board/action-creators';
 import {
   checkInputText,
   isCloseInputField,
@@ -8,6 +9,7 @@ import {
   getHtmlElementQS,
   setFocusToElement,
 } from '../../../../common/scripts/commonFunctions';
+import { BoardContext } from '../../boardContext';
 
 interface TypeState {
   nameList: string;
@@ -17,7 +19,7 @@ interface TypeState {
 interface TypeProps {
   boardId: number;
   position: number;
-  updateBoard: any;
+  listAdd: (boardId: number, title: string, position: number) => void;
 }
 
 class AddList extends React.Component<TypeProps, TypeState> {
@@ -138,11 +140,12 @@ class AddList extends React.Component<TypeProps, TypeState> {
     }
 
     setTimeout(async () => {
-      const { ...a } = this.props;
-      await addList(a.boardId, nameList, a.position);
+      const { listAdd, ...a } = this.props;
+      listAdd(a.boardId, nameList, a.position);
       this.setState((state: any) => ({ ...state, nameList: '' }));
-      await a.updateBoard();
-      await this.closeFieldInputHandler();
+      const { updateBoard } = this.context;
+      await updateBoard();
+      this.closeFieldInputHandler();
     }, 10);
   };
 
@@ -180,5 +183,8 @@ class AddList extends React.Component<TypeProps, TypeState> {
     );
   }
 }
+const mapDispatchToProps = { listAdd: addList };
 
-export default AddList;
+AddList.contextType = BoardContext;
+
+export default connect(null, mapDispatchToProps)(AddList);

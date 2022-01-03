@@ -1,32 +1,42 @@
-/* eslint-disable no-console */
 /* eslint-disable react/destructuring-assignment */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import React from 'react';
 import './addBoard.scss';
 import { connect } from 'react-redux';
-import { addBoard, getBoards } from '../../../../store/modules/boards/actions';
+import { addBoard, getBoards } from '../../../../store/modules/boards/action-creators';
 import { checkInputText, setFocusToElement, toggleClassElement } from '../../../../common/scripts/commonFunctions';
 import { showErrText, toggleClassBody } from './functionsAddBoard';
 
-type PropsType = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-comment
-  getBoards: any;
-};
+interface PropsType {
+  getBrds?: () => Promise<void>;
+  addBrd?: (newTitleBoard: string) => Promise<void>;
+}
 
-type StateType = { nameNewBoard: string };
+interface StateType {
+  nameNewBoard: string;
+  clickContainerPopap: boolean;
+}
+
+interface GlobalValue {
+  mounted: boolean;
+  isOpenPopap: boolean;
+  clickedContainerPopap: boolean;
+}
 
 class AddBoard extends React.Component<PropsType, StateType> {
-  globalValue: {
-    mounted: boolean | undefined;
-    isOpenPopap: boolean | undefined;
-  } = {
-    mounted: undefined,
-    isOpenPopap: undefined,
+  globalValue: GlobalValue = {
+    mounted: false,
+    isOpenPopap: false,
+    clickedContainerPopap: false,
   };
 
   constructor(props: PropsType) {
     super(props);
     this.state = {
       nameNewBoard: '',
+      clickContainerPopap: false,
     };
 
     this.closedPopap = this.closedPopap.bind(this);
@@ -37,25 +47,22 @@ class AddBoard extends React.Component<PropsType, StateType> {
   componentDidMount(): void {
     this.globalValue.mounted = true;
 
-    document.addEventListener('click', (e) => {
-      if (this.globalValue.mounted) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (!this.isOpenPopap && e.target.classList.contains('add-board__popapp')) {
-          this.closedPopap();
-        }
-      }
-    });
-    document.addEventListener('keypress', (e) => {
+    document.addEventListener('keypress', (e: KeyboardEvent) => {
       if (this.globalValue.isOpenPopap && e.key === 'Enter') {
         e.preventDefault();
-        this.addNewBoard();
+        this.createNewBoard();
       }
     });
   }
 
   componentWillUnmount(): void {
     this.globalValue.mounted = false;
+    document.removeEventListener('keypress', (e: KeyboardEvent) => {
+      if (this.globalValue.isOpenPopap && e.key === 'Enter') {
+        e.preventDefault();
+        this.createNewBoard();
+      }
+    });
   }
 
   inputOnChangeHandler = (e: { target: { value: string } }): void => {
@@ -65,7 +72,6 @@ class AddBoard extends React.Component<PropsType, StateType> {
   closedPopap = (): void => {
     this.globalValue.isOpenPopap = toggleClassElement('.add-board__popapp', 'display-none');
     toggleClassBody('overflowHidden');
-    this.setState({ nameNewBoard: '' });
   };
 
   openPopap = (): void => {
@@ -76,7 +82,8 @@ class AddBoard extends React.Component<PropsType, StateType> {
 
   // Check data input
   checkInputData = (): boolean => {
-    const { status: statusErrorMessage, res, errSymbols } = checkInputText(this.state.nameNewBoard);
+    const { nameNewBoard } = this.state;
+    const { status: statusErrorMessage, res, errSymbols } = checkInputText(nameNewBoard);
 
     if (!statusErrorMessage) {
       if (res === 'empty') {
@@ -94,19 +101,41 @@ class AddBoard extends React.Component<PropsType, StateType> {
     return true;
   };
 
-  addNewBoard = async (): Promise<void> => {
-    if (!this.checkInputData()) return;
+  addNewBoard = (): void => {
+    this.createNewBoard();
+  };
 
-    await addBoard(this.state.nameNewBoard);
-    await this.props.getBoards();
+  createNewBoard = async (): Promise<void> => {
+    if (!this.checkInputData()) return;
     this.closedPopap();
+
+    const { nameNewBoard } = this.state;
+    const { addBrd, getBrds } = this.props;
+
+    if (addBrd && getBrds) {
+      await addBrd(nameNewBoard);
+      await getBrds();
+      this.setState((state) => ({ ...state, nameNewBoard: '' }));
+    }
+  };
+
+  // close element for click out element
+  popapClick = (): void => {
+    if (this.globalValue.clickedContainerPopap) this.globalValue.clickedContainerPopap = false;
+    else this.closedPopap();
+  };
+
+  popapContainerClick = (): void => {
+    this.globalValue.clickedContainerPopap = true;
   };
 
   render(): JSX.Element {
+    const { nameNewBoard } = this.state;
+
     return (
       <div className="add-board">
-        <div className="add-board__popapp display-none">
-          <div className="add-board__container">
+        <div className="add-board__popapp display-none" onClick={this.popapClick}>
+          <div className="add-board__container" onClick={this.popapContainerClick}>
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <button className="add-board__close-btn" onClick={this.closedPopap} />
             <div className="add-board__input-container">
@@ -115,7 +144,7 @@ class AddBoard extends React.Component<PropsType, StateType> {
                 id="addNewBoardInpt"
                 type="text"
                 autoComplete="off"
-                value={this.state.nameNewBoard}
+                value={nameNewBoard}
                 onChange={this.inputOnChangeHandler}
               />
             </div>
@@ -133,4 +162,4 @@ class AddBoard extends React.Component<PropsType, StateType> {
   }
 }
 
-export default connect(null, { getBoards })(AddBoard);
+export default connect(null, { getBrds: getBoards, addBrd: addBoard })(AddBoard);

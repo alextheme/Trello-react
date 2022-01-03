@@ -1,38 +1,53 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* e slint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React from 'react';
 import './cardDetalis.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { IBoard, ICard } from '../../common/interfaces/Interfaces';
-import Title from './components/Titlle';
-import Description from './components/Description';
+import { IBoardContent, IBoards } from '../../common/interfaces/Interfaces';
+import Title from './components/TitleCard/Title';
+import Description from './components/DescriptionCard/Description';
+import Members from './components/MembersCard/Members';
+import { BoardContext } from '../Board/boardContext';
+import { CardDetalisContext } from './CardDetalisContext';
+import MoveCard from './components/MoveCard/MoveCard';
+import { ICurrentValue } from './components/MoveCard/MoveCard.props';
 
 interface TypeProps extends RouteComponentProps {
-  board: IBoard;
-  boardId: number;
+  board: IBoardContent;
   cardId: number;
-  updateBoard: () => void;
-  handlerCloseDetalisCard: () => void;
+  closeDetalisCard: () => void;
 }
 
 interface TypeState {
-  historyUrl: string;
+  showDialogMoveCardInTitleBox: boolean;
 }
 
 class CardDetalis extends React.Component<TypeProps, TypeState> {
+  mount = false;
+
+  constructor(props: TypeProps) {
+    super(props);
+    this.state = {
+      showDialogMoveCardInTitleBox: !1,
+    };
+  }
+
   componentDidMount(): void {
-    const { boardId, cardId } = this.props;
+    this.mount = true;
+
+    const { cardId } = this.props;
+    const { boardId } = this.context;
     this.setLocation(`/b/${boardId}/c/${cardId}`);
+    this.setState({ showDialogMoveCardInTitleBox: !1 });
   }
 
   componentWillUnmount(): void {
-    const { boardId } = this.props;
+    this.mount = false;
+
+    const { boardId } = this.context;
     this.setLocation(`/board/${boardId}`);
   }
 
@@ -42,79 +57,143 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
       history.pushState(null, '', curLoc);
       return;
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e);
     }
     location.hash = `#${curLoc}`;
   };
 
-  handlerOnClickClose = (event: any): void => {
-    const { target } = event;
-    const elem = target.closest('.card-dialog__wrapper');
-    const closeElem = target.closest('.card-dialog__close-dialog');
-    if (elem && !closeElem) return;
-
-    const { handlerCloseDetalisCard } = this.props;
-    handlerCloseDetalisCard();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handlerOnClickClose = ({ target }: { target: any }): void => {
+    if (!target.closest('.card-dialog__wrapper')) {
+      this.closedCardDialog();
+    }
   };
 
-  render(): JSX.Element {
-    const { boardId, cardId, board, updateBoard } = this.props;
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    const list = Object.entries(board.lists).filter(([, list]) => cardId in list.cards)[0][1];
+  closedCardDialog = (): void => {
+    const { closeDetalisCard } = this.props;
+    closeDetalisCard();
+  };
+
+  handlerTitleColumnName = (): void => {
+    const { showDialogMoveCardInTitleBox } = this.state;
+    // TODO - переключатель и просто включатель
+    // this.setState({ showDialogMoveCardInTitleBox: !showDialogMoveCardInTitleBox });
+    this.setState({ showDialogMoveCardInTitleBox: !0 });
+  };
+
+  render(): JSX.Element | null {
+    const { cardId, board } = this.props;
+    const { showDialogMoveCardInTitleBox } = this.state;
+    const { boardId } = this.context as { boardId: number };
+    const list = Object.entries(board.lists).find(([, listContent]) => cardId in listContent.cards)?.[1];
+    if (!list) return null;
     const card = list.cards[cardId];
 
+    const startingValues: ICurrentValue = {
+      startingValues: {
+        cardId,
+        listId: list.id,
+        boardId,
+        boardData: board,
+      },
+    };
+
     return (
-      <div className="card-dialog" onClick={this.handlerOnClickClose}>
-        <div className="card-dialog__wrapper">
-          <button className="card-dialog__close-dialog" onClick={this.handlerOnClickClose}>
-            <FontAwesomeIcon icon={['fas', 'times']} />
-          </button>
+      <CardDetalisContext.Provider value={{ updateBoard: async (): Promise<void> => {} }}>
+        <div className="card-dialog" onClick={this.handlerOnClickClose}>
+          <div className="card-dialog__wrapper" >
+            <button className="card-dialog__close-dialog" onClick={this.closedCardDialog}>
+              <FontAwesomeIcon icon={['fas', 'times']} />
+            </button>
 
-          <div className="card-dialog__header">
-            <div className="title-box">
-              <div className="icon">
-                <FontAwesomeIcon icon={['fas', 'credit-card']} />
-              </div>
-              <Title title={card.title} boardId={boardId} listId={list.id} cardId={cardId} updateBoard={updateBoard} />
-            </div>
-            <div className="title-column-name-box">
-              <p className="tlt-col-name">
-                in the column <a href="#">{list.title}</a>
-              </p>
-            </div>
-          </div>
-
-          <div className="content">
-            <div className="card-dialog__description">
+            <div className="card-dialog__header">
               <div className="title-box">
                 <div className="icon">
-                  <FontAwesomeIcon icon={['fas', 'bars']} />
+                  <FontAwesomeIcon icon={['fas', 'credit-card']} />
                 </div>
-                <h3 className="title">Description</h3>
+                <Title title={card.title} boardId={boardId} listId={list.id} cardId={cardId} />
               </div>
-              <Description
-                boardId={boardId}
-                listId={list.id}
-                cardId={cardId}
-                description={card.description}
-                updateBoard={updateBoard}
-              />
+              <div className="title-column-name-box">
+                <div className="tlt-col-name">
+                  in the column{' '}
+                  <a href="#" onClick={this.handlerTitleColumnName}>
+                    <span className="tlt-col-name-title">{list.title}</span>
+                    {showDialogMoveCardInTitleBox && <MoveCard {...startingValues} closeCardDialog={this.closedCardDialog} />}
+                  </a>
+                </div>
+              </div>
             </div>
 
-            <div className="card-dialog__sidebar">
-              <div className="title-sidebar">Add on card</div>
-              <a href="#" className="button-link">
-                <span className="icon">
-                  <FontAwesomeIcon icon={['fas', 'user']} />
+            <div className="card-dialog__content">
+              <div className="card-dialog__information">
+                <span className="title-content information">
+                  <span className="icon">
+                    <FontAwesomeIcon icon={['fas', 'user']} />
+                  </span>
+                  <h3 className="title">Members</h3>
                 </span>
-                <span className="user">user: {card.users[0]}</span>
-              </a>
+
+                <div className="card-dialog_members">
+                  <Members boardId={`${boardId}`} card={card} boardUsers={board.users} />
+                </div>
+
+                <div className="card-dialog_description">
+                  <div className="title-box">
+                    <div className="icon">
+                      <FontAwesomeIcon icon={['fas', 'bars']} />
+                    </div>
+                    <h3 className="title">Description</h3>
+                  </div>
+                  <Description listId={list.id} cardId={cardId} description={card.description} />
+                </div>
+              </div>
+
+              <div className="card-dialog__sidebar">
+                <span className="title-content sidebar">
+                  <span className="icon">
+                    <FontAwesomeIcon icon={['fas', 'cogs']} />
+                  </span>
+                  <h3 className="title">Action to card</h3>
+                </span>
+
+                <ul className="list-actions-to-card">
+                  <li>
+                    <button className="button-element">
+                      <span className="icon">
+                        <FontAwesomeIcon icon={['fas', 'copy']} />
+                      </span>
+                      <span className="action-title">Copy</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button className="button-element">
+                      <span className="icon">
+                        <FontAwesomeIcon icon={['fas', 'exchange-alt']} />
+                      </span>
+                      <span className="action-title">Move to</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button className="button-element">
+                      <span className="icon">
+                        <FontAwesomeIcon icon={['fas', 'box']} />
+                      </span>
+                      <span className="action-title">Archive</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </CardDetalisContext.Provider>
     );
   }
 }
+
+CardDetalis.contextType = CardDetalisContext;
+
+CardDetalis.contextType = BoardContext;
 
 export default withRouter(CardDetalis);

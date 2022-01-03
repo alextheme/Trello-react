@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
-import { renameTitleList } from '../../../../store/modules/board/actions';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable no-console */
+/* eslint-disable prettier/prettier */
+import React, { useContext, useState } from 'react';
+import { connect } from 'react-redux';
+import { renameTitleList } from '../../../../store/modules/board/action-creators';
 import { checkInputText } from '../../../../common/scripts/commonFunctions';
 import PopUpMessage from '../PopUpMessage/PopUpMessage';
+import { BoardContext } from '../../boardContext';
 
 type TypeProps = {
-  boardId: number;
   titleList: string;
   listId: number;
-  updateBoard: () => void;
-  movingProcess: boolean;
+  processMovingList: boolean;
+  listRenameTitle: (boardId: number, listId: number, title: string) => Promise<boolean>;
 };
 
-const EditableTitleList = ({ boardId, titleList, listId, movingProcess, updateBoard }: TypeProps): JSX.Element => {
+const EditableTitleList = ({ titleList, listId, processMovingList, listRenameTitle }: TypeProps): JSX.Element => {
   const [title, setTitle] = useState(titleList);
+  const [prevTitle, setPrevTitle] = useState(titleList);
   const [openInput, setOpenInput] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ statusErrorText: false, res: '', errSymbols: '' });
   const [heightTitle, setHeightTitle] = useState(0);
+  const { updateBoard, boardId } = useContext(BoardContext);
 
   /** Input text in textarea */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,12 +36,13 @@ const EditableTitleList = ({ boardId, titleList, listId, movingProcess, updateBo
   /** Open Editor List Title */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handlerPressTitle = (event: any): void => {
-    if (!movingProcess) {
+    if (!processMovingList) {
       const { currentTarget } = event;
       const { height } = currentTarget.getBoundingClientRect();
       setHeightTitle(height);
 
       setOpenInput(true);
+      setErrorMessage({ statusErrorText: true, res: '', errSymbols: '' });
 
       setTimeout(() => {
         currentTarget.nextSibling.focus();
@@ -49,20 +56,24 @@ const EditableTitleList = ({ boardId, titleList, listId, movingProcess, updateBo
   const renameTitle = async (textarea: HTMLElement): Promise<void> => {
     const { status, res, errSymbols } = checkInputText(title);
 
-    if (status) {
-      setTitle(title);
-      await renameTitleList(+boardId, listId, title);
-      await updateBoard();
-      setOpenInput(false);
-      textarea.classList.remove('focus');
-      return;
+    if (status && boardId && updateBoard) {
+      const { value: editTitle } = textarea as { value?: string };
+      const response = await listRenameTitle(boardId, listId, editTitle || title);
+      if (response) {
+        setTitle(editTitle || title);
+        setPrevTitle(editTitle || title);
+        textarea.classList.remove('focus');
+        setOpenInput(false);
+      } else {
+        setTitle(prevTitle);
+        setOpenInput(false);
+      }
+    } else {
+      setErrorMessage({ statusErrorText: true, res, errSymbols });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      textarea.focus(); // @ts-ignore
+      textarea.select();
     }
-
-    setErrorMessage({ statusErrorText: true, res, errSymbols });
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    textarea.focus(); // @ts-ignore
-    textarea.select();
   };
 
   /** Reneme Titne on blur Textarea */
@@ -87,7 +98,7 @@ const EditableTitleList = ({ boardId, titleList, listId, movingProcess, updateBo
         style={{ display: openInput ? 'none' : 'block', position: 'relative' }}
         onClick={handlerPressTitle}
       >
-        {titleList}
+        {title}
       </h2>
       <textarea
         id={`input-title-list-${listId}`}
@@ -99,9 +110,11 @@ const EditableTitleList = ({ boardId, titleList, listId, movingProcess, updateBo
         autoComplete="off"
         style={{ display: openInput ? 'block' : 'none', position: 'relative', height: heightTitle }}
       />
-      {openInput ? <PopUpMessage {...errorMessage} parentId={`input-title-list-${listId}`} /> : null}
+      {openInput && errorMessage.res !== '' && <PopUpMessage {...errorMessage} parentId={`input-title-list-${listId}`} />}
     </div>
   );
 };
 
-export default EditableTitleList;
+const mapDispatchToProps = { listRenameTitle: renameTitleList };
+
+export default connect(null, mapDispatchToProps)(EditableTitleList);

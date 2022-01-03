@@ -1,0 +1,33 @@
+.dialog-header {
+  height: 40px;
+  margin-bottom: 8px;
+  position: relative;
+  text-align: center;
+
+  .title {
+    border-bottom: 1px solid #091e4221;
+    box-sizing: border-box;
+    color: #5e6c84;
+    display: block;
+    line-height: 40px;
+    margin: 0 12px;
+    overflow: hidden;
+    padding: 0 32px;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 1;
+  }
+  .close-btn {
+    color: #6b778c;
+    padding: 10px 12px 10px 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+
+    &:hover {
+      color: #374d72;
+    }
+  }
+}
