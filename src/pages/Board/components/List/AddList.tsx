@@ -9,7 +9,7 @@ import {
   getHtmlElementQS,
   setFocusToElement,
 } from '../../../../common/scripts/commonFunctions';
-import { BoardContext } from '../../boardContext';
+import { BoardContext, IBoardContext } from '../../boardContext';
 
 interface TypeState {
   nameList: string;
@@ -143,7 +143,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
       const { listAdd, ...a } = this.props;
       listAdd(a.boardId, nameList, a.position);
       this.setState((state: any) => ({ ...state, nameList: '' }));
-      const { updateBoard } = this.context;
+      const { updateBoard } = this.context as IBoardContext;
       await updateBoard();
       this.closeFieldInputHandler();
     }, 10);

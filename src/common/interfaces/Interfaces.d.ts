@@ -14,10 +14,12 @@ export interface IBoardReducer {
 
 export interface IBoardContent {
   title: string;
-  lists: {
-    [id: number]: IListContent;
-  };
+  lists: ILists;
   users: number[];
+}
+
+export interface ILists {
+  [id: number]: IListContent;
 }
 
 export interface IListContent {
@@ -27,6 +29,10 @@ export interface IListContent {
   cards: {
     [id: number]: ICardContent;
   };
+}
+
+export interface ICards {
+  [id: number]: ICardContent;
 }
 
 export interface ICardContent {
@@ -87,3 +93,32 @@ export interface IMatch {
   path: string;
   url: string;
 }
+
+export interface IValuesNewCardPositions {
+  id: number;
+  position: number;
+  list_id: number;
+}
+
+export interface IParamsForEditCardTitle {
+  board_id: number;
+  list_id: number;
+  card_id: number;
+  title?: string;
+}
+
+export interface IParamsForEditCardDescription {
+  board_id: number;
+  list_id: number;
+  card_id: number;
+  description?: string;
+}
+export interface IArgumentsForEditCard {
+  board_id: number;
+  list_id: number;
+  card_id: number;
+  text: string;
+  textType: 'title' | 'description';
+}
+
+export type IParamsForEditCard = IParamsForEditCardTitle | IParamsForEditCardDescription;

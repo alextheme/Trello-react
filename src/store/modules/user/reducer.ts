@@ -10,8 +10,8 @@ const reducer = (state: IUserReducer = getInitialState(), action: Action) => {
   switch (action.type) {
     case ActionType.AUTORIZATION:
       return { ...state, userIsLogged: true, userEmail: action.payload };
-    case ActionType.AUTHORIZED_USER_FILL_THE_DATA:
-      return { ...state, userIsLogged: true, userName: action.payload.userName, userId: action.payload.userId };
+    // case ActionType.AUTHORIZED_USER_FILL_THE_DATA:
+    //   return { ...state, userIsLogged: true, userName: action.payload.userName, userId: action.payload.userId };
     case ActionType.LOGOUT:
       return { ...state, userIsLogged: false, userEmail: '', userName: '', userId: -1 };
 

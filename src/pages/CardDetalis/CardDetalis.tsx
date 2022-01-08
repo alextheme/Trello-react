@@ -70,7 +70,7 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
     }
   };
 
-  closedCardDialog = (): void => {
+  closedCardDialog = (): void => {    
     const { closeDetalisCard } = this.props;
     closeDetalisCard();
   };
@@ -88,11 +88,12 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
     const { boardId } = this.context as { boardId: number };
     const list = Object.entries(board.lists).find(([, listContent]) => cardId in listContent.cards)?.[1];
     if (!list) return null;
-    const card = list.cards[cardId];
+    const cardContent = list.cards[cardId];
 
     const startingValues: ICurrentValue = {
-      startingValues: {
+      src: {
         cardId,
+        positionCard: cardContent.position,
         listId: list.id,
         boardId,
         boardData: board,
@@ -112,7 +113,7 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                 <div className="icon">
                   <FontAwesomeIcon icon={['fas', 'credit-card']} />
                 </div>
-                <Title title={card.title} boardId={boardId} listId={list.id} cardId={cardId} />
+                <Title title={cardContent.title} boardId={boardId} listId={list.id} cardId={cardId} />
               </div>
               <div className="title-column-name-box">
                 <div className="tlt-col-name">
@@ -135,7 +136,7 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                 </span>
 
                 <div className="card-dialog_members">
-                  <Members boardId={`${boardId}`} card={card} boardUsers={board.users} />
+                  <Members boardId={`${boardId}`} card={cardContent} boardUsers={board.users} />
                 </div>
 
                 <div className="card-dialog_description">
@@ -145,8 +146,8 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                     </div>
                     <h3 className="title">Description</h3>
                   </div>
-                  <Description listId={list.id} cardId={cardId} description={card.description} />
-                </div>
+                  <Description listId={list.id} cardId={cardId} description={cardContent.description} />
+                  </div>
               </div>
 
               <div className="card-dialog__sidebar">

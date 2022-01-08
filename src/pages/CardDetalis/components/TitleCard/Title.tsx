@@ -11,7 +11,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
-import { renameTitleCard } from '../../../../store/modules/board/action-creators';
+import { editCard } from '../../../../store/modules/board/action-creators';
 import { BoardContext } from '../../../Board/boardContext';
 import './Title.scss';
 
@@ -20,7 +20,13 @@ interface TypeProps {
   listId: number;
   cardId: number;
   title: string;
-  cardRenameTitle: (board_id: number, card_id: number, data: { title: string; list_id: number }) => Promise<boolean>;
+  cardEdit: (
+    board_id: number,
+    list_id: number,
+    card_id: number,
+    text: string,
+    textType: 'title' | 'description'
+  ) => Promise<boolean>;
 }
 
 interface TypeState {
@@ -46,6 +52,9 @@ class Title extends React.Component<TypeProps, TypeState> {
 
   componentWillUnmount(): void {
     this.mount = false;
+    // fix Warning: Can't perform a React state update on an unmounted component
+    this.setState = (): void => {};
+    
     this.renameTitle();
   }
 
@@ -63,13 +72,14 @@ class Title extends React.Component<TypeProps, TypeState> {
 
   renameTitle = async (): Promise<void> => {
     if (!this.mount) return;
-
-    const { boardId, listId, cardId, cardRenameTitle } = this.props;
     const { prevValueTitle, title } = this.state;
+    if (prevValueTitle === title) return;
 
-    const response = await cardRenameTitle(boardId, cardId, { title, list_id: listId });
-   
-    if (response) {      
+    const { boardId, listId, cardId, cardEdit } = this.props;
+
+    const response = await cardEdit(boardId, listId, cardId, title, 'title');
+
+    if (response) {
       this.setState({ prevValueTitle: title });
     } else {
       this.setState({ title: prevValueTitle });
@@ -93,7 +103,7 @@ class Title extends React.Component<TypeProps, TypeState> {
   }
 }
 
-const mapDispatchToProps = { cardRenameTitle: renameTitleCard };
+const mapDispatchToProps = { cardEdit: editCard };
 
 Title.contextType = BoardContext;
 

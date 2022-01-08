@@ -10,15 +10,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { ICardContent, IEditableCardProps } from '../../../../common/interfaces/Interfaces';
 import EditableCard from './EditableCard';
-import { deleteCard, renameTitleCard } from '../../../../store/modules/board/action-creators';
+import { deleteCard, editCard } from '../../../../store/modules/board/action-creators';
 import { BoardContext } from '../../boardContext';
 
 interface TypeProps {
   cards: { [id: number]: ICardContent };
   onMouseDownForCard: (event: any) => void;
   listId: number;
-  cardDelete: (boardId: number, cardId: number) => Promise<void>;
-  cardRenameTitle: (boardId: number, cardId: number, data: { title: string; list_id: number }) => Promise<boolean>;
+  cardDelete: (boardId: number, cardId: number) => Promise<boolean>;
+  cardEdit: (
+    board_id: number,
+    list_id: number,
+    card_id: number,
+    text: string,
+    textType: 'title' | 'description'
+  ) => Promise<boolean>;
 }
 
 interface TypeState {
@@ -86,9 +92,9 @@ class Card extends React.Component<TypeProps, TypeState> {
   };
 
   handlerCardTitleRename = async (title: string, idCard: number): Promise<void> => {
-    const { listId, cardRenameTitle } = this.props;
+    const { listId, cardEdit } = this.props;
     const { updateBoard, boardId } = this.context;
-    await cardRenameTitle(boardId, idCard, { title, list_id: listId });
+    await cardEdit(boardId, listId, idCard, title, 'title');
     updateBoard();
   };
 
@@ -140,7 +146,7 @@ class Card extends React.Component<TypeProps, TypeState> {
 
 const mapDispatchToProps = {
   cardDelete: deleteCard,
-  cardRenameTitle: renameTitleCard,
+  cardEdit: editCard,
 };
 
 Card.contextType = BoardContext;

@@ -11,7 +11,7 @@ import EditableTitleList from './EditableTitleList';
 import AddList from './AddList';
 import AddCard from './AddCard';
 import { deleteList } from '../../../../store/modules/board/action-creators';
-import { BoardContext } from '../../boardContext';
+import { BoardContext, IBoardContext } from '../../boardContext';
 
 interface TypeProps {
   lists: { [id: number]: IListContent };
@@ -46,13 +46,12 @@ class List extends React.Component<TypeProps, TypeState> {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   onClickDeleteList = async (event: any): Promise<void> => {
     const { target } = event;
-    const { contextValue } = this.context;
     const listId = target.dataset.listId || target.parentElement.dataset.listId;
 
     const { listDelete } = this.props;
-    const { boardId } = this.context;
+    const { boardId, updateBoard } = this.context as IBoardContext;
     await listDelete(+boardId, listId);
-    contextValue.updateBoard();
+    updateBoard();
   };
 
   handlerClickCloseAddedCard = (): void => {

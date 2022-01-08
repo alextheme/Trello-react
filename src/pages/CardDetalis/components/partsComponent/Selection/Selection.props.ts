@@ -1,24 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HTMLAttributes, DetailedHTMLProps, ReactNode } from 'react';
-import { IBoards, IBoardContent, IListContent } from '../../../../../common/interfaces/Interfaces';
+import { IBoards, IBoardContent } from '../../../../../common/interfaces/Interfaces';
 import { ICurrentValue } from '../../MoveCard/MoveCard.props';
 
-interface ICommonInterface extends ICurrentValue {
-  valueId: number; // cardId || listId || boardId
-}
-
-interface ISelectBoardData extends ICommonInterface {
+interface ISelectBoardData extends ICurrentValue {
   key: 'boards';
+  valueId: number; // boardId
   value: IBoards;
 }
 
-interface ISelectListsData extends ICommonInterface {
+interface ISelectListsData extends ICurrentValue {
   key: 'lists';
+  valueId: number; // listId
   value: IBoardContent;
 }
 
-interface ISelectCardsData extends ICommonInterface {
+interface ISelectCardsData extends ICurrentValue {
   key: 'cards';
-  value: IListContent;
+  boardId: number;
+  listId: number;
+  positionCard: number;
+  numberCards: number;
 }
 
 type TypeSelectData = ISelectBoardData | ISelectListsData | ISelectCardsData;
