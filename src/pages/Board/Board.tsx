@@ -521,6 +521,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
           boardId: +boardId,
           boardUsers: boardContent.users,
           handlerOpenDetatisCard: this.handlerOpenDetatisCard,
+          boardData: boardContent,
         }}
       >
         <div className="DnD">

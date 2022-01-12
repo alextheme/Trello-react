@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HTMLAttributes, DetailedHTMLProps, ReactNode } from 'react';
-import { IBoards, IBoardContent } from '../../../../../common/interfaces/Interfaces';
-import { ICurrentValue } from '../../MoveCard/MoveCard.props';
+import { IBoards, IBoardContent } from '../../../../common/interfaces/Interfaces';
+import { ICurrentValue } from '../CopyCard/CopyCard.props';
 
 interface ISelectBoardData extends ICurrentValue {
   key: 'boards';

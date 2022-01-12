@@ -7,11 +7,9 @@ import { IBoardContent, IBoards, IListContent } from '../../../../common/interfa
 
 
 export interface IFuncType {
-  deleteCrd: (boardId: number, cardId: number, listContent?: IListContent | null, listId?: number | undefined) => Promise<boolean>;
   createCrd: (boardId: number, listContent: IListContent, position: number, title: string) => Promise<number | undefined>;
   editCrd: (board_id: number, list_id: number, card_id: number, text: string, textType: 'title' | 'description') => Promise<boolean>;
-  moveCards: (boardId: number, data: { id: number; position: number; list_id: number; }[]) => Promise<boolean>;
-  update: (boardId: number) => Promise<void>;
+  copyMembersInCard: (boardId: number, cardId: number, updateBoard: () => void, add: number[], remove: number[]) => Promise<boolean>; 
 };
 
 export interface ICurrentValue {
@@ -36,4 +34,7 @@ export interface PopupCardDialogState {
   positionCard: number;
   boardsList: IBoards | null;
   boardData: IBoardContent;
+  titleCard: string;
+  copyDescription: boolean;
+  copyMembers: boolean;
 }

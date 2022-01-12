@@ -9,7 +9,7 @@ import instance from '../../../../api/request';
 import { IFoundUsers } from '../../../../common/interfaces/Interfaces';
 import { getToken } from '../../../../store/modules/user/session-storage-actions';
 import { BoardContext, IBoardContext } from '../../../Board/boardContext';
-import CloseIcon from '../partsComponent/icons/CloseIcon';
+import CloseIcon from '../icons/CloseIcon';
 // eslint-disable-next-line import/no-cycle
 import DialogAddMembers from '../DialogAddMembers';
 import { assignOrRemoveUsersToOrFromCard } from '../../../../store/modules/user/assignOrRemoveUsersToFromCard';

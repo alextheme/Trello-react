@@ -14,9 +14,7 @@ import React from 'react';
 import instance from '../../../api/request';
 import { IFoundUsers } from '../../../common/interfaces/Interfaces';
 import { IBoardContext } from '../../Board/boardContext';
-import { Selection } from './partsComponent/Selection/Selection';
-import HeaderPopupCardDialog from './partsComponent/HeaderPopupCardDialog/HeaderPopupCardDialog';
-import { Button } from './partsComponent/Button/Button';
+import HeaderPopupCardDialog from './HeaderPopupCardDialog/HeaderPopupCardDialog';
 import { MembersContext } from './MembersCard/MembersContext';
 import { assignOrRemoveUsersToOrFromCard } from '../../../store/modules/user/assignOrRemoveUsersToFromCard';
 

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -8,16 +9,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
-import { ICardContent, IEditableCardProps } from '../../../../common/interfaces/Interfaces';
+import { ICardContent, IEditableCardProps, IListContent } from '../../../../common/interfaces/Interfaces';
 import EditableCard from './EditableCard';
 import { deleteCard, editCard } from '../../../../store/modules/board/action-creators';
-import { BoardContext } from '../../boardContext';
+import { BoardContext, IBoardContext } from '../../boardContext';
 
 interface TypeProps {
   cards: { [id: number]: ICardContent };
   onMouseDownForCard: (event: any) => void;
   listId: number;
-  cardDelete: (boardId: number, cardId: number) => Promise<boolean>;
+  cardDelete: (boardId: number, cardId: number, listContent?: IListContent | null) => Promise<boolean>;
   cardEdit: (
     board_id: number,
     list_id: number,
@@ -73,16 +74,24 @@ class Card extends React.Component<TypeProps, TypeState> {
         parentElement: { dataset: { idCard: any }; parentElement: { dataset: { idCard: any } } };
       };
     };
-  }): Promise<void> => {
+  }): Promise<void> => {   
     const { cardDelete } = this.props;
-    const { updateBoard, boardId } = this.context;
+    const { updateBoard, boardId, boardData } = this.context as IBoardContext;
     const idCard =
       event.target.dataset.idCard ||
       event.target.parentElement.dataset.idCard ||
       event.target.parentElement.parentElement.dataset.idCard ||
       event.target.parentElement.parentElement.parentElement.dataset.idCard;
-    await cardDelete(boardId, idCard);
-    updateBoard();
+
+    console.log('del card: ', boardId, idCard);
+    
+    const listContent = Object.entries(boardData.lists).find(([, list]) => 
+      // @ts-ignore
+      Object.entries(list.cards).find(([, crd]) => `${crd.id}` === idCard)?.[1]
+    )?.[1];
+    
+    await cardDelete(boardId, idCard, listContent);
+    await updateBoard();
     this.setState({ openEditCard: false });
   };
 

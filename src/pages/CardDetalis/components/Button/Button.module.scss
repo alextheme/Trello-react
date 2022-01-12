@@ -7,7 +7,6 @@
   box-sizing: border-box;
   cursor: pointer;
   height: 32px;
-  margin-top: 8px;
   overflow: hidden;
   padding: 6px 12px;
   position: relative;
@@ -42,6 +41,16 @@
     &:hover {
       background-color: #005f96;
       color: rgb(233, 233, 233);
+    }
+  }
+
+  &.brown {
+    width: 100%;
+    background-color: #b04632;
+    color: #fff;
+
+    &:hover {
+      background-color: #933b27;
     }
   }
 

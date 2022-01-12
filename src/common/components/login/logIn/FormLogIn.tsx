@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-debugger */
 /* eslint-disable arrow-body-style */
 /* eslint-disable react/no-unused-state */
@@ -30,11 +31,11 @@ type StateType = {
   nameOk: boolean;
   email: string;
   emailOk: boolean;
-  password: string;
-  passwordIsComplex: number;
-  passwordOk: boolean;
-  password2: string;
-  password2Ok: boolean;
+  fPassword: string;
+  fPasswordIsComplex: number;
+  fPasswordOk: boolean;
+  sPassword: string;
+  sPpasswordOk: boolean;
   error: string[];
 };
 
@@ -48,26 +49,24 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
       nameOk: true,
       email: 'ae1@gmail.com',
       emailOk: true,
-      password: '1111',
-      passwordIsComplex: 0,
-      passwordOk: true,
-      password2: '1111',
-      password2Ok: true,
+      fPassword: '1111',
+      fPasswordIsComplex: 0,
+      fPasswordOk: true,
+      sPassword: '1111',
+      sPpasswordOk: true,
       error: [],
     };
     this.formSwitcher = this.formSwitcher.bind(this);
     this.handleInputName = this.handleInputName.bind(this);
     this.handleUserLogIn = this.handleUserLogIn.bind(this);
-    this.handleInputEmail = this.handleInputEmail.bind(this);
-    this.handleInputPassword = this.handleInputPassword.bind(this);
-    this.handleInputSecondPassword = this.handleInputSecondPassword.bind(this);
     this.handleUserRegistration = this.handleUserRegistration.bind(this);
     this.setButtonActive = this.setButtonActive.bind(this);
     this.callBackPasswordStrengBar = this.callBackPasswordStrengBar.bind(this);
+    this.handleInputOnChange = this.handleInputOnChange.bind(this);
   }
 
   componentDidMount(): void {
-    const { email, password, password2 } = this.state;
+    const { email, fPassword: password, sPassword: password2 } = this.state;
     const buttonActive = !(email === '' || password === '' || password2 === '');
     this.setState({ buttonActive });
   }
@@ -76,36 +75,28 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
     this.setState({ name: e.target.value });
   }
 
-  handleInputEmail(e: React.ChangeEvent<HTMLInputElement>): void {
-    this.setState({ email: e.target.value, error: [] });
-    this.setButtonActive(e.target.value, null, null);
-  }
+  handleInputOnChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const {
+      target: { id, value },
+    } = e;
+    this.setState((state) => ({ ...state, [id]: value, error: [] }));
 
-  handleInputPassword(e: React.ChangeEvent<HTMLInputElement>): void {
-    this.setState({ password: e.target.value, error: [] });
-    this.setButtonActive(null, e.target.value, null);
-  }
-
-  handleInputSecondPassword(e: React.ChangeEvent<HTMLInputElement>): void {
-    this.setState({ password2: e.target.value, error: [] });
-    this.setButtonActive(null, null, e.target.value);
+    // почему то состояние реакта отстает в распознаинни заполнения поля на один символ,
+    // чтобы избежать этого передаем в функцию текущее вводные данные с инпута.
+    this.setButtonActive(id, value);
   }
 
   formSwitcher = (): void => {
     this.setState((state) => ({ formAuthorization: !state.formAuthorization }));
   };
 
-  setButtonActive = (e: string | null, p: string | null, p2: string | null): void => {
-    const { email, password, password2 } = this.state;
-    const Vemail = e === null ? email : e;
-    const Vpassword = p === null ? password : p;
-    const Vpassword2 = p2 === null ? password2 : p2;
-
-    if (Vemail && Vpassword && Vpassword2) {
-      this.setState({ buttonActive: !0 });
-    } else {
-      this.setState({ buttonActive: !1 });
-    }
+  setButtonActive = (id: string, value: string): void => {
+    const { email, fPassword, sPassword } = this.state;
+    const vEmail     = id === 'email'     && !!(value || email);
+    const vPassword  = id === 'fPassword' && !!(value || fPassword);
+    const vPassword2 = id === 'sPassword' && !!(value || sPassword);
+    
+    this.setState({ buttonActive: vEmail && vPassword && vPassword2 });
   };
 
   // Authorization
@@ -113,7 +104,7 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
     event.preventDefault();
     if (this.state.buttonActive) {
       const { authorizationUser } = this.props as { authorizationUser: (email: string, password: string) => void };
-      const { email, password } = this.state;
+      const { email, fPassword: password } = this.state;
       authorizationUser(email, password);
     }
   }
@@ -124,12 +115,12 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
 
     if (this.state.buttonActive) {
       if (this.validateEmail() && this.checkPasswordComplex() && this.checkPasswordEquality()) {
-        const { email, password } = this.state;
+        const { email, fPassword: password } = this.state;
 
         const result = (await instance.post('/user', { email, password })) as { result: string; id: number };
         if (result && result.result === 'Created') {
           this.formSwitcher();
-          this.setState({ email, password }); // TODO ? нужно ли сохранять эти данные ???
+          this.setState({ email, fPassword: password }); // TODO ? нужно ли сохранять эти данные ???
           console.log('Created success!');
         } else {
           console.log('Created false (');
@@ -159,7 +150,7 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
 
   // Checking passwords for complexity
   checkPasswordComplex = (): boolean => {
-    const { passwordOk, error } = this.state;
+    const { fPasswordOk: passwordOk, error } = this.state;
     const message = 'Пароль слишком простой';
 
     if (!passwordOk) {
@@ -167,7 +158,7 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
       if (!result) {
         error.push(message);
       }
-      this.setState({ passwordOk: false, error });
+      this.setState({ fPasswordOk: false, error });
       return false;
     }
 
@@ -177,7 +168,7 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
 
   // Checking passwords for equality
   checkPasswordEquality = (): boolean => {
-    const { password, password2, error } = this.state;
+    const { fPassword: password, sPassword: password2, error } = this.state;
     const message = 'Пароли не совпадают';
 
     if (password.length !== password2.length && password !== password2) {
@@ -185,21 +176,31 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
       if (!result) {
         error.push(message);
       }
-      this.setState({ password2Ok: false, error });
+      this.setState({ sPpasswordOk: false, error });
       return false;
     }
 
-    this.setState({ password2Ok: true, error: error.filter((e) => e !== message) });
+    this.setState({ sPpasswordOk: true, error: error.filter((e) => e !== message) });
     return true;
   };
 
   callBackPasswordStrengBar = (score: number, feedback: PasswordFeedback): void => {
-    const { passwordIsComplex } = this.state;
-    this.setState({ passwordOk: score >= passwordIsComplex });
+    const { fPasswordIsComplex: passwordIsComplex } = this.state;
+    this.setState({ fPasswordOk: score >= passwordIsComplex });
   };
 
   render(): JSX.Element | null {
-    const { formAuthorization, buttonActive, password, error, emailOk, passwordOk, password2Ok } = this.state;
+    const {
+      formAuthorization,
+      buttonActive,
+      fPassword,
+      fPasswordOk,
+      email,
+      emailOk,
+      error,
+      sPassword,
+      sPpasswordOk,
+    } = this.state;
 
     const titleForm = formAuthorization ? 'authorization' : 'registration';
 
@@ -214,36 +215,36 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
               id="email"
               name="email"
               className={emailOk ? '' : 'errorValue'}
-              value={this.state.email}
-              onChange={this.handleInputEmail}
+              defaultValue={email}
+              onChange={this.handleInputOnChange}
             />
-            <label htmlFor="fpassword">Password</label>
+            <label htmlFor="fPassword">Password</label>
             <input
               type="password"
-              id="fpassword"
-              name="fpassword"
-              className={passwordOk ? '' : 'errorValue'}
-              value={this.state.password}
-              onChange={this.handleInputPassword}
+              id="fPassword"
+              name="fPassword"
+              className={fPasswordOk ? '' : 'errorValue'}
+              defaultValue={fPassword}
+              onChange={this.handleInputOnChange}
             />
             {!formAuthorization && (
               <PasswordStrengthBar
-                password={password}
+                password={fPassword}
                 // className="passwordStrengBar"
-                className={passwordOk ? 'passwordStrengBar' : 'passwordStrengBar errorValue'}
+                className={fPasswordOk ? 'passwordStrengBar' : 'passwordStrengBar errorValue'}
                 onChangeScore={this.callBackPasswordStrengBar}
               />
             )}
             {!formAuthorization && (
               <>
-                <label htmlFor="Spassword">Repeat password</label>
+                <label htmlFor="sPassword">Repeat password</label>
                 <input
                   type="password"
-                  id="Spassword"
-                  name="Spassword"
-                  className={password2Ok ? '' : 'errorValue'}
-                  value={this.state.password2}
-                  onChange={this.handleInputSecondPassword}
+                  id="sPassword"
+                  name="sPassword"
+                  className={sPpasswordOk ? '' : 'errorValue'}
+                  defaultValue={sPassword}
+                  onChange={this.handleInputOnChange}
                 />
 
                 <div className="textError">

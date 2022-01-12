@@ -24,6 +24,7 @@ export const Button = ({
         [styles.simpleButton]: simpleButton,
         [styles.grey]: appearance === 'grey',
         [styles.blue]: appearance === 'blue',
+        [styles.brown]: appearance === 'brown',
         [styles.circle]: circle,
       })}
       {...props}

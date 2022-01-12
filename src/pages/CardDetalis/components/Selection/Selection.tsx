@@ -6,8 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { SelectionProps } from './Selection.props';
-import styles from './Selection.module.scss';
-import Select from "./components/Select";
+import './Selection.scss';
 // import ArrowIcon from './arrow.svg'; key, value, valueId
 
 export const Selection = ({ data, children, className, ...props }: SelectionProps): JSX.Element => {
@@ -20,13 +19,13 @@ export const Selection = ({ data, children, className, ...props }: SelectionProp
     const boardTitle = data.value.boards.find((b) => b.id === data.valueId)?.title;
 
     return (
-      <div className={cn(styles.buttonSelection, className)} {...props}>
-        <div className={cn(styles.buttonLink)}>
-          <span className={styles.label}>{buttonLabel}</span>
-          <span className={styles.value}>{boardTitle}</span>
+      <div className={cn(className, 'selection-wrapper')} {...props}>
+        <div className="button">
+          <span className="label">{buttonLabel}</span>
+          <span className="value">{boardTitle}</span>
 
           {data.value.boards.length && (
-            <select className={styles.selectBoard} defaultValue={data.valueId}>
+            <select className="select" defaultValue={data.valueId}>
               {data.value.boards.map((b) => (
                 <option key={b.id} value={b.id}>
                   {b.title} {b.id} {src.boardId === b.id ? current : ''}
@@ -46,17 +45,19 @@ export const Selection = ({ data, children, className, ...props }: SelectionProp
 
     if (list) {
       return (
-        <div className={cn(styles.buttonSelection, className)} {...props}>
-          <div className={cn(styles.buttonLink)}>
-            <span className={styles.label}>{buttonLabel}</span>
-            <span className={styles.value}>{list.title}</span>
-            <Select 
-              options={data.value.lists} 
-              defaultValue={data.valueId} 
-              additionalOption={undefined}
-              startValueId={src.listId}
-              textCurrnt={current}
-            />
+        <div className={cn(className, 'selection-wrapper')} {...props}>
+          <div className="button">
+            <span className="label">{buttonLabel}</span>
+            <span className="value">{list.title}</span>
+            <select className="select" value={data.valueId} onChange={(): void => {}}>
+            {Object.entries(data.value.lists)
+                .sort(([, a], [, b]) => a.position - b.position)
+                .map(([, l]) => (
+                  <option key={l.id} value={l.id}>
+                    {l.title} *** {l.id} {l.id === src.listId && current}
+                  </option>
+              ))}
+          </select>
           </div>
         </div>
       );
@@ -76,12 +77,12 @@ export const Selection = ({ data, children, className, ...props }: SelectionProp
     }    
 
     return (
-      <div className={cn(styles.buttonSelection, className)} {...props}>
-        <div className={cn(styles.buttonLink)}>
-          <span className={styles.label}>{buttonLabel}</span>
-          <span className={styles.value}>{positionCard}</span>
+      <div className={cn(className, 'selection-wrapper', )} {...props}>
+        <div className="button">
+          <span className="label">{buttonLabel}</span>
+          <span className="value">{positionCard}</span>
 
-          <select className={styles.selectBoard} value={positionCard} onChange={(): void => {}}>
+          <select className="select" value={positionCard} onChange={(): void => {}}>
             {optionsArray.map((v) => (
               <option key={v} value={v}>
                 {v} {v === positionCard && isThisCardInThisList && current}

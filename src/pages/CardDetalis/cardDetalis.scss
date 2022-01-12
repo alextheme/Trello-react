@@ -93,6 +93,7 @@ button {
       a {
         color: #5e6c84;
         text-decoration: none;
+        position: relative;
 
         &:hover {
           color: #172b4d;
@@ -166,43 +167,13 @@ button {
   }
 
   .button-element {
-    background-color: #091e420a;
-    border: none;
-    border-radius: 3px;
-    box-shadow: none;
-    box-sizing: border-box;
-    cursor: pointer;
-    display: block;
-    height: 32px;
-    line-height: 32px;
-    margin-bottom: 5px;
-    max-width: 300px;
-    width: 100%;
-    overflow: hidden;
-    padding: 0 12px;
-    -webkit-user-select: none;
-    user-select: none;
-    white-space: nowrap;
-    color: #172b4d;
-    text-align: inherit;
+    margin: 8px 8px 0 0;
+    position: relative;
 
-    &:hover {
-      background-color: #091e4214;
-      border: none;
-      box-shadow: none;
-    }
-
-    .icon {
-      font-size: 16px;
-      height: 20px;
-      line-height: 20px;
-      width: 20px;
-      color: #42526e;
-      margin: 0 6px 0 -3px;
-    }
-    
-    .action-title {
-      color: #42526e;
+    .popup-card-dialog {
+      margin-top: 15px;
+      left: unset;
+      right: 0;
     }
   }
 }

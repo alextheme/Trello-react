@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* e slint-disable @typescript-eslint/no-explicit-any */
@@ -14,6 +16,9 @@ import { BoardContext } from '../Board/boardContext';
 import { CardDetalisContext } from './CardDetalisContext';
 import MoveCard from './components/MoveCard/MoveCard';
 import { ICurrentValue } from './components/MoveCard/MoveCard.props';
+import { Button } from './components/Button/Button';
+import CopyCard from "./components/CopyCard/CopyCard";
+import DeleteCard from "./components/DeleteCard/DeleteCard";
 
 interface TypeProps extends RouteComponentProps {
   board: IBoardContent;
@@ -23,6 +28,9 @@ interface TypeProps extends RouteComponentProps {
 
 interface TypeState {
   showDialogMoveCardInTitleBox: boolean;
+  showDialogCopyCardInSidebar: boolean;
+  showDialogMoveToCardInSidebar: boolean;
+  showDialogArchiveCardInSidebar: boolean;
 }
 
 class CardDetalis extends React.Component<TypeProps, TypeState> {
@@ -32,21 +40,21 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
     super(props);
     this.state = {
       showDialogMoveCardInTitleBox: !1,
+      showDialogCopyCardInSidebar: !1,
+      showDialogMoveToCardInSidebar: !1,
+      showDialogArchiveCardInSidebar: !1,
     };
   }
 
   componentDidMount(): void {
     this.mount = true;
-
     const { cardId } = this.props;
     const { boardId } = this.context;
     this.setLocation(`/b/${boardId}/c/${cardId}`);
-    this.setState({ showDialogMoveCardInTitleBox: !1 });
   }
 
   componentWillUnmount(): void {
     this.mount = false;
-
     const { boardId } = this.context;
     this.setLocation(`/board/${boardId}`);
   }
@@ -68,23 +76,76 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
     if (!target.closest('.card-dialog__wrapper')) {
       this.closedCardDialog();
     }
+
+    const {
+      showDialogMoveCardInTitleBox,
+      showDialogCopyCardInSidebar,
+      showDialogMoveToCardInSidebar,
+      showDialogArchiveCardInSidebar
+    } = this.state;
+
+    const clickedNoPopapOrBtnClose = (!target.closest('.popup-card-dialog') || target.closest('.close-btn'));
+
+    if (showDialogMoveCardInTitleBox && clickedNoPopapOrBtnClose) {
+      this.closeDialogMoveCardInTitleBox();
+    }
+
+    if (showDialogCopyCardInSidebar && clickedNoPopapOrBtnClose) {
+      this.closeDialogCopyCardInSidebar();
+    }
+
+    if (showDialogMoveToCardInSidebar && clickedNoPopapOrBtnClose) {
+      this.closeDialogMoveToCardInSidebar();
+    }
+
+    if (showDialogArchiveCardInSidebar && clickedNoPopapOrBtnClose) {
+      this.closeDialogArchiveCardInSidebar();
+      this.setState({ showDialogArchiveCardInSidebar: !1 });
+    }
   };
 
-  closedCardDialog = (): void => {    
+  closedCardDialog = (): void => {
     const { closeDetalisCard } = this.props;
     closeDetalisCard();
   };
 
+  // open dialog moved card
   handlerTitleColumnName = (): void => {
-    const { showDialogMoveCardInTitleBox } = this.state;
-    // TODO - переключатель и просто включатель
-    // this.setState({ showDialogMoveCardInTitleBox: !showDialogMoveCardInTitleBox });
     this.setState({ showDialogMoveCardInTitleBox: !0 });
+  };
+
+  // close dialog moved card
+  closeDialogMoveCardInTitleBox = (): void => {
+    this.setState({ showDialogMoveCardInTitleBox: !1 });
+  };
+  
+  // close dialog copy card
+  closeDialogCopyCardInSidebar = (): void => {
+    this.setState({ showDialogCopyCardInSidebar: !1 });
+  };
+
+  // close dialog move to card
+  closeDialogMoveToCardInSidebar = (): void => {
+    this.setState({ showDialogMoveToCardInSidebar: !1 });
+  };
+
+  // close dialog archive card
+  closeDialogArchiveCardInSidebar = (): void => {
+    this.setState({ showDialogArchiveCardInSidebar: !1 });
+  };
+
+  // Copy, Move, Archive
+  handlerButtonSidebarActionToCard = (event: any): void => {
+    // @ts-ignore
+    const id = event?.target?.id;   
+    if (id === 'sdb-copy-card') this.setState({ showDialogCopyCardInSidebar: !0 });
+    if (id === 'sdb-move-card') this.setState({ showDialogMoveToCardInSidebar: !0 });
+    if (id === 'sdb-archive-card') this.setState({ showDialogArchiveCardInSidebar: !0 });
   };
 
   render(): JSX.Element | null {
     const { cardId, board } = this.props;
-    const { showDialogMoveCardInTitleBox } = this.state;
+    const { showDialogMoveCardInTitleBox, showDialogCopyCardInSidebar, showDialogMoveToCardInSidebar, showDialogArchiveCardInSidebar } = this.state;
     const { boardId } = this.context as { boardId: number };
     const list = Object.entries(board.lists).find(([, listContent]) => cardId in listContent.cards)?.[1];
     if (!list) return null;
@@ -103,7 +164,7 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
     return (
       <CardDetalisContext.Provider value={{ updateBoard: async (): Promise<void> => {} }}>
         <div className="card-dialog" onClick={this.handlerOnClickClose}>
-          <div className="card-dialog__wrapper" >
+          <div className="card-dialog__wrapper">
             <button className="card-dialog__close-dialog" onClick={this.closedCardDialog}>
               <FontAwesomeIcon icon={['fas', 'times']} />
             </button>
@@ -120,7 +181,9 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                   in the column{' '}
                   <a href="#" onClick={this.handlerTitleColumnName}>
                     <span className="tlt-col-name-title">{list.title}</span>
-                    {showDialogMoveCardInTitleBox && <MoveCard {...startingValues} closeCardDialog={this.closedCardDialog} />}
+                    {showDialogMoveCardInTitleBox && (
+                      <MoveCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogMoveCardInTitleBox} />
+                    )}
                   </a>
                 </div>
               </div>
@@ -147,7 +210,7 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                     <h3 className="title">Description</h3>
                   </div>
                   <Description listId={list.id} cardId={cardId} description={cardContent.description} />
-                  </div>
+                </div>
               </div>
 
               <div className="card-dialog__sidebar">
@@ -159,29 +222,47 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                 </span>
 
                 <ul className="list-actions-to-card">
-                  <li>
-                    <button className="button-element">
-                      <span className="icon">
-                        <FontAwesomeIcon icon={['fas', 'copy']} />
-                      </span>
-                      <span className="action-title">Copy</span>
-                    </button>
+                  <li className="button-element">
+                    <Button
+                      id="sdb-copy-card"
+                      appearance="grey"
+                      awesomeIconProp={['fas', 'copy']}
+                      className="button"
+                      onClick={this.handlerButtonSidebarActionToCard}
+                    >
+                      Copy
+                    </Button>
+                    {showDialogCopyCardInSidebar && (
+                      <CopyCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogCopyCardInSidebar} />
+                    )}
                   </li>
-                  <li>
-                    <button className="button-element">
-                      <span className="icon">
-                        <FontAwesomeIcon icon={['fas', 'exchange-alt']} />
-                      </span>
-                      <span className="action-title">Move to</span>
-                    </button>
+                  <li className="button-element">
+                    <Button
+                      id="sdb-move-card"
+                      appearance="grey"
+                      awesomeIconProp={['fas', 'exchange-alt']}
+                      className="button"
+                      onClick={this.handlerButtonSidebarActionToCard}
+                    >
+                      Move to
+                    </Button>
+                    {showDialogMoveToCardInSidebar && (
+                      <MoveCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogMoveToCardInSidebar} />
+                    )}
                   </li>
-                  <li>
-                    <button className="button-element">
-                      <span className="icon">
-                        <FontAwesomeIcon icon={['fas', 'box']} />
-                      </span>
-                      <span className="action-title">Archive</span>
-                    </button>
+                  <li className="button-element">
+                    <Button
+                      id="sdb-archive-card"
+                      appearance="grey"
+                      awesomeIconProp={['fas', 'box']}
+                      className="button"
+                      onClick={this.handlerButtonSidebarActionToCard}
+                    >
+                      Archive
+                    </Button>
+                    {showDialogArchiveCardInSidebar && (
+                      <DeleteCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogArchiveCardInSidebar} />
+                    )}
                   </li>
                 </ul>
               </div>

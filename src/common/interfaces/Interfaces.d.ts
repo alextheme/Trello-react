@@ -58,9 +58,6 @@ export interface ILoadingReducer {
 
 export interface IUserReducer {
   userIsLogged: boolean;
-  userName: string;
-  userId: number;
-  userEmail: string;
 }
 
 export interface IFoundUsers {

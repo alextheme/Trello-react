@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -162,15 +163,16 @@ export const createNewCardWithMovement =
   };
 
 const getNewCardPositionsForDelete = (list: IListContent, cardId: number): IValuesNewCardPositions[] => {
-  let position: number;
-  return Object.entries(list.cards)
-            .sort(([, a], [, b]) => a.position - b.position)
-            .filter(([, c]) => {
-              if (c.id === cardId) position = c.position;
-              return c.id !== cardId;
-            })
-            .filter(([, c]) => c.position >= position)
-            .map(([, cd], i) => ({ id: cd.id, position: position + i, list_id: list.id }));  
+  let position = -1;
+  return Object.entries(list.cards).sort(([, a], [, b]) => a.position - b.position)
+    .filter(([, c]) => {      
+      if (c.id === +cardId) {
+        position = c.position;
+      }
+      return c.id !== +cardId;
+    })
+    .filter(([, c]) => c.position >= position)
+    .map(([, cd], i) => ({ id: cd.id, position: position + i, list_id: list.id }));  
 };
 
 export const deleteCard =
@@ -181,22 +183,21 @@ export const deleteCard =
     
     // get value new card positions
     const moveCardsList = listContent && getNewCardPositionsForDelete(listContent, cardId);  
-
+    
     // delete card & move cards
     try {
-      if (!moveCardsList) throw new Error('error, not data new value card positions');
-
-      const response = await instance.delete(`/board/${boardId}/card/${cardId}`) as { result: string };
-      
-      try {
-        await instance.put(`/board/${boardId}/card`, moveCardsList) as { result: string };
-      } catch (e: any) {
-        dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось удалить карточку. Сбой перемезщения карточек.', e.message] });
-        return false;
+      if (moveCardsList) {
+        
+        const response = await instance.delete(`/board/${boardId}/card/${cardId}`) as { result: string };
+        try {
+          await instance.put(`/board/${boardId}/card`, moveCardsList) as { result: string };
+        } catch (e: any) {
+          dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось удалить карточку. Сбой перемезщения карточек.', e.message] });
+          return false;
+        }
+        return response.result === 'Deleted';
       }
-
-
-      return response.result === 'Deleted';
+      return !1;
 
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось удалить карточку.', e.message] });
@@ -228,7 +229,6 @@ export const movedCards =
 export const editCard =
   (board_id: number, list_id: number, card_id: number, text: string, textType: 'title' | 'description') =>
   async (dispatch: Dispatch): Promise<boolean> => {
-    console.log(`editCard ${textType}: start`);
     
     dispatch({ type: ActionTypeLoading.LOADING });
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
@@ -237,7 +237,6 @@ export const editCard =
     
     try {
       const response = await instance.put(`/board/${board_id}/card/${card_id}`, data) as { result: string };
-      console.log(`editCard ${textType}`, response);
       
       return response.result === 'Updated';
     } catch (e: any) {
