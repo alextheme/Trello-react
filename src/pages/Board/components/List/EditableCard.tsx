@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUpMessage from '../PopUpMessage/PopUpMessage';
@@ -28,6 +27,7 @@ const EditableCard = (props: IEditableCardProps): JSX.Element => {
     textArea?.current?.focus(); // function component
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFocus = (e: { target: any }): void => {
     const { target } = e;
 
@@ -50,6 +50,7 @@ const EditableCard = (props: IEditableCardProps): JSX.Element => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onInputcardTitle = (e: any): void => {
     setCardTitle(e.target.value);
   };

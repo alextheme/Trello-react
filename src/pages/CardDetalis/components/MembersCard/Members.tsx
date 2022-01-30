@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { ICardContent } from '../../../../common/interfaces/Interfaces';
-import { getToken } from '../../../../store/modules/user/session-storage-actions';
+import { getFromSessionStorageToken } from '../../../../store/modules/user/session-storage-actions';
 import { BoardContext, IBoardContext } from '../../../Board/boardContext';
 import Member from './Member';
 import { MembersContext } from './MembersContext';
@@ -30,7 +30,7 @@ class Members extends React.Component<TypeProps, TypeState> {
     super(props);
     this.state = {
       isShowInfoMemberId: nonExistentID,
-      token: getToken(),
+      token: getFromSessionStorageToken(),
     };
   }
 

@@ -1,10 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-console */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +9,7 @@ import { BoardContext, IBoardContext } from '../../boardContext';
 
 interface TypeProps {
   cards: { [id: number]: ICardContent };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onMouseDownForCard: (event: any) => void;
   listId: number;
   cardDelete: (boardId: number, cardId: number, listContent?: IListContent | null) => Promise<boolean>;
@@ -48,7 +42,7 @@ class Card extends React.Component<TypeProps, TypeState> {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClickOpenEditor = (card: ICardContent, event: any): void => {
     const c = event.target.closest('.card_item').getBoundingClientRect();
     this.setState({ openEditCard: true, width: c.width, x: c.left, y: c.top, card });
@@ -58,7 +52,8 @@ class Card extends React.Component<TypeProps, TypeState> {
     this.setState({ openEditCard: false });
   };
 
-  handlerClickClosedEditCard = (event: { target: { closest: (arg0: string) => any } }): void => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handlerClickClosedEditCard = (event: any): void => {
     let canBeClosed = true;
     ['.editor-card__title', '.editor-card__buttons'].forEach((cls) => {
       if (event.target.closest(cls)) canBeClosed = false;
@@ -66,15 +61,8 @@ class Card extends React.Component<TypeProps, TypeState> {
     if (canBeClosed) this.closeEditor();
   };
 
-  onClickDeleteCard = async (event: {
-    target: {
-      dataset: { idCard: any };
-      parentElement: {
-        dataset: { idCard: any };
-        parentElement: { dataset: { idCard: any }; parentElement: { dataset: { idCard: any } } };
-      };
-    };
-  }): Promise<void> => {   
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onClickDeleteCard = async (event: any): Promise<void> => {
     const { cardDelete } = this.props;
     const { updateBoard, boardId, boardData } = this.context as IBoardContext;
     const idCard =
@@ -83,13 +71,11 @@ class Card extends React.Component<TypeProps, TypeState> {
       event.target.parentElement.parentElement.dataset.idCard ||
       event.target.parentElement.parentElement.parentElement.dataset.idCard;
 
-    console.log('del card: ', boardId, idCard);
-    
-    const listContent = Object.entries(boardData.lists).find(([, list]) => 
-      // @ts-ignore
-      Object.entries(list.cards).find(([, crd]) => `${crd.id}` === idCard)?.[1]
+    const listContent = Object.entries(boardData.lists).find(
+      ([, list]: [key: string, list: IListContent]) =>
+        Object.entries(list.cards).find(([, crd]) => `${crd.id}` === idCard)?.[1]
     )?.[1];
-    
+
     await cardDelete(boardId, idCard, listContent);
     await updateBoard();
     this.setState({ openEditCard: false });

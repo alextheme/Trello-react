@@ -7,9 +7,10 @@
 import React from 'react';
 import instance from '../../../../api/request';
 import { IFoundUsers } from '../../../../common/interfaces/Interfaces';
-import { getToken } from '../../../../store/modules/user/session-storage-actions';
+import { getFromSessionStorageToken } from '../../../../store/modules/user/session-storage-actions';
 import { BoardContext, IBoardContext } from '../../../Board/boardContext';
-import CloseIcon from '../icons/CloseIcon';
+// import CloseIcon from '../icons/CloseIcon';
+import { ReactComponent as CloseIcon } from './logo.svg';
 // eslint-disable-next-line import/no-cycle
 import DialogAddMembers from '../DialogAddMembers';
 import { assignOrRemoveUsersToOrFromCard } from '../../../../store/modules/user/assignOrRemoveUsersToFromCard';
@@ -43,7 +44,7 @@ class Member extends React.Component<TypeProps, TypeState> {
   handlerJoinMemberOnClick = async (): Promise<void> => {
     const { updateBoard } = this.context as IBoardContext;
     const { boardId, cardId } = this.props;
-    const userToken = getToken();
+    const userToken = getFromSessionStorageToken();
 
     if (boardId && cardId && userToken && updateBoard) {
       if (+userToken) {

@@ -1,9 +1,9 @@
 import { IUserReducer } from '../../../common/interfaces/Interfaces';
 import { ActionType } from './action-types';
 import { Action } from './actions';
-import { getToken } from './session-storage-actions';
+import { getFromSessionStorageToken } from './session-storage-actions';
 
-const getInitialState = (): IUserReducer => ({ userIsLogged: !!getToken() });
+const getInitialState = (): IUserReducer => ({ userIsLogged: !!getFromSessionStorageToken() });
 
 const reducer = (state: IUserReducer = getInitialState(), action: Action): IUserReducer => {
   switch (action.type) {

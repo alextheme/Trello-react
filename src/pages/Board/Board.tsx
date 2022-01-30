@@ -1,16 +1,11 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-console */
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import './board.scss';
-import { IBoardContent, IListContent, IMatch, IUserReducer } from '../../common/interfaces/Interfaces';
+import { IBoardContent, IListContent, IMatch } from '../../common/interfaces/Interfaces';
 import { getBoard, movedCards, movedLists } from '../../store/modules/board/action-creators';
 import List from './components/List/List';
-import EditableTitleBoard from './components/EditableTitleBoard';
+import EditableTitleBoard from './components/EditableTitleBoard/EditableTitleBoard';
 import CardDetalis from '../CardDetalis/CardDetalis';
 import { BoardContext } from './boardContext';
 import { movingCardsBetweenDifferentList, movingCardsInOneList } from './functionBoard/functionsForWorkingWithCards';
@@ -92,7 +87,8 @@ class Board extends React.Component<IBoardProps, IBoardState> {
       this.showDetalisCard(+cardId);
     }
 
-    // close the window with details on the card when pressing the ESCAPE key
+    /** close the window with details on the card when pressing the ESCAPE key */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     document.addEventListener('keyup', (event: any) => {
       const { key, keyCode } = event;
       const { openDetailEditCard } = this.state;
@@ -132,7 +128,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
 
     if (!boardContent) return;
     const { lists } = boardContent;
-    
+
     if (!lists) return;
     this.setState((state) => ({ ...state, dataLists: lists }));
   };
@@ -142,6 +138,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
    *
    * Mouse press on CARD element
    * */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onMouseDownForCard = (event: any): void => {
     event.preventDefault();
 
@@ -172,6 +169,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
   /** Move CARD
    *
    * */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   moveCard = (event: any): void => {
     this.setState((state) => ({ ...state, processMovingCard: true }));
 
@@ -254,6 +252,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
   /** Mouse UP for CARD
    *
    * */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mouseUpForCard = (): void => {
     const { cardActive, placeholder, dataLists, movingCard, indexNewPositionActiveElement: newPosition } = this.state;
     if (!cardActive || !placeholder || !dataLists || !movingCard) return;
@@ -338,6 +337,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
    *
    * Mouse press on LIST element
    * */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onMouseDownForList = (event: any): void => {
     const { clientX, clientY, target, currentTarget } = event;
     // Move only by grabbing the head of the element
@@ -368,6 +368,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
   /** Move LIST element
    *
    * */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   moveList = (event: any): void => {
     this.setState({ processMovingList: true });
 
@@ -471,6 +472,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
   /**
    * Detalis Card Functions ...
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlerOpenDetatisCard = (event: any): void => {
     // Prevent opening when moving card
     const { processMovingCard } = this.state;
@@ -480,7 +482,7 @@ class Board extends React.Component<IBoardProps, IBoardState> {
     }
 
     if (event.target.closest('.card__open-card-editor-btn')) return;
-    const { cardId, listId } = event.currentTarget.dataset;
+    const { cardId } = event.currentTarget.dataset;
     this.showDetalisCard(+cardId);
   };
 
@@ -558,6 +560,7 @@ interface IMapStateToProps {
   board: IBoardContent;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapStateToProps = (state: IMapStateToProps): any => ({
   ...state.board,
 });

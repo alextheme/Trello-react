@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-console */
-/* eslint-disable prettier/prettier */
 import React, { useContext, useState } from 'react';
 import { connect } from 'react-redux';
 import { renameTitleList } from '../../../../store/modules/board/action-creators';
@@ -110,7 +107,9 @@ const EditableTitleList = ({ titleList, listId, processMovingList, listRenameTit
         autoComplete="off"
         style={{ display: openInput ? 'block' : 'none', position: 'relative', height: heightTitle }}
       />
-      {openInput && errorMessage.res !== '' && <PopUpMessage {...errorMessage} parentId={`input-title-list-${listId}`} />}
+      {openInput && errorMessage.res !== '' && (
+        <PopUpMessage {...errorMessage} parentId={`input-title-list-${listId}`} />
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import axios from 'axios';
 import { api } from '../common/constants';
-import { getToken } from '../store/modules/user/session-storage-actions';
+import { getFromSessionStorageToken } from '../store/modules/user/session-storage-actions';
 
 const instance = axios.create({
   baseURL: api.baseURL,
@@ -13,7 +13,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  const token = getToken() || '';
+  const token = getFromSessionStorageToken() || '';
   return { ...config, headers: { ...config.headers, Authorization: `Bearer ${token}` } };
 });
 

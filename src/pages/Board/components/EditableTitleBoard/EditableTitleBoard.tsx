@@ -1,13 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
-import { checkInputText, getHtmlElementByID } from '../../../common/scripts/commonFunctions';
-import { renameTitleBoard } from '../../../store/modules/board/action-creators';
-import { BoardContext } from '../boardContext';
-import PopUpMessage from './PopUpMessage/PopUpMessage';
+import { checkInputText } from '../../../../common/scripts/commonFunctions';
+import { renameTitleBoard } from '../../../../store/modules/board/action-creators';
+import { BoardContext } from '../../boardContext';
+import PopUpMessage from '../PopUpMessage/PopUpMessage';
 
 interface TypeProps {
   title: string;
@@ -19,14 +15,16 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   const [title, setTitle] = useState(props.title);
   const [prevTitle, setPrevTitle] = useState(props.title);
   const [errorMessage, setErrorMessage] = useState({ statusErrorText: false, res: '', errSymbols: '' });
-  const isMountedRef = useRef<boolean | null>(null);
+  const isMountedRef = useRef<number>(0);
   const { boardId } = useContext(BoardContext);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useEffect((): any => {
-    isMountedRef.current = true;
-    return (): boolean => isMountedRef.current = false;
+    isMountedRef.current = 1;
+    return (isMountedRef.current = 0);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTitleOnClick = (event: any): void => {
     event.preventDefault();
     const { currentTarget } = event;
@@ -45,6 +43,7 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   };
 
   /** Print new name board */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputOnInputEditTitleHandler = (e: any): void => {
     e.preventDefault();
     const { target } = e;
@@ -55,20 +54,21 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
 
   /** Rename Board, ajax request */
   const renameBoard = async (nameTitle: string): Promise<void> => {
-    if (!isMountedRef.current) return;
-
     const { status, res, errSymbols } = checkInputText(nameTitle);
-    
+
     if (status && res === '' && boardId) {
       const { changeBoardTitle } = props;
-      const response = await changeBoardTitle(boardId, nameTitle);
-            
-      if (response) {
-        setTitle(nameTitle);
-        setPrevTitle(nameTitle);
-        setOpenInputEditTitle(false);
-        setErrorMessage({ statusErrorText: true, res: '', errSymbols: '' });
-        return;
+
+      if (isMountedRef.current) {
+        const response = await changeBoardTitle(boardId, nameTitle);
+
+        if (response) {
+          setTitle(nameTitle);
+          setPrevTitle(nameTitle);
+          setOpenInputEditTitle(false);
+          setErrorMessage({ statusErrorText: true, res: '', errSymbols: '' });
+          return;
+        }
       }
     }
 
@@ -78,13 +78,17 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   };
 
   /** Focus out */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputOnBlurHandler = (e: any): void => {
     e.preventDefault();
-    const { target: { value: nameTitle } } = e as { target: { value: string }};
+    const {
+      target: { value: nameTitle },
+    } = e as { target: { value: string } };
     renameBoard(nameTitle);
   };
 
   /** Press Enter on input */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inputOnKeyPressHandler = (e: any): void => {
     const { code, target } = e;
     if (code === 'Enter') renameBoard(target.value);
@@ -107,7 +111,9 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
         style={{ display: openInputEditTitle ? 'block' : 'none' }}
         autoComplete="off"
       />
-      {errorMessage.statusErrorText && errorMessage.res !== '' && <PopUpMessage {...errorMessage} parentId="input-edit-board-title" />}
+      {errorMessage.statusErrorText && errorMessage.res !== '' && (
+        <PopUpMessage {...errorMessage} parentId="input-edit-board-title" />
+      )}
     </div>
   );
 };

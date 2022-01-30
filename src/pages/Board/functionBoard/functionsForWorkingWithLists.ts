@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IListContent } from '../../../common/interfaces/Interfaces';
 
-/* eslint-disable no-console */
 interface INewListPositon {
   id: number;
   position: number;

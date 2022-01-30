@@ -1,7 +1,3 @@
-/* esli nt-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-console */
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
@@ -16,7 +12,9 @@ import { BoardContext, IBoardContext } from '../../boardContext';
 interface TypeProps {
   lists: { [id: number]: IListContent };
   heightContainer: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onMouseDownForList: (event: any) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onMouseDownForCard: (event: any) => void;
   processMovingList: boolean;
   listDelete: (boardId: number, listId: number) => void;
@@ -38,12 +36,12 @@ class List extends React.Component<TypeProps, TypeState> {
 
   componentWillUnmount(): void {}
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClickOpenAddedCard = (event: any): void => {
     this.setState({ openAddCard: event.target.dataset.btnAddCardListId });
   };
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClickDeleteList = async (event: any): Promise<void> => {
     const { target } = event;
     const listId = target.dataset.listId || target.parentElement.dataset.listId;
@@ -58,7 +56,7 @@ class List extends React.Component<TypeProps, TypeState> {
     this.setState({ openAddCard: '' });
   };
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClickColumn = (event: any): void => {
     const { target } = event;
     if (target.classList.contains('list_wrapper')) {

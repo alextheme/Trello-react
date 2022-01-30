@@ -83,18 +83,6 @@ export const toggleDisplayNoneToBlock = (element: HTMLElement | null): void => {
 };
 
 /**
- * Get object by method querySelector
- * @param selector class element
- */
-export const getHtmlElementQS = (selector: string): HTMLElement | null => document.querySelector(selector);
-
-/**
- * Get object by method getElementById
- * @param id id element without #
- */
-export const getHtmlElementByID = (id: string): HTMLElement | null => document.getElementById(id);
-
-/**
  * checks the objects that were clicked and returns true if none of the passed objects was clicked.
  * True if the input window can be closed.
  * @param listClassesOrIdHtmlElements an array of classes or id which should not be closed by clicking on the input field

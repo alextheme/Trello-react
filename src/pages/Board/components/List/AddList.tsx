@@ -1,14 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import { connect } from 'react-redux';
 import { addList } from '../../../../store/modules/board/action-creators';
-import {
-  checkInputText,
-  isCloseInputField,
-  getHtmlElementByID,
-  getHtmlElementQS,
-  setFocusToElement,
-} from '../../../../common/scripts/commonFunctions';
+import { checkInputText, isCloseInputField } from '../../../../common/scripts/commonFunctions';
 import { BoardContext, IBoardContext } from '../../boardContext';
 
 interface TypeState {
@@ -35,12 +29,16 @@ class AddList extends React.Component<TypeProps, TypeState> {
     timeOut: undefined,
   };
 
+  inputRef: React.RefObject<HTMLInputElement>;
+
   constructor(props: TypeProps) {
     super(props);
     this.state = {
       nameList: '',
       openInput: false,
     };
+
+    this.inputRef = React.createRef();
 
     this.handlerAddNewList = this.handlerAddNewList.bind(this);
     this.onInputHandler = this.onInputHandler.bind(this);
@@ -49,7 +47,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
   componentDidMount(): void {
     this.globalValue.mounted = true;
 
-    const inputBtn = getHtmlElementQS('.add-list__add-btn-run');
+    const inputBtn: HTMLElement | null = document.querySelector('.add-list__add-btn-run');
 
     if (inputBtn) {
       this.globalValue.nameRunButton = inputBtn.innerText;
@@ -57,7 +55,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
     }
 
     document.addEventListener('keypress', (e) => {
-      const inputField = getHtmlElementByID('add-list__input-field1');
+      const inputField = document.getElementById('add-list__input-field1');
       if (this.globalValue.mounted) {
         if (inputField === document.activeElement && e.key === 'Enter') {
           this.handlerAddNewList();
@@ -87,7 +85,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
     this.globalValue.mounted = false;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onInputHandler = (e: any): void => {
     e.preventDefault();
     const { value } = e.target;
@@ -124,7 +122,12 @@ class AddList extends React.Component<TypeProps, TypeState> {
   };
 
   buttonHandlerOpenFieldInput = (): void => {
-    setFocusToElement('add-list__input-field1');
+    const node = this.inputRef.current;
+    if (node) {
+      node.focus();
+      node.select();
+    }
+
     this.setState((state: TypeState) => ({ ...state, openInput: true }));
   };
 
@@ -142,6 +145,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
     setTimeout(async () => {
       const { listAdd, ...a } = this.props;
       listAdd(a.boardId, nameList, a.position);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.setState((state: any) => ({ ...state, nameList: '' }));
       const { updateBoard } = this.context as IBoardContext;
       await updateBoard();
@@ -156,6 +160,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
         <div className="add-list">
           <div className="add-list__edit-container" style={{ display: openInput ? 'block' : 'none' }}>
             <input
+              ref={this.inputRef}
               id="add-list__input-field1"
               type="text"
               placeholder="ввести заголовок списка"

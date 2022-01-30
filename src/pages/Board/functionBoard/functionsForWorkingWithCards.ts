@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ICardContent, IListContent } from '../../../common/interfaces/Interfaces';
 
-/* eslint-disable no-console */
 interface INewCardPositon {
   id: number;
   position: number;

@@ -1,17 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/ban-ts-comment, @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  checkInputText,
-  // closeInputField,
-  getHtmlElementByID,
-  isCloseInputField,
-  // isCloseInputField,
-} from '../../../../common/scripts/commonFunctions';
+import { checkInputText } from '../../../../common/scripts/commonFunctions';
 import { addCard } from '../../../../store/modules/board/action-creators';
 import { BoardContext } from '../../boardContext';
 import PopUpMessage from '../PopUpMessage/PopUpMessage';
@@ -35,6 +24,8 @@ interface TypeState {
 class AddCard extends React.Component<TypeProps, TypeState> {
   mounted = false;
 
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
+
   constructor(props: TypeProps) {
     super(props);
     this.state = {
@@ -44,6 +35,8 @@ class AddCard extends React.Component<TypeProps, TypeState> {
       errSymbols: '',
       positionFixed: true,
     };
+
+    this.textareaRef = React.createRef();
   }
 
   componentDidMount(): void {
@@ -57,10 +50,12 @@ class AddCard extends React.Component<TypeProps, TypeState> {
     this.mounted = false;
   }
 
-  // set value in title, tracked component
+  /** set value in title, tracked component */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   inputOnChangeHandler = (e: any): void => {
     if (this.mounted) {
-      if (this.state.statusErrorText) {
+      const { statusErrorText } = this.state;
+      if (statusErrorText) {
         this.setState((state: TypeState) => ({ ...state, statusErrorText: false }));
       }
       this.setState((state: TypeState) => ({ ...state, nameCard: e.target.value }));
@@ -68,10 +63,12 @@ class AddCard extends React.Component<TypeProps, TypeState> {
   };
 
   onClickButtonCloseInputField = (): void => {
-    this.props.handlerClickCloseAddedCard();
+    const { handlerClickCloseAddedCard } = this.props;
+    handlerClickCloseAddedCard();
     this.setState((state) => ({ ...state, statusErrorText: false }));
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onKeyPressInputAddCard = (e: any): void => {
     if (e.code === 'Enter' && e.charCode === 13) {
       const { dataset } = e.target;
@@ -81,15 +78,13 @@ class AddCard extends React.Component<TypeProps, TypeState> {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClickButtonAddCard = (e: any): void => {
     const { dataset } = e.target;
     const { countcards, idlist } = dataset;
 
     this.addNewCard(idlist, countcards);
   };
-
-  /** Get Input Html Element */
-  getInput = (): HTMLElement | null => getHtmlElementByID(this.props.addCardInputId);
 
   /** Add New Card */
   addNewCard = async (listId: string, countcards: string): Promise<void> => {
@@ -116,9 +111,16 @@ class AddCard extends React.Component<TypeProps, TypeState> {
       this.setState((st) => ({ ...st, statusErrorText: false }));
     }, 2000);
 
-    const input = this.getInput();
-    input?.focus(); // @ts-ignore
-    input?.select();
+    const { addCardInputId } = this.props;
+    const node = document.getElementById(addCardInputId);
+
+    // const node = this.textareaRef.current;
+
+    if (node) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      node.focus(); // @ts-ignore
+      node.select();
+    }
   };
 
   // Render
@@ -132,6 +134,7 @@ class AddCard extends React.Component<TypeProps, TypeState> {
         <div className="add-card__input-box">
           <div className="textarea-wrapper">
             <textarea
+              ref={this.textareaRef}
               id={addCardInputId}
               className="add-card__input-field"
               placeholder="Ввести заголовок для этой карточки"

@@ -27,7 +27,8 @@ import Hero from './common/components/errorsExample/Hero';
 
 library.add(fas);
 
-// Самый простой способ использовать <ErrorBoundary> — обернуть им любой компонент,
+// TODO: ErrorBoundary
+// простой способ использовать <ErrorBoundary> — обернуть им любой компонент,
 // который может вызвать ошибку.
 // Это будет обрабатывать ошибки, выдаваемые этим компонентом и его потомками.
 function ErrorFallback({ error, resetErrorBoundary }: any): JSX.Element {
