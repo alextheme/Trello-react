@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import homeIcon from './common/img/home-icon.png';
 import Home from './pages/Home/Home';
 import Board from './pages/Board/Board';
-import Preloader from './common/components/preloader/Preloader';
+import Preloader from './common/components/preloader/Preloader/Preloader';
 import ErrorMessages from './common/components/errorsMessagePopap/ErrorMessages';
 import LogOut from './common/components/login/logOut/Logout';
 import Form from './common/components/login/logIn/FormLogIn';

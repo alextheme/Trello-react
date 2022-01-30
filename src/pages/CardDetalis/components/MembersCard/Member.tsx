@@ -10,7 +10,7 @@ import { IFoundUsers } from '../../../../common/interfaces/Interfaces';
 import { getFromSessionStorageToken } from '../../../../store/modules/user/session-storage-actions';
 import { BoardContext, IBoardContext } from '../../../Board/boardContext';
 // import CloseIcon from '../icons/CloseIcon';
-import { ReactComponent as CloseIcon } from './logo.svg';
+// import { ReactComponent as CloseIcon } from './logo.svg';
 // eslint-disable-next-line import/no-cycle
 import DialogAddMembers from '../DialogAddMembers';
 import { assignOrRemoveUsersToOrFromCard } from '../../../../store/modules/user/assignOrRemoveUsersToFromCard';
@@ -104,7 +104,8 @@ class Member extends React.Component<TypeProps, TypeState> {
 
         <div className={`detalis_member ${isShow ? 'isShow' : ''}`}>
           <button className="close-button" onClick={hide}>
-            <CloseIcon />
+            {/* <CloseIcon /> */}
+            x
           </button>
 
           <div className="info_member">

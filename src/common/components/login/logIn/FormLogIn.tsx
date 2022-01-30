@@ -1,34 +1,20 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-debugger */
-/* eslint-disable arrow-body-style */
-/* eslint-disable react/no-unused-state */
-/* eslint-disable react/sort-comp */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-/* es lint-disable react/destructuring-assignment, @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import { connect } from 'react-redux';
-import PasswordStrengthBar, { PasswordFeedback } from 'react-password-strength-bar';
-import instance from '../../../../api/request';
-import { authorization } from '../../../../store/modules/user/action-creators';
+import PasswordStrengthBar from 'react-password-strength-bar';
+import { Rainbow } from 'common/components/preloader/Rainbow/Rainbow';
+import { authorization, registration } from '../../../../store/modules/user/action-creators';
 import './formLogIn.scss';
+import ButtonFormLogin from './ButtonFormLogin/ButtonFormLogin';
 
 interface PropsType {
-  userAuthorization?: (email: string, password: string) => void;
+  authorizationUser: (email: string, password: string) => Promise<void>;
+  registrationUser: (email: string, password: string) => Promise<boolean>;
+  logging: boolean;
 }
 
 type StateType = {
   formAuthorization: boolean;
-  buttonActive: boolean;
-  name: string;
-  nameOk: boolean;
   email: string;
   emailOk: boolean;
   fPassword: string;
@@ -37,6 +23,7 @@ type StateType = {
   sPassword: string;
   sPpasswordOk: boolean;
   error: string[];
+  createUserSuccess: boolean;
 };
 
 class FormAuthorization extends React.Component<PropsType, StateType> {
@@ -44,68 +31,55 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
     super(props);
     this.state = {
       formAuthorization: !0,
-      buttonActive: !0,
-      name: 'Vasja',
-      nameOk: true,
-      email: 'ae1@gmail.com',
-      emailOk: true,
-      fPassword: '1111',
-      fPasswordIsComplex: 0,
-      fPasswordOk: true,
-      sPassword: '1111',
-      sPpasswordOk: true,
+      email: 'abc@mail.com', // ae1@gmail.com
+      emailOk: !1,
+      fPassword: '', // HA543/aa8z
+      fPasswordIsComplex: 3,
+      fPasswordOk: !1,
+      sPassword: '', // HA543/aa8z
+      sPpasswordOk: !1,
       error: [],
+      createUserSuccess: !1,
     };
     this.formSwitcher = this.formSwitcher.bind(this);
-    this.handleInputName = this.handleInputName.bind(this);
     this.handleUserLogIn = this.handleUserLogIn.bind(this);
     this.handleUserRegistration = this.handleUserRegistration.bind(this);
-    this.setButtonActive = this.setButtonActive.bind(this);
     this.callBackPasswordStrengBar = this.callBackPasswordStrengBar.bind(this);
     this.handleInputOnChange = this.handleInputOnChange.bind(this);
-  }
-
-  componentDidMount(): void {
-    const { email, fPassword: password, sPassword: password2 } = this.state;
-    const buttonActive = !(email === '' || password === '' || password2 === '');
-    this.setState({ buttonActive });
-  }
-
-  handleInputName(e: React.ChangeEvent<HTMLInputElement>): void {
-    this.setState({ name: e.target.value });
   }
 
   handleInputOnChange(e: React.ChangeEvent<HTMLInputElement>): void {
     const {
       target: { id, value },
     } = e;
-    this.setState((state) => ({ ...state, [id]: value, error: [] }));
 
-    // почему то состояние реакта отстает в распознаинни заполнения поля на один символ,
-    // чтобы избежать этого передаем в функцию текущее вводные данные с инпута.
-    this.setButtonActive(id, value);
+    // email fPassword sPassword
+    this.setState((state) => ({ ...state, [id]: value }));
+
+    if (id === 'email') {
+      this.validateEmail(value);
+    }
+
+    if (id === 'fPassword') {
+      this.validateFirstPassword(value);
+    }
+
+    if (id === 'sPassword') {
+      this.validateSecondPassword(value);
+    }
   }
-
-  formSwitcher = (): void => {
-    this.setState((state) => ({ formAuthorization: !state.formAuthorization }));
-  };
-
-  setButtonActive = (id: string, value: string): void => {
-    const { email, fPassword, sPassword } = this.state;
-    const vEmail     = id === 'email'     && !!(value || email);
-    const vPassword  = id === 'fPassword' && !!(value || fPassword);
-    const vPassword2 = id === 'sPassword' && !!(value || sPassword);
-    
-    this.setState({ buttonActive: vEmail && vPassword && vPassword2 });
-  };
 
   // Authorization
   async handleUserLogIn(event: React.MouseEvent<HTMLInputElement>): Promise<void> {
     event.preventDefault();
-    if (this.state.buttonActive) {
-      const { authorizationUser } = this.props as { authorizationUser: (email: string, password: string) => void };
-      const { email, fPassword: password } = this.state;
-      authorizationUser(email, password);
+
+    const { formAuthorization, emailOk, fPasswordOk, sPpasswordOk } = this.state;
+    const btnActive = formAuthorization ? emailOk && fPasswordOk : emailOk && fPasswordOk && sPpasswordOk;
+
+    if (btnActive) {
+      const { authorizationUser } = this.props;
+      const { email, fPassword } = this.state;
+      authorizationUser(email, fPassword);
     }
   }
 
@@ -113,39 +87,40 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
   async handleUserRegistration(event: React.MouseEvent<HTMLInputElement>): Promise<void> {
     event.preventDefault();
 
-    if (this.state.buttonActive) {
-      if (this.validateEmail() && this.checkPasswordComplex() && this.checkPasswordEquality()) {
-        const { email, fPassword: password } = this.state;
+    const { formAuthorization, emailOk, fPasswordOk, sPpasswordOk } = this.state;
+    const btnActive = formAuthorization ? emailOk && fPasswordOk : emailOk && fPasswordOk && sPpasswordOk;
 
-        const result = (await instance.post('/user', { email, password })) as { result: string; id: number };
-        if (result && result.result === 'Created') {
-          this.formSwitcher();
-          this.setState({ email, fPassword: password }); // TODO ? нужно ли сохранять эти данные ???
-          console.log('Created success!');
-        } else {
-          console.log('Created false (');
-        }
+    if (btnActive) {
+      const { registrationUser } = this.props;
+      const { email, fPassword } = this.state;
+
+      const resRegg = await registrationUser(email, fPassword);
+
+      if (resRegg) {
+        this.setState({ createUserSuccess: true, email: '', fPassword: '', sPassword: '' });
+        this.formSwitcher();
       }
     }
   }
 
+  /*
+   * Valiation Email, Password, Password2
+   */
   // validetion Email
-  validateEmail = (): boolean => {
-    const { email, error } = this.state;
-    const message = 'Неправильный электронный адрес.';
+  validateEmail = (email: string): void => {
     const pattern = /^[\w\-.]+@[\w-]+\.[a-z]{2,4}$/i;
+    this.setState({ emailOk: pattern.test(email) });
+  };
 
-    if (!pattern.test(email)) {
-      const result = error.find((e) => e === message);
-      if (!result) {
-        error.push(message);
-      }
-      this.setState({ emailOk: false, error });
-      return false;
-    }
+  // validetion Email
+  validateFirstPassword = (password: string): void => {
+    this.setState({ fPasswordOk: password !== '' });
+  };
 
-    this.setState({ emailOk: true, error: error.filter((e) => e !== message) });
-    return true;
+  // validetion Email
+  validateSecondPassword = (password: string): void => {
+    const { fPassword } = this.state;
+    this.setState({ sPpasswordOk: password === fPassword });
   };
 
   // Checking passwords for complexity
@@ -183,16 +158,26 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
     this.setState({ sPpasswordOk: true, error: error.filter((e) => e !== message) });
     return true;
   };
+  /*
+   * end function validations
+   */
 
-  callBackPasswordStrengBar = (score: number, feedback: PasswordFeedback): void => {
-    const { fPasswordIsComplex: passwordIsComplex } = this.state;
-    this.setState({ fPasswordOk: score >= passwordIsComplex });
+  callBackPasswordStrengBar = (score: number): void => {
+    const { fPasswordIsComplex } = this.state;
+    this.setState({ fPasswordOk: score >= fPasswordIsComplex });
+  };
+
+  formSwitcher = (): void => {
+    this.setState((state) => ({ formAuthorization: !state.formAuthorization }));
+  };
+
+  handleCloseInfoSuccessCreateUser = (): void => {
+    this.setState({ createUserSuccess: false });
   };
 
   render(): JSX.Element | null {
     const {
       formAuthorization,
-      buttonActive,
       fPassword,
       fPasswordOk,
       email,
@@ -200,80 +185,88 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
       error,
       sPassword,
       sPpasswordOk,
+      createUserSuccess,
     } = this.state;
+    const { logging } = this.props;
 
     const titleForm = formAuthorization ? 'authorization' : 'registration';
+    const textSuccessCreateUser = 'Вы успешно зарегистрировались! Авторизируйтесь и наслаждайтесь работой';
 
     return (
       <div className={`${titleForm}-box`}>
+        {logging && <Rainbow />}
+        {createUserSuccess && (
+          <div className="success-create-user">
+            <span>{textSuccessCreateUser}</span>
+            <span className="button" onClick={this.handleCloseInfoSuccessCreateUser}>
+              x
+            </span>
+          </div>
+        )}
         <div className={`${titleForm}-container`}>
           <h4 className={`${titleForm}-title`}>{titleForm}</h4>
+
           <form className={`${titleForm}-form`}>
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
               name="email"
-              className={emailOk ? '' : 'errorValue'}
+              value={email}
               defaultValue={email}
               onChange={this.handleInputOnChange}
             />
+
             <label htmlFor="fPassword">Password</label>
             <input
               type="password"
               id="fPassword"
               name="fPassword"
-              className={fPasswordOk ? '' : 'errorValue'}
+              value={fPassword}
               defaultValue={fPassword}
               onChange={this.handleInputOnChange}
             />
-            {!formAuthorization && (
-              <PasswordStrengthBar
-                password={fPassword}
-                // className="passwordStrengBar"
-                className={fPasswordOk ? 'passwordStrengBar' : 'passwordStrengBar errorValue'}
-                onChangeScore={this.callBackPasswordStrengBar}
-              />
-            )}
+
             {!formAuthorization && (
               <>
+                <PasswordStrengthBar
+                  password={fPassword}
+                  className={fPasswordOk ? 'passwordStrengBar' : 'passwordStrengBar errorValue'}
+                  onChangeScore={this.callBackPasswordStrengBar}
+                  scoreWords={['пусто', 'слабовато', 'нужно посложнее', 'сойдет', 'молоток!']}
+                  shortScoreWord="это дыра"
+                />
+
                 <label htmlFor="sPassword">Repeat password</label>
                 <input
                   type="password"
                   id="sPassword"
                   name="sPassword"
-                  className={sPpasswordOk ? '' : 'errorValue'}
                   defaultValue={sPassword}
                   onChange={this.handleInputOnChange}
                 />
 
                 <div className="textError">
-                  {error.map((m, i) => {
+                  {error.map((m, i) => (
                     // eslint-disable-next-line react/no-array-index-key
-                    return <p key={i}>{m}</p>;
-                  })}
+                    <p key={i}>{m}</p>
+                  ))}
                 </div>
               </>
             )}
 
-            <input
-              type="submit"
-              onClick={formAuthorization ? this.handleUserLogIn : this.handleUserRegistration}
-              value={formAuthorization ? 'Sign in' : 'Register now'}
-              className={`${titleForm}-submit ${buttonActive ? 'active' : ''}`}
+            <ButtonFormLogin
+              formAuthorization={formAuthorization}
+              handleUserLogIn={this.handleUserLogIn}
+              handleUserRegistration={this.handleUserRegistration}
+              titleForm={titleForm}
+              buttonActive={formAuthorization ? emailOk && fPasswordOk : emailOk && fPasswordOk && sPpasswordOk}
             />
 
-            {!formAuthorization && (
-              <p className={`${titleForm}-already`}>
-                Already have an account? <span onClick={this.formSwitcher}>Sign in</span>
-              </p>
-            )}
-
-            {formAuthorization && (
-              <p className={`${titleForm}-already`}>
-                First time with us? <span onClick={this.formSwitcher}>Register now</span>
-              </p>
-            )}
+            <p className={`${titleForm}-already`}>
+              {formAuthorization ? 'First time with us?' : 'Already have an account?'}{' '}
+              <span onClick={this.formSwitcher}>{formAuthorization ? 'Register now' : 'Sign in'}</span>
+            </p>
           </form>
         </div>
       </div>
@@ -281,4 +274,9 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
   }
 }
 
-export default connect(null, { authorizationUser: authorization })(FormAuthorization);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mapStateToProps = (state: any): any => ({ ...state.load });
+
+export default connect(mapStateToProps, { authorizationUser: authorization, registrationUser: registration })(
+  FormAuthorization
+);

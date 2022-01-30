@@ -6,6 +6,7 @@
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "airbnb-typescript",
+    "plugin:prettier/recommended",
     "prettier"
   ],
   "parserOptions": {
