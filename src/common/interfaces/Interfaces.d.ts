@@ -54,6 +54,7 @@ export interface IErrorReducer {
 
 export interface ILoadingReducer {
   loading: boolean;
+  logging: boolean;
 }
 
 export interface IUserReducer {

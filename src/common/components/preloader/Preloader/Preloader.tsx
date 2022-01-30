@@ -1,12 +1,8 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { connect } from 'react-redux';
 import { loadProgressBar } from 'x-axios-progress-bar';
 import PreloaderIcon from './PreloaderIcon';
-import instance from '../../../api/request';
+import instance from '../../../../api/request';
 import './preloader.scss';
 import 'x-axios-progress-bar/dist/nprogress.css';
 
@@ -31,6 +27,7 @@ class PreloaderComponent extends React.Component {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapStateToProps = (state: any): any => ({ ...state.loading });
 
 export default connect(mapStateToProps, null)(PreloaderComponent);
