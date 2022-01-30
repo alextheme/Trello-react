@@ -1,7 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
 import React from 'react';
 import './addBoard.scss';
 import { connect } from 'react-redux';

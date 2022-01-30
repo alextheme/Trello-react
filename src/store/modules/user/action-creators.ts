@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-console */
 import { Dispatch } from 'redux';
 import instance from '../../../api/request';
 import { ActionType } from './action-types';
@@ -49,10 +48,7 @@ export const registration =
         id: number;
       };
 
-      console.log('2', result);
-
       if (result && result.result === 'Created') {
-        console.log('SUCCESS!');
         return true;
       }
     } catch (err) {

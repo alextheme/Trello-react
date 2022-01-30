@@ -1,14 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* e slint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
 import React from 'react';
 import './cardDetalis.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { IBoardContent, IBoards } from '../../common/interfaces/Interfaces';
+import { IBoardContent } from '../../common/interfaces/Interfaces';
 import Title from './components/TitleCard/Title';
 import Description from './components/DescriptionCard/Description';
 import Members from './components/MembersCard/Members';
@@ -17,8 +11,8 @@ import { CardDetalisContext } from './CardDetalisContext';
 import MoveCard from './components/MoveCard/MoveCard';
 import { ICurrentValue } from './components/MoveCard/MoveCard.props';
 import { Button } from './components/Button/Button';
-import CopyCard from "./components/CopyCard/CopyCard";
-import DeleteCard from "./components/DeleteCard/DeleteCard";
+import CopyCard from './components/CopyCard/CopyCard';
+import DeleteCard from './components/DeleteCard/DeleteCard';
 
 interface TypeProps extends RouteComponentProps {
   board: IBoardContent;
@@ -81,10 +75,10 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
       showDialogMoveCardInTitleBox,
       showDialogCopyCardInSidebar,
       showDialogMoveToCardInSidebar,
-      showDialogArchiveCardInSidebar
+      showDialogArchiveCardInSidebar,
     } = this.state;
 
-    const clickedNoPopapOrBtnClose = (!target.closest('.popup-card-dialog') || target.closest('.close-btn'));
+    const clickedNoPopapOrBtnClose = !target.closest('.popup-card-dialog') || target.closest('.close-btn');
 
     if (showDialogMoveCardInTitleBox && clickedNoPopapOrBtnClose) {
       this.closeDialogMoveCardInTitleBox();
@@ -118,7 +112,7 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
   closeDialogMoveCardInTitleBox = (): void => {
     this.setState({ showDialogMoveCardInTitleBox: !1 });
   };
-  
+
   // close dialog copy card
   closeDialogCopyCardInSidebar = (): void => {
     this.setState({ showDialogCopyCardInSidebar: !1 });
@@ -135,9 +129,9 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
   };
 
   // Copy, Move, Archive
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlerButtonSidebarActionToCard = (event: any): void => {
-    // @ts-ignore
-    const id = event?.target?.id;   
+    const id = event?.target?.id;
     if (id === 'sdb-copy-card') this.setState({ showDialogCopyCardInSidebar: !0 });
     if (id === 'sdb-move-card') this.setState({ showDialogMoveToCardInSidebar: !0 });
     if (id === 'sdb-archive-card') this.setState({ showDialogArchiveCardInSidebar: !0 });
@@ -145,7 +139,12 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
 
   render(): JSX.Element | null {
     const { cardId, board } = this.props;
-    const { showDialogMoveCardInTitleBox, showDialogCopyCardInSidebar, showDialogMoveToCardInSidebar, showDialogArchiveCardInSidebar } = this.state;
+    const {
+      showDialogMoveCardInTitleBox,
+      showDialogCopyCardInSidebar,
+      showDialogMoveToCardInSidebar,
+      showDialogArchiveCardInSidebar,
+    } = this.state;
     const { boardId } = this.context as { boardId: number };
     const list = Object.entries(board.lists).find(([, listContent]) => cardId in listContent.cards)?.[1];
     if (!list) return null;
@@ -182,7 +181,11 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                   <a href="#" onClick={this.handlerTitleColumnName}>
                     <span className="tlt-col-name-title">{list.title}</span>
                     {showDialogMoveCardInTitleBox && (
-                      <MoveCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogMoveCardInTitleBox} />
+                      <MoveCard
+                        {...startingValues}
+                        closeCardDialog={this.closedCardDialog}
+                        closePopup={this.closeDialogMoveCardInTitleBox}
+                      />
                     )}
                   </a>
                 </div>
@@ -233,7 +236,11 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                       Copy
                     </Button>
                     {showDialogCopyCardInSidebar && (
-                      <CopyCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogCopyCardInSidebar} />
+                      <CopyCard
+                        {...startingValues}
+                        closeCardDialog={this.closedCardDialog}
+                        closePopup={this.closeDialogCopyCardInSidebar}
+                      />
                     )}
                   </li>
                   <li className="button-element">
@@ -247,7 +254,11 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                       Move to
                     </Button>
                     {showDialogMoveToCardInSidebar && (
-                      <MoveCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogMoveToCardInSidebar} />
+                      <MoveCard
+                        {...startingValues}
+                        closeCardDialog={this.closedCardDialog}
+                        closePopup={this.closeDialogMoveToCardInSidebar}
+                      />
                     )}
                   </li>
                   <li className="button-element">
@@ -261,7 +272,11 @@ class CardDetalis extends React.Component<TypeProps, TypeState> {
                       Archive
                     </Button>
                     {showDialogArchiveCardInSidebar && (
-                      <DeleteCard {...startingValues} closeCardDialog={this.closedCardDialog} closePopup={this.closeDialogArchiveCardInSidebar} />
+                      <DeleteCard
+                        {...startingValues}
+                        closeCardDialog={this.closedCardDialog}
+                        closePopup={this.closeDialogArchiveCardInSidebar}
+                      />
                     )}
                   </li>
                 </ul>

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
 import { Dispatch } from 'redux';
 import instance from '../../../api/request';
 import { ActionType } from './action-types';
@@ -13,13 +10,10 @@ export const getBoards =
   async (dispatch: Dispatch): Promise<void> => {
     try {
       const data = (await instance.get('/board')) as { boards: IBoardCover[] };
-      // console.log('data boards: ', data);
-
       dispatch({ type: ActionType.UPDATE_BOARDS, payload: data.boards });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const { message } = error;
-
-      console.log('message: ', message);
 
       dispatch({
         type: ActionTypeError.ERROR,
@@ -44,6 +38,7 @@ export const addBoard =
       if (response.result !== 'Created') {
         throw new Error('Не удалось создать доску.');
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось создать доску.', error.message] });
     } finally {
@@ -63,6 +58,7 @@ export const deleteBoard =
       if (response.result !== 'Deleted') {
         throw new Error('Не удалось удалить эту доску.');
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось удалить эту доску.', error.message] });
     } finally {

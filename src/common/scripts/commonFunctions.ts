@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-
 type TypeCheckInputText = (
   text: string,
   checkedSymbols?: RegExp

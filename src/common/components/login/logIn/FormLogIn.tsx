@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { connect } from 'react-redux';
 import PasswordStrengthBar from 'react-password-strength-bar';
@@ -31,12 +30,12 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
     super(props);
     this.state = {
       formAuthorization: !0,
-      email: 'abc@mail.com', // ae1@gmail.com
+      email: '', // abc@mail.com
       emailOk: !1,
-      fPassword: '', // HA543/aa8z
+      fPassword: '', // abcmailcom
       fPasswordIsComplex: 3,
       fPasswordOk: !1,
-      sPassword: '', // HA543/aa8z
+      sPassword: '', // abcmailcom
       sPpasswordOk: !1,
       error: [],
       createUserSuccess: !1,
@@ -212,9 +211,10 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
               type="email"
               id="email"
               name="email"
-              value={email}
+              // value={email}
               defaultValue={email}
               onChange={this.handleInputOnChange}
+              autoComplete="section-email"
             />
 
             <label htmlFor="fPassword">Password</label>
@@ -222,9 +222,10 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
               type="password"
               id="fPassword"
               name="fPassword"
-              value={fPassword}
+              // value={fPassword}
               defaultValue={fPassword}
               onChange={this.handleInputOnChange}
+              autoComplete="section-first-password"
             />
 
             {!formAuthorization && (
@@ -244,6 +245,7 @@ class FormAuthorization extends React.Component<PropsType, StateType> {
                   name="sPassword"
                   defaultValue={sPassword}
                   onChange={this.handleInputOnChange}
+                  autoComplete="section-second-password"
                 />
 
                 <div className="textError">

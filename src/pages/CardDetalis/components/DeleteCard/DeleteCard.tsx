@@ -1,19 +1,4 @@
-/* eslint-disable import/order */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-alert */
-/* eslint-disable no-debugger */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable no-console */
-/* eslint-disable react/no-unused-state */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/jsx-no-undef */
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import cn from 'classnames';
 import { connect } from 'react-redux';
 import './DeleteCard.scss';
 import { PopupCardDialogProps, PopupCardDialogState } from './DeleteCard.props';
@@ -42,7 +27,9 @@ class DeleteCard extends Component<PopupCardDialogProps, PopupCardDialogState> {
         {/* HEADER */}
         <HeaderPopupCardDialog title="Удаление карточки" classname="deleteCardInTitleCardBox" />
         {/* WARNING */}
-        <p className="label-warning">Все действия будут удалены из ленты, и вы не сможете повторно открыть карточку. Отмена невозможна.</p>
+        <p className="label-warning">
+          Все действия будут удалены из ленты, и вы не сможете повторно открыть карточку. Отмена невозможна.
+        </p>
         {/* BUTTON */}
         <Button appearance="brown" onClick={this.handlerDeleteCard} className="button-delete-card">
           Delete card

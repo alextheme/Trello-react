@@ -1,13 +1,3 @@
-/* eslint-disable react/no-unused-state */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-useless-constructor */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -54,10 +44,11 @@ class Title extends React.Component<TypeProps, TypeState> {
     this.mount = false;
     // fix Warning: Can't perform a React state update on an unmounted component
     this.setState = (): void => {};
-    
+
     this.renameTitle();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlerChangeTextarea = (event: any): void => {
     event.preventDefault();
     const { target } = event;

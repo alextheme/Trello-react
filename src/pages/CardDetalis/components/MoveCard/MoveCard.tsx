@@ -1,23 +1,9 @@
-/* eslint-disable import/order */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-alert */
-/* eslint-disable no-debugger */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable no-console */
-/* eslint-disable react/no-unused-state */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/jsx-no-undef */
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import cn from 'classnames';
 import { connect } from 'react-redux';
 import './MoveCard.scss';
 import { IFuncType, PopupCardDialogProps, PopupCardDialogState } from './MoveCard.props';
-import { IBoardContent, IBoardCover, IBoards, IListContent, ILists } from '../../../../common/interfaces/Interfaces';
+import { IBoardContent, IBoards, IListContent } from '../../../../common/interfaces/Interfaces';
 import instance from '../../../../api/request';
 import { Selection } from '../Selection/Selection';
 import HeaderPopupCardDialog from '../HeaderPopupCardDialog/HeaderPopupCardDialog';
@@ -55,9 +41,9 @@ class MoveCard extends Component<PopupCardDialogProps & IFuncType, PopupCardDial
   getBoardsList = async (): Promise<IBoards | null> => {
     try {
       const data = (await instance.get('/board')) as IBoards;
-      // console.log('boards: ', data);
       return data;
     } catch (error: any) {
+      // eslint-disable-next-line no-console
       console.log(error);
       return null;
     }
@@ -68,6 +54,7 @@ class MoveCard extends Component<PopupCardDialogProps & IFuncType, PopupCardDial
       const data: IBoardContent = await instance.get(`/board/${boardId}`);
       return data;
     } catch (e: any) {
+      // eslint-disable-next-line no-console
       console.log('Error update data: ', e);
       return null;
     }
@@ -162,16 +149,10 @@ class MoveCard extends Component<PopupCardDialogProps & IFuncType, PopupCardDial
       // Move between different lists & board
     } else {
       // TODO - разобраться с редактированием карточки Title & Description
-      const { deleteCrd, createCrd, editCrd, closeCardDialog } = this.props;
+      const { deleteCrd, createCrd, closeCardDialog } = this.props;
       const card = { ...src.boardData.lists[src.listId].cards[src.cardId] };
       await deleteCrd(src.boardId, src.cardId, src.boardData.lists[src.listId]);
-      const resultCreateCard = await createCrd(boardId, boardData.lists[listId], positionCard, card.title);
-      // if (resultCreateCard) {
-      //   setTimeout(async () => {
-      //     await updateBoard();
-      //     await editCard(boardId, listId, resultCreateCard, card.description, 'description');
-      //   }, 5000);
-      // }
+      await createCrd(boardId, boardData.lists[listId], positionCard, card.title);
       await updateBoard();
       closeCardDialog();
     }

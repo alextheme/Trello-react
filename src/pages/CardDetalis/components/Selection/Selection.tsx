@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/jsx-boolean-value */
-/* eslint-disable prettier/prettier */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-console */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { SelectionProps } from './Selection.props';
 import './Selection.scss';
@@ -50,14 +46,14 @@ export const Selection = ({ data, children, className, ...props }: SelectionProp
             <span className="label">{buttonLabel}</span>
             <span className="value">{list.title}</span>
             <select className="select" value={data.valueId} onChange={(): void => {}}>
-            {Object.entries(data.value.lists)
+              {Object.entries(data.value.lists)
                 .sort(([, a], [, b]) => a.position - b.position)
                 .map(([, l]) => (
                   <option key={l.id} value={l.id}>
                     {l.title} *** {l.id} {l.id === src.listId && current}
                   </option>
-              ))}
-          </select>
+                ))}
+            </select>
           </div>
         </div>
       );
@@ -70,14 +66,14 @@ export const Selection = ({ data, children, className, ...props }: SelectionProp
     const { boardId, listId, positionCard, numberCards } = data;
 
     const isThisCardInThisList = src.boardId === boardId && src.listId === listId;
-    const optionsArray = (new Array(numberCards)).fill(1).map((ae,i)=>i + 1);
-      
+    const optionsArray = new Array(numberCards).fill(1).map((ae, i) => i + 1);
+
     if (!isThisCardInThisList) {
       optionsArray.push(numberCards + 1);
-    }    
+    }
 
     return (
-      <div className={cn(className, 'selection-wrapper', )} {...props}>
+      <div className={cn(className, 'selection-wrapper')} {...props}>
         <div className="button">
           <span className="label">{buttonLabel}</span>
           <span className="value">{positionCard}</span>

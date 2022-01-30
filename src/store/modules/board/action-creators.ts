@@ -1,8 +1,4 @@
-/* eslint-disable no-debugger */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-console */
 import { Dispatch } from 'redux';
 import instance from '../../../api/request';
 import { IBoardContent, IListContent, IValuesNewCardPositions } from '../../../common/interfaces/Interfaces';
@@ -15,10 +11,10 @@ export const getBoard =
   async (dispatch: Dispatch): Promise<void> => {
     try {
       const data: IBoardContent = await instance.get(`/board/${boardId}`);
-      // console.log('get board data: ', data);
-      
+
       dispatch({ type: ActionType.UPDATE_BOARD, payload: data });
     } catch (e: any) {
+      // eslint-disable-next-line no-console
       console.log('Error update data: ', e);
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось обновить доску', e.message] });
     } finally {
@@ -33,7 +29,7 @@ export const renameTitleBoard =
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
 
     try {
-      const response = await instance.put(`/board/${boardId}`, { title }) as { result: 'Updated' };
+      const response = (await instance.put(`/board/${boardId}`, { title })) as { result: 'Updated' };
       return response.result === 'Updated';
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось переименовать доску.', e.message] });
@@ -53,7 +49,7 @@ export const addList =
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
 
     try {
-      const response = await instance.post(`/board/${boardId}/list`, { title, position }) as { result: 'Updated' };
+      const response = (await instance.post(`/board/${boardId}/list`, { title, position })) as { result: 'Updated' };
       return response.result === 'Updated';
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось добавить список на доску.', e.message] });
@@ -85,7 +81,7 @@ export const renameTitleList =
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
 
     try {
-      const response = await instance.put(`/board/${boardId}/list/${listId}`, { title }) as { result: 'Updated' };
+      const response = (await instance.put(`/board/${boardId}/list/${listId}`, { title })) as { result: 'Updated' };
       return response.result === 'Updated';
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось переименовать этот список.', e.message] });
@@ -120,7 +116,10 @@ export const addCard =
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
 
     try {
-      const response = await instance.post(`/board/${boardId}/card`, { title, list_id, position }) as { result: string; id: number };
+      const response = (await instance.post(`/board/${boardId}/card`, { title, list_id, position })) as {
+        result: string;
+        id: number;
+      };
       return response.result === 'Created' ? response.id : undefined;
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось создать новую карточку.', e.message] });
@@ -130,10 +129,11 @@ export const addCard =
     }
   };
 
-const getNewCardPositionsForCreate = (list: IListContent, position: number): IValuesNewCardPositions[] => Object.entries(list.cards)
-            .sort(([, a], [, b]) => a.position - b.position)
-            .filter(([, c]) => c.position >= position)
-            .map(([, cd]) => ({ id: cd.id, position: cd.position + 1, list_id: list.id }));
+const getNewCardPositionsForCreate = (list: IListContent, position: number): IValuesNewCardPositions[] =>
+  Object.entries(list.cards)
+    .sort(([, a], [, b]) => a.position - b.position)
+    .filter(([, c]) => c.position >= position)
+    .map(([, cd]) => ({ id: cd.id, position: cd.position + 1, list_id: list.id }));
 
 // create a new card with the movement of the previous ones
 export const createNewCardWithMovement =
@@ -144,15 +144,22 @@ export const createNewCardWithMovement =
 
     const newCardPositions = getNewCardPositionsForCreate(listContent, position);
     try {
-      const response = await instance.put(`/board/${boardId}/card`, newCardPositions) as { result: string };
+      await instance.put(`/board/${boardId}/card`, newCardPositions);
     } catch (e: any) {
-      dispatch({ type: ActionTypeError.ERROR, payload: ['При создании карточки не удалось переместить предыдущие карточки.', e.message] });
+      dispatch({
+        type: ActionTypeError.ERROR,
+        payload: ['При создании карточки не удалось переместить предыдущие карточки.', e.message],
+      });
     } finally {
       dispatch({ type: ActionTypeLoading.LOADING_END });
     }
 
     try {
-      const response = await instance.post(`/board/${boardId}/card`, { title, list_id: listContent.id, position }) as { result: string; id: number };
+      const response = (await instance.post(`/board/${boardId}/card`, {
+        title,
+        list_id: listContent.id,
+        position,
+      })) as { result: string; id: number };
       return response.result === 'Created' ? response.id : undefined;
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось создать новую карточку.', e.message] });
@@ -164,15 +171,16 @@ export const createNewCardWithMovement =
 
 const getNewCardPositionsForDelete = (list: IListContent, cardId: number): IValuesNewCardPositions[] => {
   let position = -1;
-  return Object.entries(list.cards).sort(([, a], [, b]) => a.position - b.position)
-    .filter(([, c]) => {      
+  return Object.entries(list.cards)
+    .sort(([, a], [, b]) => a.position - b.position)
+    .filter(([, c]) => {
       if (c.id === +cardId) {
         position = c.position;
       }
       return c.id !== +cardId;
     })
     .filter(([, c]) => c.position >= position)
-    .map(([, cd], i) => ({ id: cd.id, position: position + i, list_id: list.id }));  
+    .map(([, cd], i) => ({ id: cd.id, position: position + i, list_id: list.id }));
 };
 
 export const deleteCard =
@@ -180,25 +188,26 @@ export const deleteCard =
   async (dispatch: Dispatch): Promise<boolean> => {
     dispatch({ type: ActionTypeLoading.LOADING });
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
-    
+
     // get value new card positions
-    const moveCardsList = listContent && getNewCardPositionsForDelete(listContent, cardId);  
-    
+    const moveCardsList = listContent && getNewCardPositionsForDelete(listContent, cardId);
+
     // delete card & move cards
     try {
       if (moveCardsList) {
-        
-        const response = await instance.delete(`/board/${boardId}/card/${cardId}`) as { result: string };
+        const response = (await instance.delete(`/board/${boardId}/card/${cardId}`)) as { result: string };
         try {
-          await instance.put(`/board/${boardId}/card`, moveCardsList) as { result: string };
+          (await instance.put(`/board/${boardId}/card`, moveCardsList)) as { result: string };
         } catch (e: any) {
-          dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось удалить карточку. Сбой перемезщения карточек.', e.message] });
+          dispatch({
+            type: ActionTypeError.ERROR,
+            payload: ['Не удалось удалить карточку. Сбой перемезщения карточек.', e.message],
+          });
           return false;
         }
         return response.result === 'Deleted';
       }
       return !1;
-
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось удалить карточку.', e.message] });
       return false;
@@ -214,7 +223,7 @@ export const movedCards =
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
 
     try {
-      const response = await instance.put(`/board/${boardId}/card`, data) as { result: string };
+      const response = (await instance.put(`/board/${boardId}/card`, data)) as { result: string };
       return response.result === 'Updated';
     } catch (e: any) {
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось переместить карточки.', e.message] });
@@ -229,17 +238,17 @@ export const movedCards =
 export const editCard =
   (board_id: number, list_id: number, card_id: number, text: string, textType: 'title' | 'description') =>
   async (dispatch: Dispatch): Promise<boolean> => {
-    
     dispatch({ type: ActionTypeLoading.LOADING });
     dispatch({ type: ActionTypeError.ERROR_CLEAR });
-    
+
     const data = textType === 'title' ? { title: text, list_id } : { description: text, list_id };
-    
+
     try {
-      const response = await instance.put(`/board/${board_id}/card/${card_id}`, data) as { result: string };
-      
+      const response = (await instance.put(`/board/${board_id}/card/${card_id}`, data)) as { result: string };
+
       return response.result === 'Updated';
     } catch (e: any) {
+      // eslint-disable-next-line no-console
       console.log('edit card error: ', e);
       dispatch({ type: ActionTypeError.ERROR, payload: ['Не удалось изменить описание карточки.', e.message] });
       return false;

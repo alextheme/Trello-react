@@ -1,7 +1,4 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { ICardContent } from '../../../../common/interfaces/Interfaces';
 import { getFromSessionStorageToken } from '../../../../store/modules/user/session-storage-actions';
@@ -42,6 +39,7 @@ class Members extends React.Component<TypeProps, TypeState> {
     window.removeEventListener('click', this.handlerOnClickWindow);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlerOnClickWindow = (e: any): void => {
     // Кнопка учасника
     const memberNameButton = e.target?.closest('.member-button');
@@ -59,6 +57,7 @@ class Members extends React.Component<TypeProps, TypeState> {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   infoMemberShow = (e: any): void => {
     const id = e.target.dataset.memberId;
     this.setState({ isShowInfoMemberId: +id });

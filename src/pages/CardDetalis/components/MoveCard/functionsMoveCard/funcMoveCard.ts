@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-debugger */
-/* es lint-disable prettier/prettier */
-/* eslint-disable no-console */
 import { IBoardContent } from '../../../../../common/interfaces/Interfaces';
 
 interface INewCardPositon {

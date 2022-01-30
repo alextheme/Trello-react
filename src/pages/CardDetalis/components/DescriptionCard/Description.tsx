@@ -1,9 +1,3 @@
-/* eslint-disable no-useless-return */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* esl int-disable react/no-unused-state */
 import React from 'react';
 import { connect } from 'react-redux';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -49,9 +43,10 @@ class Description extends React.Component<TypeProps, TypeState> {
     this.mount = false;
     this.renameDescription();
     // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = (state, callback): void => {};
+    // this.setState = (state, callback): void => {}; // TODO: ?
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlerChangeTextarea = (event: any): void => {
     event.preventDefault();
     const { target } = event;
@@ -79,7 +74,7 @@ class Description extends React.Component<TypeProps, TypeState> {
     } else {
       this.setState({ description: prevValueDescription });
     }
-    
+
     await updateBoard();
   };
 

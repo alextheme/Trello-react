@@ -1,6 +1,5 @@
 import { ILoadingReducer } from '../../../common/interfaces/Interfaces';
 
-/* eslint-disable no-console */
 export enum ActionType {
   LOADING = 'LOADING',
   LOADING_END = 'LOADING_END',

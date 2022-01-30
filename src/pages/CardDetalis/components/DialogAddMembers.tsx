@@ -1,16 +1,7 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react/no-children-prop */
-/* eslint-disable react/jsx-no-comment-textnodes */
-/* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable react/prefer-stateless-function */
-/* esl int-disable prettier/prettier */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { connect } from 'react-redux';
 import instance from '../../../api/request';
 import { IFoundUsers } from '../../../common/interfaces/Interfaces';
 import { IBoardContext } from '../../Board/boardContext';
@@ -22,6 +13,13 @@ interface TypeProps {
   title: string;
   boardId: number;
   cardId: number;
+  userAssignOrRemove: (
+    boardId: number,
+    cardId: number,
+    updateBoard: () => void,
+    add: number[],
+    remove: number[]
+  ) => Promise<boolean>;
 }
 
 interface TypeState {
@@ -38,6 +36,7 @@ class DialogAddMembers extends React.Component<TypeProps, TypeState> {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handlerInputOnChange = async (e: any): Promise<void> => {
     const { value } = e.target;
     this.setState({ inputValue: value });
@@ -51,27 +50,30 @@ class DialogAddMembers extends React.Component<TypeProps, TypeState> {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addMemberToCard = async (e: any): Promise<void> => {
     this.addOrRemoveMemberToCard(e, !0);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   removeMemberToCard = async (e: any): Promise<void> => {
     this.addOrRemoveMemberToCard(e, !1);
   };
 
   // Add or remove a member depending on the checkbox on the link
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addOrRemoveMemberToCard = async (e: any, actionAddMember: boolean): Promise<void> => {
     const { target } = e;
     const { dataset } = target;
     const id = dataset.idMember;
-    const { boardId, cardId } = this.props;
+    const { boardId, cardId, userAssignOrRemove } = this.props;
     const { updateBoard } = this.context as IBoardContext;
 
     const addMembers = actionAddMember ? [+id] : [];
     const removeMembers = actionAddMember ? [] : [+id];
 
     if (id) {
-      assignOrRemoveUsersToOrFromCard(boardId, cardId, updateBoard, addMembers, removeMembers);
+      userAssignOrRemove(boardId, cardId, updateBoard, addMembers, removeMembers);
     }
   };
 
@@ -100,7 +102,9 @@ class DialogAddMembers extends React.Component<TypeProps, TypeState> {
                     <a
                       href="#"
                       title={user.username}
-                      onClick={cardUsers && cardUsers.includes(user.id) ? this.removeMemberToCard : this.addMemberToCard}
+                      onClick={
+                        cardUsers && cardUsers.includes(user.id) ? this.removeMemberToCard : this.addMemberToCard
+                      }
                     >
                       <span className="hiden-data" data-id-member={user.id} />
                       <span className="name">{user.username} </span>
@@ -124,4 +128,4 @@ class DialogAddMembers extends React.Component<TypeProps, TypeState> {
 
 DialogAddMembers.contextType = MembersContext;
 
-export default DialogAddMembers;
+export default connect(null, { userAssignOrRemove: assignOrRemoveUsersToOrFromCard })(DialogAddMembers);

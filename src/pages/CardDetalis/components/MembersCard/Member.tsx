@@ -1,17 +1,9 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React from 'react';
-import instance from '../../../../api/request';
-import { IFoundUsers } from '../../../../common/interfaces/Interfaces';
+import { connect } from 'react-redux';
 import { getFromSessionStorageToken } from '../../../../store/modules/user/session-storage-actions';
 import { BoardContext, IBoardContext } from '../../../Board/boardContext';
-// import CloseIcon from '../icons/CloseIcon';
-// import { ReactComponent as CloseIcon } from './logo.svg';
-// eslint-disable-next-line import/no-cycle
 import DialogAddMembers from '../DialogAddMembers';
 import { assignOrRemoveUsersToOrFromCard } from '../../../../store/modules/user/assignOrRemoveUsersToFromCard';
 
@@ -25,12 +17,18 @@ interface TypeProps {
   typeButton: 'member' | 'add' | 'join';
   confirmationId: number;
   hide: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   show: (e: any) => void;
+  userAssignOrRemove: (
+    boardId: number,
+    cardId: number,
+    updateBoard: () => void,
+    add: number[],
+    remove: number[]
+  ) => Promise<boolean>;
 }
 
-interface TypeState {}
-
-class Member extends React.Component<TypeProps, TypeState> {
+class Member extends React.Component<TypeProps> {
   constructor(props: TypeProps) {
     super(props);
     this.state = {};
@@ -43,33 +41,35 @@ class Member extends React.Component<TypeProps, TypeState> {
   // Join User Logged
   handlerJoinMemberOnClick = async (): Promise<void> => {
     const { updateBoard } = this.context as IBoardContext;
-    const { boardId, cardId } = this.props;
+    const { boardId, cardId, userAssignOrRemove } = this.props;
     const userToken = getFromSessionStorageToken();
 
     if (boardId && cardId && userToken && updateBoard) {
       if (+userToken) {
-        assignOrRemoveUsersToOrFromCard(boardId, cardId, updateBoard, [+userToken], []);
+        console.log('adfasdf');
+        userAssignOrRemove(boardId, cardId, updateBoard, [+userToken], []);
       }
     }
   };
 
   // Remove User
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   removeUserFromCard = async (e: any): Promise<void> => {
-    const { boardId, cardId } = this.props;
+    const { boardId, cardId, userAssignOrRemove } = this.props;
     const { target } = e;
     const { dataset } = target;
     const idUser = dataset.userId;
     const { updateBoard } = this.context;
 
     if (boardId && cardId && idUser && updateBoard) {
-      assignOrRemoveUsersToOrFromCard(boardId, cardId, updateBoard, [], [+idUser]);
+      userAssignOrRemove(boardId, cardId, updateBoard, [], [+idUser]);
     }
   };
 
   render(): JSX.Element {
     const { name, email, typeButton, boardId, cardId, id, confirmationId, show, hide } = this.props;
     const isShow = confirmationId === id;
-    
+
     if (typeButton === 'add') {
       return (
         <div className="member add">
@@ -104,8 +104,7 @@ class Member extends React.Component<TypeProps, TypeState> {
 
         <div className={`detalis_member ${isShow ? 'isShow' : ''}`}>
           <button className="close-button" onClick={hide}>
-            {/* <CloseIcon /> */}
-            x
+            {/* <CloseIcon /> */}x
           </button>
 
           <div className="info_member">
@@ -131,4 +130,4 @@ class Member extends React.Component<TypeProps, TypeState> {
 
 Member.contextType = BoardContext;
 
-export default Member;
+export default connect(null, { userAssignOrRemove: assignOrRemoveUsersToOrFromCard })(Member);
