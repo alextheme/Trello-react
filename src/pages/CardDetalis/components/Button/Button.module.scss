@@ -1,0 +1,78 @@
+.button {
+  display: inline-block;
+  width: 100%;
+  border: none;
+  border-radius: 3px;
+  box-shadow: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 32px;
+  overflow: hidden;
+  padding: 6px 12px;
+  position: relative;
+  text-overflow: ellipsis;
+  -webkit-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+  
+  &:hover {
+    border: none;
+    box-shadow: none;
+    outline: 0;
+  }
+  
+  &.grey {
+    background-color: #091e420a;
+    color: #172b4d;
+    max-width: 300px;
+    text-align: left;
+    &:hover {
+      background-color: #091e4214;
+      color: #091e42;
+    }
+  }
+  
+  &.blue {
+    background-color: #0079bf;
+    color: #fff;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    
+    &:hover {
+      background-color: #005f96;
+      color: rgb(233, 233, 233);
+    }
+  }
+
+  &.brown {
+    width: 100%;
+    background-color: #b04632;
+    color: #fff;
+
+    &:hover {
+      background-color: #933b27;
+    }
+  }
+
+  &.circle {
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  &.simpleButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: max-content;
+    padding: 6px 12px;
+  }
+}
+
+.icon {
+  margin: 0 6px 0 0;
+}
+
+.square {
+  // afda
+}

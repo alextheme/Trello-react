@@ -2,10 +2,11 @@
 
 # dependencies
 /node_modules
-/.vscode
-/.idea
 /.pnp
 .pnp.js
+
+/.vscode
+/.idea
 
 # testing
 /coverage

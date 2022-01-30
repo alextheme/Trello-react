@@ -1,0 +1,161 @@
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  border-radius: $radius;
+}
+
+$transitionParams: 300ms ease-in-out all;
+
+@mixin transition($transitionParams) {
+  -webkit-transition: $transitionParams;
+  -moz-transition: $transitionParams;
+  -o-transition: $transitionParams;
+  transition: $transitionParams;
+}
+
+.display-none {
+  display: none!important;
+}
+
+.overflowHidden {
+  overflow: hidden;
+}
+
+.add-board {
+  width: 100%;
+  height: 100%;
+
+  // popap
+  .add-board__popapp {
+    display: flex;
+    background: rgba(35, 35, 35, 0.75);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    justify-content: center;
+    align-items: center;
+
+    .add-board__container {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      background: #a8a8a8;
+      @include border-radius(10px);
+
+      .add-board__input-container {
+        position: relative;
+
+        #addNewBoardInpt {
+          outline: none;
+          border: 2px solid transparent;
+          transition: 300ms ease-in-out all;
+
+          &:focus {
+            border: 2px solid #7a7a7a;
+            transition: 300ms ease-in-out all;
+          }
+        }
+      }
+
+      .progress {
+        background: transparent;
+        border: 1px solid #232323;
+
+        .progress-bar {
+          background: teal;
+        }
+      }
+
+      .add-board__errorHint {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #ffa9a9;
+        border-radius: 5px;
+        border: 2px solid rgba(255, 34, 34, 0.56);
+        padding: 5px;
+        z-index: 1;
+        width: 100%;
+        margin-left: -6px;
+        margin-top: 5px;
+      }
+
+      .add-board__create-new-board {
+        width: fit-content;
+        margin-top: 8px;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 10px;
+        cursor: pointer;
+
+        &:hover {
+          background: #dedede;
+        }
+      }
+
+      input[type="text"] {
+        width: 200px;
+        height: 25px;
+        @include border-radius(5px);
+        border: none;
+      }
+
+      .add-board__close-btn {
+        width: 20px;
+        height: 20px;
+        border: none;
+        background: transparent;
+        position: relative;
+        cursor: pointer;
+        margin-bottom: 8px;
+        align-self: flex-end;
+
+        &:before, &:after {
+          content: "";
+          width: 2px;
+          height: 20px;
+          background: #f3f3f3;
+          position: absolute;
+          top: 0;
+          left: 50%;
+          cursor: pointer;
+          @include transition($transitionParams);
+        }
+        &:before {
+          transform: rotate(45deg);
+        }
+        &:after {
+          transform: rotate(-45deg);
+        }
+        &:hover {
+          &:before {
+            transform: rotate(140deg);
+          }
+          &:after {
+            transform: rotate(45deg);
+          }
+          @include transition($transitionParams);
+        }
+      }
+    }
+  }
+
+  .create-new-board-begin {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #777777;
+    @include transition($transitionParams);
+
+    span {
+      margin-right: 3px;
+      @include transition($transitionParams);
+    }
+  }
+}

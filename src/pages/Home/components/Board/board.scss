@@ -1,0 +1,75 @@
+$transitionParams: 300ms ease-in-out all;
+
+@mixin transition($transitionParams) {
+  -webkit-transition: $transitionParams;
+  -moz-transition: $transitionParams;
+  -o-transition: $transitionParams;
+  transition: $transitionParams;
+}
+
+.board__container {
+  position: relative;
+  cursor: pointer;
+
+  .board__title-box {
+    position: relative;
+    //overflow-x: hidden;
+    word-wrap: break-word;
+    cursor: pointer;
+
+    .board__title {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #ffffff;
+      text-wrap: unset;
+      cursor: pointer;
+    }
+  }
+
+  .board__delete_btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    position: absolute;
+    cursor: pointer;
+    top: -16px;
+    right: -19px;
+
+    &:before, &:after {
+      content: "";
+      width: 2px;
+      height: 20px;
+      background: #f3f3f3;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      cursor: pointer;
+      @include transition($transitionParams);
+    }
+
+    &:before {
+      transform: rotate(45deg);
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+    }
+
+    &:hover {
+      background: rgba(255, 0, 0, 0.46);
+      &:before {
+        transform: rotate(140deg);
+      }
+
+      &:after {
+        transform: rotate(45deg);
+      }
+
+      @include transition($transitionParams);
+    }
+  }
+}
+

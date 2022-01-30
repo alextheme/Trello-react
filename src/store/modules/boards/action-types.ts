@@ -1,0 +1,4 @@
+export enum ActionType {
+  UPDATE_BOARDS = 'UPDATE_BOARDS',
+  CLEAR_BOARDS = 'CLEAR_BOARDS',
+}
