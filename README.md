@@ -1,3 +1,3 @@
 # GitHubPage myTrello
 
-### follow [myTrello](https://alextheme.github.io/Trello-react-2/){:target="_blank"}
+### follow <a href="https://alextheme.github.io/Trello-react-2/" target="_blank">myTrello</a>
