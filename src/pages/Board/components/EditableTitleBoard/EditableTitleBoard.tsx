@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+/* eslint-disable no-console */
+import React, { useContext, useState } from 'react';
 import { connect } from 'react-redux';
 import { checkInputText } from '../../../../common/scripts/commonFunctions';
 import { renameTitleBoard } from '../../../../store/modules/board/action-creators';
@@ -15,14 +16,7 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
   const [title, setTitle] = useState(props.title);
   const [prevTitle, setPrevTitle] = useState(props.title);
   const [errorMessage, setErrorMessage] = useState({ statusErrorText: false, res: '', errSymbols: '' });
-  const isMountedRef = useRef<number>(0);
   const { boardId } = useContext(BoardContext);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useEffect((): any => {
-    isMountedRef.current = 1;
-    return (isMountedRef.current = 0);
-  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTitleOnClick = (event: any): void => {
@@ -59,16 +53,14 @@ const EditableTitleBoard = ({ ...props }: TypeProps): JSX.Element => {
     if (status && res === '' && boardId) {
       const { changeBoardTitle } = props;
 
-      if (isMountedRef.current) {
-        const response = await changeBoardTitle(boardId, nameTitle);
+      const response = await changeBoardTitle(boardId, nameTitle);
 
-        if (response) {
-          setTitle(nameTitle);
-          setPrevTitle(nameTitle);
-          setOpenInputEditTitle(false);
-          setErrorMessage({ statusErrorText: true, res: '', errSymbols: '' });
-          return;
-        }
+      if (response) {
+        setTitle(nameTitle);
+        setPrevTitle(nameTitle);
+        setOpenInputEditTitle(false);
+        setErrorMessage({ statusErrorText: true, res: '', errSymbols: '' });
+        return;
       }
     }
 
