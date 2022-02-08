@@ -144,7 +144,7 @@ class AddList extends React.Component<TypeProps, TypeState> {
 
     setTimeout(async () => {
       const { listAdd, ...a } = this.props;
-      listAdd(a.boardId, nameList, a.position);
+      await listAdd(a.boardId, nameList, a.position);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.setState((state: any) => ({ ...state, nameList: '' }));
       const { updateBoard } = this.context as IBoardContext;
